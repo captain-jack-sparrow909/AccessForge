@@ -249,7 +249,9 @@ async def test_anthropic_validates_structured_json_fallback() -> None:
 
     async with client_for(handler) as client:
         provider = AnthropicProvider(api_key="test-only-key", http_client=client)
-        result = await provider.complete_structured(request_for("claude-test"), ExtractedRequirement)
+        result = await provider.complete_structured(
+            request_for("claude-test"), ExtractedRequirement
+        )
 
     assert result.data == ExtractedRequirement(kind="target", confirmed=True)
 
