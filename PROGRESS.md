@@ -118,7 +118,7 @@ The API test covers project creation, scope evaluation, consent recording, text 
 
 Passed on a fresh temporary SQLite database:
 
-- backend `ruff`, strict `mypy`, and `pytest` — 37 tests, including provider endpoint/model routing, all built-in provider adapters, offline fake extraction/confirmation, prompt-injection/citation rejection, schema rejection, and no-media context coverage
+- backend `ruff`, strict `mypy`, and `pytest` — 38 tests, including provider endpoint/model routing, all built-in provider adapters, offline fake extraction/confirmation, prompt-injection/citation rejection, schema rejection, and no-media context coverage
 - AES-256-GCM credential and custom-endpoint safety tests
 - a fresh Alembic upgrade through `0003_phase3_ai_requirements`
 - generated OpenAPI/client, frontend lint/typecheck, and production web build
