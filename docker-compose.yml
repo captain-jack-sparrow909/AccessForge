@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: accessforge
+      POSTGRES_USER: accessforge
+      POSTGRES_PASSWORD: accessforge
+    ports: ['5432:5432']
+    volumes: [accessforge-postgres:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U accessforge -d accessforge']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  redis:
+    image: redis:7.4-alpine
+    ports: ['6379:6379']
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  minio:
+    image: minio/minio:RELEASE.2025-02-28T09-55-16Z
+    command: server /data --console-address ':9001'
+    environment:
+      MINIO_ROOT_USER: accessforge
+      MINIO_ROOT_PASSWORD: accessforge-local-only
+    ports: ['9000:9000', '9001:9001']
+    volumes: [accessforge-minio:/data]
+  api:
+    build: { context: ./services/api, dockerfile: Dockerfile }
+    environment:
+      APP_ENV: development
+      AUTO_CREATE_DB: 'true'
+      DATABASE_URL: postgresql+asyncpg://accessforge:accessforge@postgres:5432/accessforge
+      REDIS_URL: redis://redis:6379/0
+      CORS_ORIGINS: http://localhost:3000
+      BACKEND_TOKEN_ISSUER: accessforge-web
+      BACKEND_TOKEN_AUDIENCE: accessforge-api
+      BACKEND_TOKEN_PUBLIC_KEYS_JSON: ${BACKEND_TOKEN_PUBLIC_KEYS_JSON:-{}}
+    ports: ['8000:10000']
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://localhost:10000/health/live')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  worker:
+    build: { context: ./services/api, dockerfile: Dockerfile }
+    command: celery -A accessforge.jobs.celery_app worker --loglevel=INFO
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql+asyncpg://accessforge:accessforge@postgres:5432/accessforge
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+volumes:
+  accessforge-postgres:
+  accessforge-minio:

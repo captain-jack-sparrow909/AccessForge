@@ -1,0 +1,13 @@
+alembic<2,>=1.16
+asyncpg<1,>=0.30
+aiosqlite<1,>=0.21
+boto3<2,>=1.40
+celery<6,>=5.5
+cryptography<47,>=45
+fastapi<1,>=0.116
+httpx<1,>=0.28
+pydantic-settings<3,>=2.10
+pyjwt[crypto]<3,>=2.10
+redis<7,>=6
+sqlalchemy[asyncio]<3,>=2.0.43
+uvicorn[standard]<1,>=0.35

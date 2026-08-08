@@ -1,0 +1,52 @@
+services:
+  - type: web
+    name: accessforge-api
+    runtime: docker
+    rootDir: services/api
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /health/live
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: AUTO_CREATE_DB
+        value: 'false'
+      - key: DATABASE_URL
+        fromDatabase: { name: accessforge-postgres, property: connectionString }
+      - key: REDIS_URL
+        fromService: { type: keyvalue, name: accessforge-redis, property: connectionString }
+      - key: CORS_ORIGINS
+        sync: false
+      - key: BACKEND_TOKEN_PUBLIC_KEYS_JSON
+        sync: false
+      - key: MODEL_CREDENTIAL_ENCRYPTION_KEY
+        sync: false
+  - type: worker
+    name: accessforge-worker
+    runtime: docker
+    rootDir: services/api
+    dockerfilePath: ./Dockerfile
+    dockerCommand: celery -A accessforge.jobs.celery_app worker --loglevel=INFO
+    plan: starter
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase: { name: accessforge-postgres, property: connectionString }
+      - key: REDIS_URL
+        fromService: { type: keyvalue, name: accessforge-redis, property: connectionString }
+      - key: BACKEND_TOKEN_PUBLIC_KEYS_JSON
+        sync: false
+      - key: MODEL_CREDENTIAL_ENCRYPTION_KEY
+        sync: false
+  - type: keyvalue
+    name: accessforge-redis
+    plan: starter
+    maxmemoryPolicy: noeviction
+    persistenceMode: journal-snapshot
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: Render service networking; restrict further when fixed egress ranges are available
+databases:
+  - name: accessforge-postgres
+    plan: starter

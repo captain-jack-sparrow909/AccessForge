@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: accessforge-api
+Version: 0.1.0
+Summary: AccessForge API and background worker
+Requires-Python: <3.15,>=3.12
+Requires-Dist: alembic<2,>=1.16
+Requires-Dist: asyncpg<1,>=0.30
+Requires-Dist: aiosqlite<1,>=0.21
+Requires-Dist: boto3<2,>=1.40
+Requires-Dist: celery<6,>=5.5
+Requires-Dist: cryptography<47,>=45
+Requires-Dist: fastapi<1,>=0.116
+Requires-Dist: httpx<1,>=0.28
+Requires-Dist: pydantic-settings<3,>=2.10
+Requires-Dist: pyjwt[crypto]<3,>=2.10
+Requires-Dist: redis<7,>=6
+Requires-Dist: sqlalchemy[asyncio]<3,>=2.0.43
+Requires-Dist: uvicorn[standard]<1,>=0.35

@@ -1,0 +1,6 @@
+.next
+node_modules
+.venv
+uv.lock
+packages/api-client/openapi.json
+packages/api-client/src/generated.ts
