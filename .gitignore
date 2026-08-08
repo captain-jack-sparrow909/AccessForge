@@ -23,3 +23,5 @@ services/api/artifacts/
 .idea/
 .vscode/
 *.swp
+master-prompt.md
+

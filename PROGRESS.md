@@ -40,9 +40,33 @@ The project owner explicitly authorized beginning Phase 1 in the task conversati
 - [x] Add Render Blueprint and Vercel environment documentation.
 - [x] Add OpenAPI export and TypeScript API-client generation plumbing.
 - [x] Add CI definitions and backend/frontend checks.
-- [ ] Install dependencies and run all checks successfully.
-- [ ] Verify a clean-clone local authenticated create/retrieve flow.
+- [x] Install dependencies and run the Phase 1 source checks successfully.
+- [x] Verify an API-level signed-token authenticated create/list/retrieve flow with project ownership.
+- [ ] Verify the Docker API/worker image build and local Compose runtime (Docker daemon unavailable in this environment).
 - [ ] Complete Phase 1 exit gate.
+
+## Phase 1 verification evidence
+
+Passed:
+
+- `pnpm install --frozen-lockfile`
+- `pnpm generate:api`
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm build`
+- `pnpm format:check`
+- `uv run --project services/api ruff check services/api`
+- `uv run --project services/api mypy services/api/accessforge`
+- `uv run --project services/api pytest` — 3 tests passed
+- `docker compose config --quiet`
+- signed-token smoke: authenticated project create/list/retrieve and owner scoping
+
+Pending or environment-limited:
+
+- Docker image build/start: Docker CLI is installed, but the local Docker daemon is not running.
+- Browser-level OAuth/local-credential flow: the Auth.js boundary and local provider are implemented; run after starting the web/API services with `pnpm dev:keys` and Docker.
+
+No production credentials, real participant data, or physical-design workflows were used.
 
 ## Evidence created in this phase
 

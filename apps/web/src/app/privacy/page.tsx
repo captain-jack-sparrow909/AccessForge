@@ -1,3 +1,25 @@
 export default function PrivacyPage() {
-  return <div className="af-container py-16"><p className="af-eyebrow">Privacy principles</p><h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">Your project is private by default.</h1><div className="mt-8 max-w-3xl space-y-5 leading-8 text-[var(--af-muted)]"><p>AccessForge is being designed for media that may reveal a person, their home, or health-related context. The product will ask separately before recording, sending data to a model provider, or publishing a community contribution.</p><p>In the Phase 1 foundation, only empty project records are supported. Do not add real participant media or private health information.</p><p>Read the repository threat model and consent outline before using any future pilot environment.</p></div></div>;
+  return (
+    <div className="af-container py-16">
+      <p className="af-eyebrow">Privacy principles</p>
+      <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+        Your project is private by default.
+      </h1>
+      <div className="mt-8 max-w-3xl space-y-5 leading-8 text-[var(--af-muted)]">
+        <p>
+          AccessForge is being designed for media that may reveal a person, their home, or
+          health-related context. The product will ask separately before recording, sending data to
+          a model provider, or publishing a community contribution.
+        </p>
+        <p>
+          In the Phase 1 foundation, only empty project records are supported. Do not add real
+          participant media or private health information.
+        </p>
+        <p>
+          Read the repository threat model and consent outline before using any future pilot
+          environment.
+        </p>
+      </div>
+    </div>
+  );
 }

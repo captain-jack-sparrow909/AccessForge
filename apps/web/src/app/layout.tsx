@@ -11,7 +11,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
-        <a className="skip-link" href="#main-content">Skip to content</a>
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
         <div className="af-shell">
           <header className="border-b border-[var(--af-line)] bg-[var(--af-surface)]">
             <div className="af-container flex min-h-16 items-center justify-between gap-4">
@@ -19,9 +21,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 Access<span className="text-[var(--af-primary)]">Forge</span>
               </Link>
               <nav aria-label="Primary navigation" className="flex items-center gap-4 text-sm">
-                <Link className="hover:text-[var(--af-primary)]" href="/how-it-works">How it works</Link>
-                <Link className="hover:text-[var(--af-primary)]" href="/safety">Safety limits</Link>
-                <Link className="af-button af-button-secondary" href="/dashboard">Dashboard</Link>
+                <Link className="hover:text-[var(--af-primary)]" href="/how-it-works">
+                  How it works
+                </Link>
+                <Link className="hover:text-[var(--af-primary)]" href="/safety">
+                  Safety limits
+                </Link>
+                <Link className="af-button af-button-secondary" href="/dashboard">
+                  Dashboard
+                </Link>
               </nav>
             </div>
           </header>
@@ -29,7 +37,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <footer className="border-t border-[var(--af-line)] py-8 text-sm text-[var(--af-muted)]">
             <div className="af-container flex flex-wrap justify-between gap-3">
               <span>AccessForge is early-stage software, not a safety certification.</span>
-              <Link href="/privacy" className="underline underline-offset-4">Privacy principles</Link>
+              <Link href="/privacy" className="underline underline-offset-4">
+                Privacy principles
+              </Link>
             </div>
           </footer>
         </div>

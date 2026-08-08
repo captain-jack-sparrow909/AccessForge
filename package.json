@@ -4,7 +4,9 @@
   "private": true,
   "description": "Co-design tools for personalized low-risk assistive adapters",
   "packageManager": "pnpm@11.16.0",
-  "engines": {"node": ">=20.9.0"},
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "pnpm --filter @accessforge/web dev",
     "build": "pnpm generate:api && pnpm --filter @accessforge/web build",

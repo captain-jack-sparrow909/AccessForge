@@ -4,3 +4,12 @@ node_modules
 uv.lock
 packages/api-client/openapi.json
 packages/api-client/src/generated.ts
+pnpm-lock.yaml
+master-prompt.md
+README.md
+PROGRESS.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+GOVERNANCE.md
+SECURITY.md
+docs/
