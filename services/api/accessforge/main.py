@@ -7,7 +7,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from accessforge import __version__
-from accessforge.api.routes import auth, health, projects
+from accessforge.api.routes import (
+    assets,
+    auth,
+    consents,
+    health,
+    measurements,
+    model_providers,
+    observations,
+    projects,
+    requirements,
+)
 from accessforge.core.config import get_settings
 from accessforge.db.session import initialize_database
 
@@ -30,7 +40,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_credentials=False,
-    allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "Idempotency-Key"],
 )
 
@@ -72,3 +82,9 @@ async def root() -> dict[str, str]:
 app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(projects.router)
+app.include_router(consents.router)
+app.include_router(observations.router)
+app.include_router(measurements.router)
+app.include_router(assets.router)
+app.include_router(model_providers.router)
+app.include_router(requirements.router)

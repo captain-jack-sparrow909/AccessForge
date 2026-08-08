@@ -27,6 +27,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <Link className="hover:text-[var(--af-primary)]" href="/safety">
                   Safety limits
                 </Link>
+                <Link className="hover:text-[var(--af-primary)]" href="/settings/models">
+                  Model settings
+                </Link>
                 <Link className="af-button af-button-secondary" href="/dashboard">
                   Dashboard
                 </Link>

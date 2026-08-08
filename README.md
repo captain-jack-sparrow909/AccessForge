@@ -2,7 +2,7 @@
 
 AccessForge is an open-source co-design tool for turning an access difficulty with a physical object into a personalized, parametric assistive-adapter candidate.
 
-The repository is currently in **Phase 0: co-design, scope, safety, and architecture**. There is intentionally no application code yet. This phase makes the product boundaries and participant protections reviewable before implementation begins.
+The repository is currently in **Phase 3: provider-neutral AI requirements assistance**. It builds on the consent-first project, capture, and measurement workflow with an optional, editable requirements-extraction and clarification flow. CAD, physical-output, and professional-safety workflows remain deferred.
 
 ## MVP intention
 
@@ -30,15 +30,25 @@ Do not upload real participant media, health information, or private project dat
 - [Low-fidelity workflow](docs/product/low-fidelity-workflow.md)
 - [Metrics and physical-test assumptions](docs/product/metrics-and-assumptions.md)
 - [Architecture decision records](docs/architecture/)
+- [Model-provider boundary decision](docs/architecture/ADR-0007-model-provider-boundary.md)
 - [Project progress](PROGRESS.md)
 
 ## Status
 
 Pre-alpha. Phase 0 documents are awaiting human review by the project owner and, before research starts, qualified accessibility, safety, privacy, and lived-experience contributors.
 
-Phase 1 foundation work is now in progress. It provides an authenticated empty-project slice, local Postgres/Redis/MinIO services, FastAPI health endpoints, generated API-contract plumbing, and Vercel/Render deployment configuration. Capture, AI, CAD, and physical-output workflows do not exist yet.
+Phase 1 foundation and the Phase 2 input workflow are implemented. Phase 3 adds a bounded AI assistant that turns selected project text and measurements into an editable, provenance-bearing requirements draft and clarification plan. It supports DeepSeek, OpenAI-compatible endpoints, OpenAI, Anthropic, Google/Gemini, and an offline fake adapter for local development.
 
-## Local Phase 1 setup
+## Phase 3 AI boundary
+
+- AI is optional and disabled until a user deliberately creates and selects a provider configuration. Core deterministic workflows work without a model key.
+- An external provider call requires separate active `ai_provider_sharing` consent and uses only the user-selected minimum data categories.
+- Phase 3 never sends raw source images, video, audio, object-store URLs, or other project media to a model provider.
+- Deployment-managed credentials remain in backend secret settings. Personal BYOK credentials are encrypted at rest and are never returned to the browser or stored in browser persistence.
+- Requirements are proposals, not decisions: users can see provenance, edit every inference, and confirm a new immutable revision. AI cannot create geometry, lower risk, approve a design, or declare an output safe.
+- The `fake` provider is restricted to local development and test use. It is not a production fallback.
+
+## Local setup
 
 See [the local development guide](docs/operations/local-development.md). The shortest path is:
 
@@ -50,7 +60,9 @@ pnpm generate:api
 docker compose up --build api worker
 ```
 
-Then run `pnpm dev` in another terminal and open `http://localhost:3000`.
+Then run `pnpm dev` in another terminal and open `http://localhost:3000`. Use synthetic content only; do not upload real participant media.
+
+Provider setup is optional. Keep `DEFAULT_MODEL_PROVIDER=none` to leave AI disabled. If you test a local BYOK configuration, set a backend-only, base64-encoded 32-byte `MODEL_CREDENTIAL_ENCRYPTION_KEY` in the repository-root `.env` for Compose (or in `services/api/.env` when starting the API from that directory); do not place a provider key or encryption key in an `NEXT_PUBLIC_*` variable. See [local development](docs/operations/local-development.md) and [ADR-0007](docs/architecture/ADR-0007-model-provider-boundary.md) for the full boundary.
 
 ## Contributions
 

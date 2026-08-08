@@ -1,6 +1,384 @@
 {
   "components": {
     "schemas": {
+      "AssetCompleteRequest": {
+        "properties": {
+          "actual_size_bytes": {
+            "exclusiveMinimum": 0.0,
+            "title": "Actual Size Bytes",
+            "type": "integer"
+          },
+          "checksum_sha256": {
+            "pattern": "^[a-fA-F0-9]{64}$",
+            "title": "Checksum Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "actual_size_bytes",
+          "checksum_sha256"
+        ],
+        "title": "AssetCompleteRequest",
+        "type": "object"
+      },
+      "AssetDownloadResponse": {
+        "properties": {
+          "asset": {
+            "$ref": "#/components/schemas/AssetRead"
+          },
+          "download_url": {
+            "title": "Download Url",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "asset",
+          "download_url",
+          "expires_at"
+        ],
+        "title": "AssetDownloadResponse",
+        "type": "object"
+      },
+      "AssetPresignRequest": {
+        "properties": {
+          "content_type": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Content Type",
+            "type": "string"
+          },
+          "media_type": {
+            "pattern": "^(still_image|video)$",
+            "title": "Media Type",
+            "type": "string"
+          },
+          "original_name": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Name"
+          },
+          "size_bytes": {
+            "exclusiveMinimum": 0.0,
+            "title": "Size Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "media_type",
+          "content_type",
+          "size_bytes"
+        ],
+        "title": "AssetPresignRequest",
+        "type": "object"
+      },
+      "AssetPresignResponse": {
+        "properties": {
+          "asset_id": {
+            "title": "Asset Id",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "max_size_bytes": {
+            "title": "Max Size Bytes",
+            "type": "integer"
+          },
+          "object_key": {
+            "title": "Object Key",
+            "type": "string"
+          },
+          "upload_url": {
+            "title": "Upload Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "asset_id",
+          "upload_url",
+          "expires_at",
+          "object_key",
+          "max_size_bytes"
+        ],
+        "title": "AssetPresignResponse",
+        "type": "object"
+      },
+      "AssetRead": {
+        "properties": {
+          "actual_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Size"
+          },
+          "checksum_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checksum Sha256"
+          },
+          "content_type": {
+            "title": "Content Type",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "expected_size": {
+            "title": "Expected Size",
+            "type": "integer"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "media_type": {
+            "title": "Media Type",
+            "type": "string"
+          },
+          "original_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Name"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "media_type",
+          "content_type",
+          "original_name",
+          "expected_size",
+          "actual_size",
+          "checksum_sha256",
+          "status",
+          "expires_at",
+          "created_at",
+          "updated_at",
+          "version"
+        ],
+        "title": "AssetRead",
+        "type": "object"
+      },
+      "ClarifyingQuestion": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[a-z][a-z0-9_]{1,118}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "priority": {
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Priority",
+            "type": "integer"
+          },
+          "question": {
+            "maxLength": 1200,
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          },
+          "related_source_refs": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Related Source Refs",
+            "type": "array"
+          },
+          "why_it_matters": {
+            "maxLength": 1200,
+            "minLength": 1,
+            "title": "Why It Matters",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "question",
+          "why_it_matters",
+          "priority"
+        ],
+        "title": "ClarifyingQuestion",
+        "type": "object"
+      },
+      "ConsentCreate": {
+        "properties": {
+          "choices": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "minProperties": 1,
+            "title": "Choices",
+            "type": "object"
+          },
+          "consent_version": {
+            "default": "0.1",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Consent Version",
+            "type": "string"
+          },
+          "display_name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Display Name",
+            "type": "string"
+          },
+          "relationship_to_user": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relationship To User"
+          },
+          "role": {
+            "pattern": "^(participant|co_designer|helper)$",
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "display_name",
+          "role",
+          "choices"
+        ],
+        "title": "ConsentCreate",
+        "type": "object"
+      },
+      "ConsentRead": {
+        "properties": {
+          "consent_type": {
+            "title": "Consent Type",
+            "type": "string"
+          },
+          "consent_version": {
+            "title": "Consent Version",
+            "type": "string"
+          },
+          "granted": {
+            "title": "Granted",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "participant_id": {
+            "title": "Participant Id",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          }
+        },
+        "required": [
+          "id",
+          "participant_id",
+          "consent_type",
+          "granted",
+          "consent_version",
+          "recorded_at",
+          "revoked_at"
+        ],
+        "title": "ConsentRead",
+        "type": "object"
+      },
+      "ConsentResponse": {
+        "properties": {
+          "participant": {
+            "$ref": "#/components/schemas/ParticipantRead"
+          },
+          "project_status": {
+            "title": "Project Status",
+            "type": "string"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/ConsentRead"
+            },
+            "title": "Records",
+            "type": "array"
+          }
+        },
+        "required": [
+          "participant",
+          "records",
+          "project_status"
+        ],
+        "title": "ConsentResponse",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -14,8 +392,780 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "MeasurementCreate": {
+        "properties": {
+          "confirmed": {
+            "default": false,
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "kind": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Kind",
+            "type": "string"
+          },
+          "method": {
+            "default": "ruler",
+            "pattern": "^(ruler|caliper|visual_estimate|other)$",
+            "title": "Method",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "tolerance": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tolerance"
+          },
+          "unit": {
+            "default": "mm",
+            "pattern": "^(mm|cm|in)$",
+            "title": "Unit",
+            "type": "string"
+          },
+          "unknown": {
+            "default": false,
+            "title": "Unknown",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "MeasurementCreate",
+        "type": "object"
+      },
+      "MeasurementRead": {
+        "properties": {
+          "canonical_tolerance_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Tolerance Mm"
+          },
+          "canonical_value_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Value Mm"
+          },
+          "confirmed": {
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "tolerance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tolerance"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "unknown": {
+            "title": "Unknown",
+            "type": "boolean"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "value",
+          "unit",
+          "canonical_value_mm",
+          "tolerance",
+          "canonical_tolerance_mm",
+          "method",
+          "source",
+          "confirmed",
+          "unknown",
+          "notes",
+          "created_at",
+          "updated_at",
+          "version"
+        ],
+        "title": "MeasurementRead",
+        "type": "object"
+      },
+      "MeasurementUpdate": {
+        "properties": {
+          "confirmed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmed"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "pattern": "^(ruler|caliper|visual_estimate|other)$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "tolerance": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tolerance"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "pattern": "^(mm|cm|in)$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "unknown": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unknown"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "title": "MeasurementUpdate",
+        "type": "object"
+      },
+      "ModelProviderConfigCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "allowed_data_categories": {
+            "items": {
+              "enum": [
+                "project_text",
+                "measurements"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Allowed Data Categories",
+            "type": "array"
+          },
+          "api_key": {
+            "anyOf": [
+              {
+                "format": "password",
+                "type": "string",
+                "writeOnly": true
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Url"
+          },
+          "credential_mode": {
+            "enum": [
+              "byok",
+              "deployment_managed",
+              "development_fake"
+            ],
+            "title": "Credential Mode",
+            "type": "string"
+          },
+          "embedding_model": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embedding Model"
+          },
+          "fast_model": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fast Model"
+          },
+          "input_cost_per_million_usd": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Cost Per Million Usd"
+          },
+          "label": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "output_cost_per_million_usd": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Cost Per Million Usd"
+          },
+          "provider_type": {
+            "enum": [
+              "deepseek",
+              "openai_compatible",
+              "openai",
+              "anthropic",
+              "google",
+              "fake"
+            ],
+            "title": "Provider Type",
+            "type": "string"
+          },
+          "reasoning_model": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reasoning Model"
+          },
+          "vision_model": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vision Model"
+          }
+        },
+        "required": [
+          "label",
+          "provider_type",
+          "credential_mode",
+          "allowed_data_categories"
+        ],
+        "title": "ModelProviderConfigCreate",
+        "type": "object"
+      },
+      "ModelProviderConfigRead": {
+        "properties": {
+          "allowed_data_categories": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Allowed Data Categories",
+            "type": "array"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Url"
+          },
+          "capabilities": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capabilities"
+          },
+          "capabilities_checked_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capabilities Checked At"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "credential_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Credential Fingerprint"
+          },
+          "credential_mode": {
+            "title": "Credential Mode",
+            "type": "string"
+          },
+          "embedding_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embedding Model"
+          },
+          "fast_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fast Model"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "input_cost_per_million_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Cost Per Million Usd"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "last_error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error Code"
+          },
+          "last_tested_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Tested At"
+          },
+          "output_cost_per_million_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Cost Per Million Usd"
+          },
+          "provider_type": {
+            "title": "Provider Type",
+            "type": "string"
+          },
+          "reasoning_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reasoning Model"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          },
+          "vision_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vision Model"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "provider_type",
+          "credential_mode",
+          "credential_fingerprint",
+          "base_url",
+          "fast_model",
+          "reasoning_model",
+          "vision_model",
+          "embedding_model",
+          "input_cost_per_million_usd",
+          "output_cost_per_million_usd",
+          "allowed_data_categories",
+          "capabilities",
+          "capabilities_checked_at",
+          "last_tested_at",
+          "last_error_code",
+          "status",
+          "revoked_at",
+          "created_at",
+          "updated_at",
+          "version"
+        ],
+        "title": "ModelProviderConfigRead",
+        "type": "object"
+      },
+      "ObservationCreate": {
+        "properties": {
+          "input_mode": {
+            "default": "text",
+            "pattern": "^(text|skipped)$",
+            "title": "Input Mode",
+            "type": "string"
+          },
+          "text": {
+            "default": "",
+            "maxLength": 12000,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "title": "ObservationCreate",
+        "type": "object"
+      },
+      "ObservationRead": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "input_mode": {
+            "title": "Input Mode",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "input_mode",
+          "source",
+          "created_at",
+          "updated_at",
+          "version"
+        ],
+        "title": "ObservationRead",
+        "type": "object"
+      },
+      "ParticipantRead": {
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "relationship_to_user": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relationship To User"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "display_name",
+          "role",
+          "relationship_to_user"
+        ],
+        "title": "ParticipantRead",
+        "type": "object"
+      },
       "ProjectCreate": {
         "properties": {
+          "action_description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Description"
+          },
+          "age_context": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Context"
+          },
           "description": {
             "anyOf": [
               {
@@ -28,11 +1178,70 @@
             ],
             "title": "Description"
           },
+          "environment": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          },
+          "load_context": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Load Context"
+          },
           "name": {
             "maxLength": 200,
             "minLength": 1,
             "title": "Name",
             "type": "string"
+          },
+          "object_description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Object Description"
+          },
+          "safety_system": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Safety System"
           }
         },
         "required": [
@@ -43,6 +1252,39 @@
       },
       "ProjectRead": {
         "properties": {
+          "action_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Description"
+          },
+          "active_requirement_revision_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Requirement Revision Id"
+          },
+          "age_context": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Context"
+          },
           "created_at": {
             "format": "date-time",
             "title": "Created At",
@@ -59,12 +1301,93 @@
             ],
             "title": "Description"
           },
+          "environment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          },
           "id": {
             "title": "Id",
             "type": "string"
           },
+          "load_context": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Load Context"
+          },
+          "model_provider_config_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Provider Config Id"
+          },
           "name": {
             "title": "Name",
+            "type": "string"
+          },
+          "object_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Object Description"
+          },
+          "safety_system": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Safety System"
+          },
+          "scope_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope Reason"
+          },
+          "scope_status": {
+            "title": "Scope Status",
             "type": "string"
           },
           "status": {
@@ -75,13 +1398,29 @@
             "format": "date-time",
             "title": "Updated At",
             "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
           }
         },
         "required": [
           "id",
           "name",
           "description",
+          "goal",
+          "object_description",
+          "action_description",
+          "environment",
+          "load_context",
+          "safety_system",
+          "age_context",
+          "scope_status",
+          "scope_reason",
+          "model_provider_config_id",
+          "active_requirement_revision_id",
           "status",
+          "version",
           "created_at",
           "updated_at"
         ],
@@ -90,6 +1429,30 @@
       },
       "ProjectUpdate": {
         "properties": {
+          "action_description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Description"
+          },
+          "age_context": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Context"
+          },
           "description": {
             "anyOf": [
               {
@@ -101,6 +1464,42 @@
               }
             ],
             "title": "Description"
+          },
+          "environment": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          },
+          "load_context": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Load Context"
           },
           "name": {
             "anyOf": [
@@ -114,9 +1513,516 @@
               }
             ],
             "title": "Name"
+          },
+          "object_description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Object Description"
+          },
+          "safety_system": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Safety System"
           }
         },
         "title": "ProjectUpdate",
+        "type": "object"
+      },
+      "RequirementProposal": {
+        "additionalProperties": false,
+        "description": "A proposed, editable requirement; never a CAD parameter or safety verdict.",
+        "properties": {
+          "confidence": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          },
+          "explanation": {
+            "maxLength": 1200,
+            "minLength": 1,
+            "title": "Explanation",
+            "type": "string"
+          },
+          "kind": {
+            "pattern": "^[a-z][a-z0-9_]{1,118}$",
+            "title": "Kind",
+            "type": "string"
+          },
+          "needs_confirmation": {
+            "default": true,
+            "title": "Needs Confirmation",
+            "type": "boolean"
+          },
+          "source_refs": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Source Refs",
+            "type": "array"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "value_number": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Number"
+          },
+          "value_text": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Text"
+          }
+        },
+        "required": [
+          "kind",
+          "source_refs",
+          "confidence",
+          "explanation"
+        ],
+        "title": "RequirementProposal",
+        "type": "object"
+      },
+      "RequirementRead": {
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "needs_confirmation": {
+            "title": "Needs Confirmation",
+            "type": "boolean"
+          },
+          "provenance": {
+            "additionalProperties": true,
+            "title": "Provenance",
+            "type": "object"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "source_refs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Refs",
+            "type": "array"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "value_number": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Number"
+          },
+          "value_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Text"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "value_number",
+          "value_text",
+          "unit",
+          "source_refs",
+          "source",
+          "confidence",
+          "needs_confirmation",
+          "explanation",
+          "provenance",
+          "created_at"
+        ],
+        "title": "RequirementRead",
+        "type": "object"
+      },
+      "RequirementRevisionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "clarifying_questions": {
+            "items": {
+              "$ref": "#/components/schemas/ClarifyingQuestion"
+            },
+            "maxItems": 10,
+            "title": "Clarifying Questions",
+            "type": "array"
+          },
+          "rationale": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rationale"
+          },
+          "requirements": {
+            "items": {
+              "$ref": "#/components/schemas/RequirementProposal"
+            },
+            "maxItems": 30,
+            "title": "Requirements",
+            "type": "array"
+          },
+          "risk_signals": {
+            "items": {
+              "$ref": "#/components/schemas/RiskSignal"
+            },
+            "maxItems": 20,
+            "title": "Risk Signals",
+            "type": "array"
+          },
+          "unknowns": {
+            "items": {
+              "$ref": "#/components/schemas/UnknownItem"
+            },
+            "maxItems": 30,
+            "title": "Unknowns",
+            "type": "array"
+          }
+        },
+        "title": "RequirementRevisionInput",
+        "type": "object"
+      },
+      "RequirementRevisionRead": {
+        "properties": {
+          "agent_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Run Id"
+          },
+          "clarifying_questions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Clarifying Questions",
+            "type": "array"
+          },
+          "confirmed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmed At"
+          },
+          "confirmed_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmed By"
+          },
+          "content_hash": {
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "prompt_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Hash"
+          },
+          "prompt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Id"
+          },
+          "provider_config_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Config Id"
+          },
+          "rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rationale"
+          },
+          "requirements": {
+            "items": {
+              "$ref": "#/components/schemas/RequirementRead"
+            },
+            "title": "Requirements",
+            "type": "array"
+          },
+          "revision_number": {
+            "title": "Revision Number",
+            "type": "integer"
+          },
+          "risk_signals": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Risk Signals",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "unknowns": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Unknowns",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "revision_number",
+          "source",
+          "status",
+          "agent_run_id",
+          "provider_config_id",
+          "prompt_id",
+          "prompt_hash",
+          "requirements",
+          "unknowns",
+          "clarifying_questions",
+          "risk_signals",
+          "rationale",
+          "content_hash",
+          "created_at",
+          "confirmed_at",
+          "confirmed_by"
+        ],
+        "title": "RequirementRevisionRead",
+        "type": "object"
+      },
+      "RequirementsExtractRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "provider_config_id": {
+            "anyOf": [
+              {
+                "maxLength": 36,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Config Id"
+          }
+        },
+        "title": "RequirementsExtractRequest",
+        "type": "object"
+      },
+      "RiskSignal": {
+        "additionalProperties": false,
+        "properties": {
+          "explanation": {
+            "maxLength": 1200,
+            "minLength": 1,
+            "title": "Explanation",
+            "type": "string"
+          },
+          "kind": {
+            "pattern": "^[a-z][a-z0-9_]{1,118}$",
+            "title": "Kind",
+            "type": "string"
+          },
+          "level": {
+            "enum": [
+              "needs_confirmation",
+              "blocked"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "source_refs": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Source Refs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "level",
+          "explanation",
+          "source_refs"
+        ],
+        "title": "RiskSignal",
+        "type": "object"
+      },
+      "UnknownItem": {
+        "additionalProperties": false,
+        "properties": {
+          "explanation": {
+            "maxLength": 1200,
+            "minLength": 1,
+            "title": "Explanation",
+            "type": "string"
+          },
+          "kind": {
+            "pattern": "^[a-z][a-z0-9_]{1,118}$",
+            "title": "Kind",
+            "type": "string"
+          },
+          "source_refs": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Source Refs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "explanation",
+          "source_refs"
+        ],
+        "title": "UnknownItem",
         "type": "object"
       },
       "ValidationError": {
@@ -280,6 +2186,178 @@
         ]
       }
     },
+    "/v1/model-providers": {
+      "get": {
+        "operationId": "list_model_providers_v1_model_providers_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModelProviderConfigRead"
+                  },
+                  "title": "Response List Model Providers V1 Model Providers Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Model Providers",
+        "tags": [
+          "model providers"
+        ]
+      },
+      "post": {
+        "operationId": "create_model_provider_v1_model_providers_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelProviderConfigCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelProviderConfigRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Model Provider",
+        "tags": [
+          "model providers"
+        ]
+      }
+    },
+    "/v1/model-providers/{config_id}": {
+      "delete": {
+        "operationId": "revoke_model_provider_v1_model_providers__config_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "config_id",
+            "required": true,
+            "schema": {
+              "title": "Config Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Revoke Model Provider V1 Model Providers  Config Id  Delete",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Revoke Model Provider",
+        "tags": [
+          "model providers"
+        ]
+      }
+    },
+    "/v1/model-providers/{config_id}:test": {
+      "post": {
+        "operationId": "test_model_provider_v1_model_providers__config_id__test_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "config_id",
+            "required": true,
+            "schema": {
+              "title": "Config Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelProviderConfigRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Test Model Provider",
+        "tags": [
+          "model providers"
+        ]
+      }
+    },
     "/v1/projects": {
       "get": {
         "operationId": "list_projects_v1_projects_get",
@@ -355,6 +2433,55 @@
       }
     },
     "/v1/projects/{project_id}": {
+      "delete": {
+        "operationId": "delete_project_v1_projects__project_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Delete Project V1 Projects  Project Id  Delete",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Project",
+        "tags": [
+          "projects"
+        ]
+      },
       "get": {
         "operationId": "get_project_v1_projects__project_id__get",
         "parameters": [
@@ -453,6 +2580,850 @@
         "summary": "Update Project",
         "tags": [
           "projects"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/assets": {
+      "get": {
+        "operationId": "list_assets_v1_projects__project_id__assets_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AssetRead"
+                  },
+                  "title": "Response List Assets V1 Projects  Project Id  Assets Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Assets",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/assets/presign-upload": {
+      "post": {
+        "operationId": "presign_asset_upload_v1_projects__project_id__assets_presign_upload_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetPresignRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetPresignResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Presign Asset Upload",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/assets/{asset_id}/complete": {
+      "post": {
+        "operationId": "complete_asset_upload_v1_projects__project_id__assets__asset_id__complete_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetCompleteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Complete Asset Upload",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/assets/{asset_id}/download": {
+      "get": {
+        "operationId": "download_asset_v1_projects__project_id__assets__asset_id__download_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDownloadResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Download Asset",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/consents": {
+      "get": {
+        "operationId": "list_consents_v1_projects__project_id__consents_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ConsentResponse"
+                  },
+                  "title": "Response List Consents V1 Projects  Project Id  Consents Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Consents",
+        "tags": [
+          "consent"
+        ]
+      },
+      "post": {
+        "operationId": "create_consent_v1_projects__project_id__consents_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Consent",
+        "tags": [
+          "consent"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/consents/{consent_id}/revoke": {
+      "post": {
+        "operationId": "revoke_consent_v1_projects__project_id__consents__consent_id__revoke_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "consent_id",
+            "required": true,
+            "schema": {
+              "title": "Consent Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Revoke Consent",
+        "tags": [
+          "consent"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/measurements": {
+      "get": {
+        "operationId": "list_measurements_v1_projects__project_id__measurements_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MeasurementRead"
+                  },
+                  "title": "Response List Measurements V1 Projects  Project Id  Measurements Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Measurements",
+        "tags": [
+          "measurements"
+        ]
+      },
+      "post": {
+        "operationId": "create_measurement_v1_projects__project_id__measurements_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeasurementCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeasurementRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Measurement",
+        "tags": [
+          "measurements"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/measurements/{measurement_id}": {
+      "patch": {
+        "operationId": "update_measurement_v1_projects__project_id__measurements__measurement_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "measurement_id",
+            "required": true,
+            "schema": {
+              "title": "Measurement Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeasurementUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeasurementRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Measurement",
+        "tags": [
+          "measurements"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/observations": {
+      "get": {
+        "operationId": "list_observations_v1_projects__project_id__observations_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ObservationRead"
+                  },
+                  "title": "Response List Observations V1 Projects  Project Id  Observations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Observations",
+        "tags": [
+          "observations"
+        ]
+      },
+      "post": {
+        "operationId": "create_observation_v1_projects__project_id__observations_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ObservationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObservationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Observation",
+        "tags": [
+          "observations"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/requirements": {
+      "get": {
+        "operationId": "list_requirements_v1_projects__project_id__requirements_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RequirementRevisionRead"
+                  },
+                  "title": "Response List Requirements V1 Projects  Project Id  Requirements Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Requirements",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/requirements/{revision_id}:confirm": {
+      "post": {
+        "operationId": "confirm_requirements_v1_projects__project_id__requirements__revision_id__confirm_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "revision_id",
+            "required": true,
+            "schema": {
+              "title": "Revision Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequirementRevisionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementRevisionRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Confirm Requirements",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/requirements:extract": {
+      "post": {
+        "operationId": "extract_requirements_v1_projects__project_id__requirements_extract_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequirementsExtractRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementRevisionRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Extract Requirements",
+        "tags": [
+          "requirements"
         ]
       }
     }

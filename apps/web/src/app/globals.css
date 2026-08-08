@@ -95,6 +95,25 @@ textarea {
 .af-button-secondary:hover {
   border-color: var(--af-primary);
 }
+.af-input {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--af-line);
+  border-radius: 0.65rem;
+  background: var(--af-surface);
+  padding: 0.7rem 0.8rem;
+  color: var(--af-ink);
+}
+.af-input:focus {
+  border-color: var(--af-primary);
+  box-shadow: 0 0 0 3px rgba(35, 107, 77, 0.14);
+}
+.af-input:disabled {
+  cursor: not-allowed;
+  background: var(--af-paper);
+  color: var(--af-muted);
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

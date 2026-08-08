@@ -21,6 +21,55 @@ services:
         sync: false
       - key: MODEL_CREDENTIAL_ENCRYPTION_KEY
         sync: false
+      # AI is off unless a provider configuration is selected. Keep all managed
+      # provider secrets in Render; never mirror them into Vercel.
+      - key: DEFAULT_MODEL_PROVIDER
+        value: none
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: DEEPSEEK_API_BASE
+        value: https://api.deepseek.com
+      - key: DEEPSEEK_FAST_MODEL
+        value: deepseek-v4-flash
+      - key: DEEPSEEK_REASONING_MODEL
+        value: deepseek-v4-pro
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_API_BASE
+        value: https://api.openai.com/v1
+      - key: OPENAI_FAST_MODEL
+        sync: false
+      - key: OPENAI_REASONING_MODEL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_FAST_MODEL
+        sync: false
+      - key: ANTHROPIC_REASONING_MODEL
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: GOOGLE_FAST_MODEL
+        sync: false
+      - key: GOOGLE_REASONING_MODEL
+        sync: false
+      - key: CUSTOM_MODEL_ENDPOINT_ALLOWLIST
+        sync: false
+      # Keep hosted deployments fail-closed for custom endpoints.
+      - key: ALLOW_UNSAFE_CUSTOM_MODEL_ENDPOINTS
+        value: 'false'
+      - key: MODEL_PROVIDER_TIMEOUT_SECONDS
+        value: '20'
+      - key: S3_ENDPOINT_URL
+        sync: false
+      - key: S3_REGION
+        value: us-east-1
+      - key: S3_BUCKET_PRIVATE
+        sync: false
+      - key: S3_ACCESS_KEY_ID
+        sync: false
+      - key: S3_SECRET_ACCESS_KEY
+        sync: false
   - type: worker
     name: accessforge-worker
     runtime: docker
@@ -38,6 +87,54 @@ services:
       - key: BACKEND_TOKEN_PUBLIC_KEYS_JSON
         sync: false
       - key: MODEL_CREDENTIAL_ENCRYPTION_KEY
+        sync: false
+      # Keep future background AI work behind the same backend-only secret and
+      # egress controls as the API service.
+      - key: DEFAULT_MODEL_PROVIDER
+        value: none
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: DEEPSEEK_API_BASE
+        value: https://api.deepseek.com
+      - key: DEEPSEEK_FAST_MODEL
+        value: deepseek-v4-flash
+      - key: DEEPSEEK_REASONING_MODEL
+        value: deepseek-v4-pro
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_API_BASE
+        value: https://api.openai.com/v1
+      - key: OPENAI_FAST_MODEL
+        sync: false
+      - key: OPENAI_REASONING_MODEL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_FAST_MODEL
+        sync: false
+      - key: ANTHROPIC_REASONING_MODEL
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: GOOGLE_FAST_MODEL
+        sync: false
+      - key: GOOGLE_REASONING_MODEL
+        sync: false
+      - key: CUSTOM_MODEL_ENDPOINT_ALLOWLIST
+        sync: false
+      - key: ALLOW_UNSAFE_CUSTOM_MODEL_ENDPOINTS
+        value: 'false'
+      - key: MODEL_PROVIDER_TIMEOUT_SECONDS
+        value: '20'
+      - key: S3_ENDPOINT_URL
+        sync: false
+      - key: S3_REGION
+        value: us-east-1
+      - key: S3_BUCKET_PRIVATE
+        sync: false
+      - key: S3_ACCESS_KEY_ID
+        sync: false
+      - key: S3_SECRET_ACCESS_KEY
         sync: false
   - type: keyvalue
     name: accessforge-redis

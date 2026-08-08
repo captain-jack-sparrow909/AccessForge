@@ -7,4 +7,4 @@ COPY accessforge ./accessforge
 COPY migrations ./migrations
 COPY alembic.ini ./alembic.ini
 EXPOSE 10000
-CMD ["uvicorn", "accessforge.main:app", "--host", "0.0.0.0", "--port", "10000"]
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn accessforge.main:app --host 0.0.0.0 --port 10000"]

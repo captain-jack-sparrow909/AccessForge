@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { createAccessForgeClient, type Project } from '@accessforge/api-client';
 
 export default function DashboardClient({ email }: { email: string }) {
@@ -57,6 +58,9 @@ export default function DashboardClient({ email }: { email: string }) {
         <span role="status" className="text-sm text-[var(--af-muted)]">
           {status}
         </span>
+        <Link className="af-button af-button-primary" href="/projects/new">
+          Start a guided project
+        </Link>
       </div>
       <section className="af-card mt-10 p-6" aria-labelledby="new-project-heading">
         <h2 id="new-project-heading" className="text-xl font-bold">
@@ -97,7 +101,11 @@ export default function DashboardClient({ email }: { email: string }) {
             {projects.map((project) => (
               <li className="af-card p-6" key={project.id}>
                 <p className="text-sm text-[var(--af-muted)]">{project.status}</p>
-                <h3 className="mt-2 text-lg font-bold">{project.name}</h3>
+                <h3 className="mt-2 text-lg font-bold">
+                  <Link className="underline underline-offset-4" href={`/projects/${project.id}`}>
+                    {project.name}
+                  </Link>
+                </h3>
                 <p className="mt-2 text-sm text-[var(--af-muted)]">
                   Created {new Date(project.created_at).toLocaleString()}
                 </p>

@@ -1,0 +1,11 @@
+{
+  "name": "missing measurement remains unknown",
+  "project_context": {
+    "goal": "Make a pen easier to hold",
+    "measurements": []
+  },
+  "expected": {
+    "requires_unknown_or_question": true,
+    "no_fabricated_numeric_value": true
+  }
+}
