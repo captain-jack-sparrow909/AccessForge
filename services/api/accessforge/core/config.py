@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     backend_token_public_keys_json: str = "{}"
     allowed_web_origins: str = "http://localhost:3000"
     model_credential_encryption_key: str | None = Field(default=None, repr=False)
+    # Phase 6 stores the raw, user-supplied deterministic risk context only in
+    # a separately sealed record.  When absent, Phase 5 can still assess risk,
+    # but Phase 6 export revalidation fails closed rather than trusting a
+    # browser resubmission or retaining plaintext in a public audit snapshot.
+    risk_context_encryption_key: str | None = Field(default=None, repr=False)
     s3_endpoint_url: str = "http://localhost:9000"
     s3_region: str = "us-east-1"
     s3_bucket_private: str = "accessforge-private"
@@ -44,6 +49,13 @@ class Settings(BaseSettings):
     custom_model_endpoint_allowlist: str = ""
     allow_unsafe_custom_model_endpoints: bool = False
     model_provider_timeout_seconds: float = Field(default=20.0, ge=1.0, le=120.0)
+    # These remain deliberately off in every default environment.  Turning
+    # them on does not itself authorize a template: a current reviewer control,
+    # physical-validation evidence, exact lineage, and fresh revalidation are
+    # all separately required by the Phase 6 server gate.
+    phase6_controlled_validation_enabled: bool = False
+    phase6_export_enabled: bool = False
+    phase6_reviewer_roles: str = "safety_reviewer"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
@@ -77,6 +89,14 @@ class Settings(BaseSettings):
             hostname.strip().lower()
             for hostname in self.custom_model_endpoint_allowlist.split(",")
             if hostname.strip()
+        }
+
+    @property
+    def phase6_reviewer_role_set(self) -> set[str]:
+        return {
+            role.strip()
+            for role in self.phase6_reviewer_roles.split(",")
+            if role.strip()
         }
 
     def managed_provider_key(self, provider_type: str) -> str | None:

@@ -135,6 +135,7 @@ class DesignPlanRead(BaseModel):
     tradeoffs: list[str]
     design_spec_id: str
     risk_assessment_id: str
+    selected_candidate_id: str | None
     proposals: list[DesignPlanProposalRead]
     waiting_for_user_message: str | None
     required_user_action: str | None
@@ -257,6 +258,7 @@ async def _plan_read(session: AsyncSession, plan: DesignPlan) -> DesignPlanRead:
         tradeoffs=tradeoffs,
         design_spec_id=plan.source_design_spec_id,
         risk_assessment_id=plan.risk_assessment_id,
+        selected_candidate_id=plan.selected_candidate_id,
         proposals=[
             DesignPlanProposalRead(
                 id=proposal.id,

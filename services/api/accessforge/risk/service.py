@@ -12,23 +12,33 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from accessforge.cad.registry import TemplateRegistryError, validate_design_spec
 from accessforge.cad.schemas import DesignSpec, FieldProvenance, canonical_hash
+from accessforge.core.config import get_settings
 from accessforge.db.models import (
+    ApprovalEvent,
     AuditEvent,
     CandidateDesign,
     CandidateValidationRun,
     DesignPlan,
     DesignPlanProposal,
     DesignSpecRevision,
+    ExportBundle,
     Measurement,
     Observation,
     Project,
     Requirement,
     RequirementRevision,
     RiskAssessment,
+    RiskAssessmentContext,
     RiskFinding,
 )
 from accessforge.projects.workflow import transition_project
 from accessforge.risk.engine import evaluate_risk
+from accessforge.risk.private_context import (
+    RISK_CONTEXT_ENVELOPE_VERSION,
+    RiskContextSealError,
+    context_hash,
+    seal_risk_context,
+)
 from accessforge.risk.schemas import RiskContextInput, RiskDecision
 from accessforge.validation.service import validation_allows_phase6_export
 
@@ -248,6 +258,27 @@ async def persist_risk_assessment(
     )
     session.add(assessment)
     await session.flush()
+    settings = get_settings()
+    if settings.risk_context_encryption_key:
+        try:
+            sealed_context = seal_risk_context(
+                context,
+                key=settings.risk_context_encryption_key,
+                project_id=project.id,
+                assessment_id=assessment.id,
+            )
+        except RiskContextSealError as exc:
+            raise RiskGateError(
+                "The private risk context could not be retained for later export revalidation."
+            ) from exc
+        session.add(
+            RiskAssessmentContext(
+                risk_assessment_id=assessment.id,
+                context_hash=context_hash(context),
+                envelope_version=RISK_CONTEXT_ENVELOPE_VERSION,
+                encrypted_context=sealed_context,
+            )
+        )
     resulting_spec = await _create_risk_bound_spec(
         session,
         project=project,
@@ -361,18 +392,23 @@ async def invalidate_active_risk_assessment(
     """Invalidate a pointer and immutable row; never edit the historical decision."""
 
     active_id = project.active_risk_assessment_id
-    if not active_id:
-        return
-    assessment = await session.scalar(
-        select(RiskAssessment).where(
-            RiskAssessment.id == active_id, RiskAssessment.project_id == project.id
+    if active_id:
+        assessment = await session.scalar(
+            select(RiskAssessment).where(
+                RiskAssessment.id == active_id, RiskAssessment.project_id == project.id
+            )
         )
+        if assessment is not None and assessment.status == "current":
+            assessment.status = "invalidated"
+            assessment.invalidated_at = datetime.now(UTC)
+            assessment.invalidated_reason = reason
+        project.active_risk_assessment_id = None
+    invalidated_approvals = await invalidate_project_export_authorizations(
+        session,
+        project=project,
+        actor_id=actor_id,
+        reason=reason,
     )
-    if assessment is not None and assessment.status == "current":
-        assessment.status = "invalidated"
-        assessment.invalidated_at = datetime.now(UTC)
-        assessment.invalidated_reason = reason
-    project.active_risk_assessment_id = None
     if reset_project_state and project.status in {
         "ready_for_generation",
         "planning",
@@ -382,6 +418,8 @@ async def invalidate_active_risk_assessment(
         "user_review",
         "blocked_out_of_scope",
         "needs_more_information",
+        "approved",
+        "export_ready",
     }:
         transition_project(
             session,
@@ -393,15 +431,82 @@ async def invalidate_active_risk_assessment(
             ),
             details={"reason": reason, "risk_assessment_id": active_id},
         )
+    if active_id or invalidated_approvals:
+        session.add(
+            AuditEvent(
+                project_id=project.id,
+                actor_id=actor_id,
+                event_type="risk.invalidated",
+                reason=reason,
+                details={
+                    "risk_assessment_id": active_id,
+                    "invalidated_approval_count": invalidated_approvals,
+                },
+            )
+        )
+
+
+async def invalidate_project_export_authorizations(
+    session: AsyncSession,
+    *,
+    project: Project,
+    actor_id: str,
+    reason: str,
+) -> int:
+    """Revoke active export acknowledgements without deleting immutable history.
+
+    A relevant project revision invalidates an old approval even if the risk
+    pointer was already cleared by an earlier request.  Any private ZIP remains
+    retained for audit/deletion purposes but is no longer downloadable.
+    """
+
+    approvals = list(
+        (
+            await session.scalars(
+                select(ApprovalEvent).where(
+                    ApprovalEvent.project_id == project.id,
+                    ApprovalEvent.status == "active",
+                )
+            )
+        ).all()
+    )
+    if not approvals:
+        return 0
+    now = datetime.now(UTC)
+    approval_ids = [approval.id for approval in approvals]
+    for approval in approvals:
+        approval.status = "invalidated"
+        approval.invalidated_at = now
+        approval.invalidated_reason = reason
+    bundles = list(
+        (
+            await session.scalars(
+                select(ExportBundle).where(
+                    ExportBundle.project_id == project.id,
+                    ExportBundle.approval_event_id.in_(approval_ids),
+                    ExportBundle.status == "ready",
+                )
+            )
+        ).all()
+    )
+    for bundle in bundles:
+        bundle.status = "revoked"
+        bundle.revoked_at = now
+        bundle.revoked_reason = reason
     session.add(
         AuditEvent(
             project_id=project.id,
             actor_id=actor_id,
-            event_type="risk.invalidated",
-            reason=reason,
-            details={"risk_assessment_id": active_id},
+            event_type="export.approvals_invalidated",
+            reason="A relevant revision invalidated exact export acknowledgements.",
+            details={
+                "approval_count": len(approvals),
+                "bundle_count": len(bundles),
+                "reason": reason,
+            },
         )
     )
+    return len(approvals)
 
 
 async def get_current_risk_assessment(

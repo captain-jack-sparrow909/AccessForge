@@ -18,6 +18,7 @@ from accessforge.db.models import (
     CandidateArtifact,
     CandidateDesign,
     DeletionJob,
+    ExportBundle,
     MediaAsset,
     Project,
 )
@@ -65,6 +66,13 @@ async def _process_deletion_jobs() -> int:
                         )
                     ).all()
                 )
+                export_bundles = list(
+                    (
+                        await session.scalars(
+                            select(ExportBundle).where(ExportBundle.project_id == job.project_id)
+                        )
+                    ).all()
+                )
                 for asset in assets:
                     if asset.status != "deleted":
                         delete_object(object_key=asset.object_key)
@@ -73,6 +81,9 @@ async def _process_deletion_jobs() -> int:
                 for artifact in candidate_artifacts:
                     delete_object(object_key=artifact.object_key)
                     await session.delete(artifact)
+                for bundle in export_bundles:
+                    delete_object(object_key=bundle.object_key)
+                    await session.delete(bundle)
                 job.status = "succeeded"
                 job.completed_at = datetime.now(UTC)
                 processed += 1

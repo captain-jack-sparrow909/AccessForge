@@ -43,6 +43,12 @@ services:
       # repository-root .env or the shell, never from the browser application.
       DEFAULT_MODEL_PROVIDER: ${DEFAULT_MODEL_PROVIDER:-none}
       MODEL_CREDENTIAL_ENCRYPTION_KEY: ${MODEL_CREDENTIAL_ENCRYPTION_KEY:-}
+      # Phase 6 is deliberately off even in the local stack. These settings do
+      # not establish safety, physical suitability, or authority to export.
+      RISK_CONTEXT_ENCRYPTION_KEY: ${RISK_CONTEXT_ENCRYPTION_KEY:-}
+      PHASE6_CONTROLLED_VALIDATION_ENABLED: ${PHASE6_CONTROLLED_VALIDATION_ENABLED:-false}
+      PHASE6_EXPORT_ENABLED: ${PHASE6_EXPORT_ENABLED:-false}
+      PHASE6_REVIEWER_ROLES: ${PHASE6_REVIEWER_ROLES:-safety_reviewer}
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
       DEEPSEEK_API_BASE: ${DEEPSEEK_API_BASE:-https://api.deepseek.com}
       DEEPSEEK_FAST_MODEL: ${DEEPSEEK_FAST_MODEL:-deepseek-v4-flash}
@@ -92,6 +98,10 @@ services:
       # boundary as the API. The offline fake adapter is development-only.
       DEFAULT_MODEL_PROVIDER: ${DEFAULT_MODEL_PROVIDER:-none}
       MODEL_CREDENTIAL_ENCRYPTION_KEY: ${MODEL_CREDENTIAL_ENCRYPTION_KEY:-}
+      RISK_CONTEXT_ENCRYPTION_KEY: ${RISK_CONTEXT_ENCRYPTION_KEY:-}
+      PHASE6_CONTROLLED_VALIDATION_ENABLED: ${PHASE6_CONTROLLED_VALIDATION_ENABLED:-false}
+      PHASE6_EXPORT_ENABLED: ${PHASE6_EXPORT_ENABLED:-false}
+      PHASE6_REVIEWER_ROLES: ${PHASE6_REVIEWER_ROLES:-safety_reviewer}
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
       DEEPSEEK_API_BASE: ${DEEPSEEK_API_BASE:-https://api.deepseek.com}
       DEEPSEEK_FAST_MODEL: ${DEEPSEEK_FAST_MODEL:-deepseek-v4-flash}

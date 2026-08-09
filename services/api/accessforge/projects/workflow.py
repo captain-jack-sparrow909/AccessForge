@@ -49,10 +49,14 @@ ALLOWED_TRANSITIONS: dict[str, set[str]] = {
         "cancelled",
         "deleted",
     },
-    "candidates_ready": {"user_review", "deleted"},
-    "user_review": {"approved", "generating", "deleted"},
-    "approved": {"export_ready", "deleted"},
-    "export_ready": {"deleted"},
+    "candidates_ready": {"user_review", "risk_review", "deleted"},
+    "user_review": {"approved", "generating", "risk_review", "deleted"},
+    # A relevant measurement, requirements, risk, validation, template, or
+    # artifact revision revokes the exact acknowledgement and returns the
+    # project to risk review.  An old approval must never keep an export path
+    # alive after its immutable inputs have changed.
+    "approved": {"export_ready", "risk_review", "deleted"},
+    "export_ready": {"risk_review", "deleted"},
     "blocked_out_of_scope": {"risk_review", "deleted"},
     "needs_more_information": {"consented", "captured", "risk_review", "deleted"},
     "cancelled": {"deleted"},

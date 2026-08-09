@@ -49,6 +49,9 @@ export default async function ProjectLayout({
           <Link className="af-button af-button-secondary" href={`/projects/${projectId}/designs`}>
             DesignSpec
           </Link>
+          <Link className="af-button af-button-secondary" href={`/projects/${projectId}/export`}>
+            Controlled Export
+          </Link>
         </nav>
       </div>
       {children}

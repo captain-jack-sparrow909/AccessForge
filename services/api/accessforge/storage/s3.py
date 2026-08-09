@@ -33,6 +33,8 @@ class S3Client(Protocol):
 
     def head_object(self, *, Bucket: str, Key: str) -> dict[str, object]: ...
 
+    def get_object(self, *, Bucket: str, Key: str) -> dict[str, object]: ...
+
     def delete_object(self, *, Bucket: str, Key: str) -> object: ...
 
 
@@ -103,6 +105,30 @@ def put_private_bytes(*, object_key: str, content: bytes, content_type: str) -> 
 def head_object(*, object_key: str) -> dict[str, object]:
     settings = get_settings()
     return storage_client().head_object(Bucket=settings.s3_bucket_private, Key=object_key)
+
+
+def get_private_bytes(*, object_key: str, max_bytes: int = 50_000_000) -> bytes:
+    """Read a server-produced private object for hash verification/packaging.
+
+    Callers must still verify the immutable database checksum and size.  This
+    intentionally has no user-controlled bucket or key input and bounds the
+    in-memory read before an export ZIP is assembled.
+    """
+
+    if max_bytes < 1:
+        raise ValueError("The private object read limit must be positive.")
+    settings = get_settings()
+    response = storage_client().get_object(Bucket=settings.s3_bucket_private, Key=object_key)
+    body = response.get("Body")
+    reader = getattr(body, "read", None)
+    if not callable(reader):
+        raise ValueError("The private object response is missing its body.")
+    content = reader(max_bytes + 1)
+    if not isinstance(content, bytes):
+        raise ValueError("The private object body is invalid.")
+    if len(content) > max_bytes:
+        raise ValueError("The private object exceeds the export read limit.")
+    return content
 
 
 def delete_object(*, object_key: str) -> None:

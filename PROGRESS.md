@@ -2,17 +2,19 @@
 
 ## Current phase
 
-**Phase 5 — Risk engine, validation, and bounded design agent**
+**Phase 6 — Controlled export and non-human validation source foundation**
 
 Status: `implementation_complete_pending_exit_gate`. The project owner
-authorized the Phase 5 source foundation in the task conversation. It adds a
-versioned deterministic R1–R3 decision, immutable lineage, bounded private
-comparison, validation limitations, cancellation, and durable job recovery.
-Phase 6 still owns approval, export, and controlled physical work. Human
-safety, privacy, accessibility, and lived-experience review remain required
-before real participant data or physical outputs. The enforced compiler
-no-egress sandbox, deployed PostgreSQL/Redis/worker recovery exercise, and
-Docker runtime verification remain open operational gates.
+authorized the Phase 6 source foundation in the task conversation. It adds
+default-denied server gates, sealed risk-context revalidation, exact-revision
+acknowledgement and bundle records, fixed-layout ZIP verification,
+feedback/hazard containment, reviewer-only release controls, and a restricted
+non-human fixture/coupon evidence schema. No current template release or
+deployment setting can pass the full gate. Human safety, privacy,
+accessibility, lived-experience, qualified-review, and real operational
+evidence remain required before any controlled export or physical output. The
+enforced compiler no-egress sandbox, deployed PostgreSQL/Redis/worker recovery
+exercise, and Docker runtime verification remain open operational gates.
 
 ## Phase 0 checklist
 
@@ -121,6 +123,22 @@ a physical design, exporting an artifact, or making a physical-use claim.
 - [ ] Exercise the broker, Celery acknowledgement/redelivery, PostgreSQL locking, S3 cleanup, and worker-loss recovery paths in a deployed or Docker runtime.
 - [ ] Complete keyboard and screen-reader review of the risk and comparison workflow.
 - [ ] Complete the Phase 5 exit gate.
+
+## Phase 6 checklist
+
+- [x] Add a separate AES-GCM-sealed risk-context record so export-time risk revalidation never trusts browser-resubmitted text; legacy/no-key rows fail closed.
+- [x] Add immutable export validation, exact-revision acknowledgement, private bundle, feedback, hazard, reviewer release-control, and non-human evidence records with a migration.
+- [x] Require complete current R1/requirements/spec/plan/batch/candidate/validation/artifact lineage and verify fixed names, byte lengths, and SHA-256 values before ZIP assembly.
+- [x] Revalidate immediately before acknowledgement, bundle assembly, and every authenticated download; invalidate approvals and bundle delivery when relevant risk inputs, reviewer controls/evidence, or a local hazard changes.
+- [x] Add a deterministic fixed-layout bundle, plaintext limitations/print guidance, manifest verification, authenticated no-store ZIP delivery (never a raw object-store bearer URL), and deletion-worker cleanup foundations.
+- [x] Add typed private feedback and a local hazardous-result stop path; reserve global template quarantine for configured reviewer roles only.
+- [x] Add a restricted versioned non-human dimensional-fixture/coupon schema and reviewer release-control API, all disabled by default.
+- [x] Add a default-denied web workflow, generated OpenAPI/client contract, source-level utility tests, strict backend checks, migration round-trip, and webpack production build.
+- [ ] Obtain independently reviewed template-release controls and qualified non-human evidence. Do not create synthetic records as a substitute.
+- [ ] Exercise real storage, PostgreSQL locking, revocation/download races, deletion cleanup, reviewer authorization, and hazard containment in a deployed or Docker runtime using approved synthetic fixtures only.
+- [ ] Complete accessibility, privacy, safety, qualified-review, and lived-experience review before enabling any Phase 6 deployment policy.
+- [ ] Implement a trusted reviewer-role provisioning path. The current browser-to-API token intentionally carries `member`, so the `safety_reviewer` controls remain fail-closed.
+- [ ] Complete the Phase 6 exit gate. No current template release is eligible for controlled export.
 
 ## Phase 2 verification evidence
 

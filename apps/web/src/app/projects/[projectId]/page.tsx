@@ -115,6 +115,12 @@ export default function ProjectOverview({ params }: { params: Promise<{ projectI
           href={`/projects/${projectId}/designs`}
           complete={project.status === 'risk_review' || project.status === 'ready_for_generation'}
         />
+        <WorkflowCard
+          title="Controlled Export"
+          copy="Review current evidence gates, exact-revision acknowledgement, and private feedback."
+          href={`/projects/${projectId}/export`}
+          complete={project.status === 'export_ready'}
+        />
       </div>
       <section className="mt-9" aria-labelledby="facts-heading">
         <h2 id="facts-heading" className="text-xl font-bold">

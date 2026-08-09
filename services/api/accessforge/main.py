@@ -12,6 +12,7 @@ from accessforge.api.routes import (
     auth,
     consents,
     designs,
+    exports,
     health,
     measurements,
     model_providers,
@@ -94,3 +95,4 @@ app.include_router(requirements.router)
 app.include_router(templates.router)
 app.include_router(designs.router)
 app.include_router(risk.router)
+app.include_router(exports.router)

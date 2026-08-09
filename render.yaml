@@ -21,6 +21,16 @@ services:
         sync: false
       - key: MODEL_CREDENTIAL_ENCRYPTION_KEY
         sync: false
+      # Phase 6 stays unavailable until an independently reviewed operational
+      # release. These values do not make an output safe or physically usable.
+      - key: RISK_CONTEXT_ENCRYPTION_KEY
+        sync: false
+      - key: PHASE6_CONTROLLED_VALIDATION_ENABLED
+        value: 'false'
+      - key: PHASE6_EXPORT_ENABLED
+        value: 'false'
+      - key: PHASE6_REVIEWER_ROLES
+        value: safety_reviewer
       # AI is off unless a provider configuration is selected. Keep all managed
       # provider secrets in Render; never mirror them into Vercel.
       - key: DEFAULT_MODEL_PROVIDER
@@ -88,6 +98,14 @@ services:
         sync: false
       - key: MODEL_CREDENTIAL_ENCRYPTION_KEY
         sync: false
+      - key: RISK_CONTEXT_ENCRYPTION_KEY
+        sync: false
+      - key: PHASE6_CONTROLLED_VALIDATION_ENABLED
+        value: 'false'
+      - key: PHASE6_EXPORT_ENABLED
+        value: 'false'
+      - key: PHASE6_REVIEWER_ROLES
+        value: safety_reviewer
       # Keep future background AI work behind the same backend-only secret and
       # egress controls as the API service.
       - key: DEFAULT_MODEL_PROVIDER

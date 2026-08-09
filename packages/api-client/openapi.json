@@ -910,6 +910,125 @@
         "title": "ConsentResponse",
         "type": "object"
       },
+      "ControlledExportAcknowledgements": {
+        "additionalProperties": false,
+        "properties": {
+          "exact_revision_reviewed": {
+            "title": "Exact Revision Reviewed",
+            "type": "boolean"
+          },
+          "limitations_understood": {
+            "title": "Limitations Understood",
+            "type": "boolean"
+          },
+          "non_human_controlled_validation_only": {
+            "title": "Non Human Controlled Validation Only",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "exact_revision_reviewed",
+          "limitations_understood",
+          "non_human_controlled_validation_only"
+        ],
+        "title": "ControlledExportAcknowledgements",
+        "type": "object"
+      },
+      "ControlledPhysicalValidationInput": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_hashes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Evidence Hashes",
+            "type": "array"
+          },
+          "measured_dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/RecordedDimensionInput"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Measured Dimensions",
+            "type": "array"
+          },
+          "process_record": {
+            "$ref": "#/components/schemas/PhysicalProcessRecordInput"
+          },
+          "protocol_version": {
+            "const": "phase6-controlled-fixture.v1",
+            "title": "Protocol Version",
+            "type": "string"
+          },
+          "record_type": {
+            "enum": [
+              "dimensional_fixture",
+              "physical_coupon"
+            ],
+            "title": "Record Type",
+            "type": "string"
+          },
+          "stop_criteria_observed": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Stop Criteria Observed",
+            "type": "array"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "record_type",
+          "process_record",
+          "measured_dimensions",
+          "evidence_hashes"
+        ],
+        "title": "ControlledPhysicalValidationInput",
+        "type": "object"
+      },
+      "ControlledPhysicalValidationRead": {
+        "properties": {
+          "candidate_id": {
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "protocol_version": {
+            "title": "Protocol Version",
+            "type": "string"
+          },
+          "record_type": {
+            "title": "Record Type",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "candidate_id",
+          "protocol_version",
+          "record_type",
+          "status",
+          "recorded_at"
+        ],
+        "title": "ControlledPhysicalValidationRead",
+        "type": "object"
+      },
       "DesignPlanCreate": {
         "additionalProperties": false,
         "properties": {
@@ -1031,6 +1150,17 @@
             "title": "Risk Assessment Id",
             "type": "string"
           },
+          "selected_candidate_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected Candidate Id"
+          },
           "status": {
             "title": "Status",
             "type": "string"
@@ -1066,6 +1196,7 @@
           "tradeoffs",
           "design_spec_id",
           "risk_assessment_id",
+          "selected_candidate_id",
           "proposals",
           "waiting_for_user_message",
           "required_user_action",
@@ -1253,6 +1384,77 @@
         "title": "DesignSpecRead",
         "type": "object"
       },
+      "ExportApprovalCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "acknowledgement_version": {
+            "const": "phase6-controlled-export.v1",
+            "title": "Acknowledgement Version",
+            "type": "string"
+          },
+          "acknowledgements": {
+            "$ref": "#/components/schemas/ControlledExportAcknowledgements"
+          }
+        },
+        "required": [
+          "acknowledgement_version",
+          "acknowledgements"
+        ],
+        "title": "ExportApprovalCreate",
+        "type": "object"
+      },
+      "ExportApprovalRead": {
+        "properties": {
+          "acknowledgement_version": {
+            "title": "Acknowledgement Version",
+            "type": "string"
+          },
+          "approval_hash": {
+            "title": "Approval Hash",
+            "type": "string"
+          },
+          "approved_at": {
+            "format": "date-time",
+            "title": "Approved At",
+            "type": "string"
+          },
+          "candidate_id": {
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "invalidated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invalidated At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "candidate_id",
+          "status",
+          "acknowledgement_version",
+          "approval_hash",
+          "approved_at",
+          "invalidated_at"
+        ],
+        "title": "ExportApprovalRead",
+        "type": "object"
+      },
       "ExportPreflightRead": {
         "additionalProperties": false,
         "properties": {
@@ -1278,6 +1480,171 @@
           "phase_boundary"
         ],
         "title": "ExportPreflightRead",
+        "type": "object"
+      },
+      "ExportReadinessRead": {
+        "additionalProperties": false,
+        "properties": {
+          "acknowledgement_version": {
+            "title": "Acknowledgement Version",
+            "type": "string"
+          },
+          "allowed": {
+            "title": "Allowed",
+            "type": "boolean"
+          },
+          "artifact_manifest": {
+            "additionalProperties": true,
+            "title": "Artifact Manifest",
+            "type": "object"
+          },
+          "artifact_manifest_hash": {
+            "title": "Artifact Manifest Hash",
+            "type": "string"
+          },
+          "limitations": {
+            "title": "Limitations",
+            "type": "string"
+          },
+          "protocol": {
+            "additionalProperties": true,
+            "title": "Protocol",
+            "type": "object"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "risk_decision_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Decision Hash"
+          },
+          "risk_input_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Input Hash"
+          },
+          "validation_report_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validation Report Hash"
+          }
+        },
+        "required": [
+          "allowed",
+          "reasons",
+          "acknowledgement_version",
+          "risk_input_hash",
+          "risk_decision_hash",
+          "validation_report_hash",
+          "artifact_manifest_hash",
+          "artifact_manifest",
+          "protocol",
+          "limitations"
+        ],
+        "title": "ExportReadinessRead",
+        "type": "object"
+      },
+      "FeedbackCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "fit",
+              "comfort",
+              "breakage",
+              "near_miss",
+              "other"
+            ],
+            "title": "Category",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "summary": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "category",
+          "severity",
+          "summary"
+        ],
+        "title": "FeedbackCreate",
+        "type": "object"
+      },
+      "FeedbackRead": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidate Id"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "candidate_id",
+          "category",
+          "severity",
+          "created_at"
+        ],
+        "title": "FeedbackRead",
         "type": "object"
       },
       "GenerateCandidateRequest": {
@@ -1307,6 +1674,73 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HazardCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "severity": {
+            "enum": [
+              "high",
+              "critical"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "summary": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "severity",
+          "summary"
+        ],
+        "title": "HazardCreate",
+        "type": "object"
+      },
+      "HazardRead": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "feedback_report_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feedback Report Id"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "reported_at": {
+            "format": "date-time",
+            "title": "Reported At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "candidate_id",
+          "feedback_report_id",
+          "status",
+          "reported_at"
+        ],
+        "title": "HazardRead",
         "type": "object"
       },
       "LengthEntryInput": {
@@ -2219,6 +2653,155 @@
         "title": "ParticipantRead",
         "type": "object"
       },
+      "PhysicalProcessRecordInput": {
+        "additionalProperties": false,
+        "properties": {
+          "calibration_reference": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Calibration Reference",
+            "type": "string"
+          },
+          "layer_height_mm": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 2.0,
+            "title": "Layer Height Mm",
+            "type": "number"
+          },
+          "material_batch_reference": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Material Batch Reference",
+            "type": "string"
+          },
+          "material_profile": {
+            "enum": [
+              "pla_provisional",
+              "petg_provisional"
+            ],
+            "title": "Material Profile",
+            "type": "string"
+          },
+          "nozzle_diameter_mm": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 5.0,
+            "title": "Nozzle Diameter Mm",
+            "type": "number"
+          },
+          "orientation_record": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Orientation Record",
+            "type": "string"
+          },
+          "printer_reference": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Printer Reference",
+            "type": "string"
+          },
+          "process": {
+            "const": "fdm",
+            "title": "Process",
+            "type": "string"
+          }
+        },
+        "required": [
+          "process",
+          "material_profile",
+          "printer_reference",
+          "material_batch_reference",
+          "orientation_record",
+          "nozzle_diameter_mm",
+          "layer_height_mm",
+          "calibration_reference"
+        ],
+        "title": "PhysicalProcessRecordInput",
+        "type": "object"
+      },
+      "PrivateExportBundleRead": {
+        "properties": {
+          "approval_event_id": {
+            "title": "Approval Event Id",
+            "type": "string"
+          },
+          "candidate_id": {
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "checksum_sha256": {
+            "title": "Checksum Sha256",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "filename": {
+            "title": "Filename",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "manifest_hash": {
+            "title": "Manifest Hash",
+            "type": "string"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "size_bytes": {
+            "title": "Size Bytes",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "candidate_id",
+          "approval_event_id",
+          "filename",
+          "status",
+          "checksum_sha256",
+          "size_bytes",
+          "manifest_hash",
+          "created_at",
+          "revoked_at"
+        ],
+        "title": "PrivateExportBundleRead",
+        "type": "object"
+      },
+      "PrivateExportCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "approval_event_id": {
+            "maxLength": 36,
+            "minLength": 1,
+            "title": "Approval Event Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approval_event_id"
+        ],
+        "title": "PrivateExportCreate",
+        "type": "object"
+      },
       "ProjectCreate": {
         "properties": {
           "action_description": {
@@ -2630,6 +3213,43 @@
           }
         },
         "title": "ProjectUpdate",
+        "type": "object"
+      },
+      "RecordedDimensionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "nominal_mm": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 500.0,
+            "title": "Nominal Mm",
+            "type": "number"
+          },
+          "observed_mm": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 500.0,
+            "title": "Observed Mm",
+            "type": "number"
+          },
+          "tolerance_mm": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 25.0,
+            "title": "Tolerance Mm",
+            "type": "number"
+          }
+        },
+        "required": [
+          "label",
+          "nominal_mm",
+          "observed_mm",
+          "tolerance_mm"
+        ],
+        "title": "RecordedDimensionInput",
         "type": "object"
       },
       "RequirementProposal": {
@@ -3393,6 +4013,134 @@
         "title": "TemplateParameterRead",
         "type": "object"
       },
+      "TemplateReleaseControlCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "control_status": {
+            "enum": [
+              "authorized_for_controlled_validation",
+              "quarantined"
+            ],
+            "title": "Control Status",
+            "type": "string"
+          },
+          "evidence_hashes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Evidence Hashes",
+            "type": "array"
+          },
+          "protocol_version": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protocol Version"
+          },
+          "reason": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "template_id": {
+            "pattern": "^[a-z][a-z0-9_]{1,79}$",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "template_manifest_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Template Manifest Sha256",
+            "type": "string"
+          },
+          "template_version": {
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Template Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id",
+          "template_version",
+          "template_manifest_sha256",
+          "control_status",
+          "reason"
+        ],
+        "title": "TemplateReleaseControlCreate",
+        "type": "object"
+      },
+      "TemplateReleaseControlRead": {
+        "properties": {
+          "control_hash": {
+            "title": "Control Hash",
+            "type": "string"
+          },
+          "evidence_hashes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Hashes",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "protocol_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protocol Version"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "template_id": {
+            "title": "Template Id",
+            "type": "string"
+          },
+          "template_manifest_sha256": {
+            "title": "Template Manifest Sha256",
+            "type": "string"
+          },
+          "template_version": {
+            "title": "Template Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "template_id",
+          "template_version",
+          "template_manifest_sha256",
+          "status",
+          "protocol_version",
+          "evidence_hashes",
+          "control_hash",
+          "recorded_at"
+        ],
+        "title": "TemplateReleaseControlRead",
+        "type": "object"
+      },
       "TemplateReleaseRead": {
         "additionalProperties": false,
         "properties": {
@@ -3674,6 +4422,52 @@
         "summary": "Whoami",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/v1/controlled-validation/template-release-controls": {
+      "post": {
+        "operationId": "submit_template_release_control_v1_controlled_validation_template_release_controls_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplateReleaseControlCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateReleaseControlRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Template Release Control",
+        "tags": [
+          "controlled export and feedback"
         ]
       }
     },
@@ -4411,6 +5205,254 @@
         ]
       }
     },
+    "/v1/projects/{project_id}/candidates/{candidate_id}/controlled-validation": {
+      "post": {
+        "operationId": "submit_controlled_validation_v1_projects__project_id__candidates__candidate_id__controlled_validation_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ControlledPhysicalValidationInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ControlledPhysicalValidationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Controlled Validation",
+        "tags": [
+          "controlled export and feedback"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates/{candidate_id}/export-readiness": {
+      "get": {
+        "operationId": "get_export_readiness_v1_projects__project_id__candidates__candidate_id__export_readiness_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportReadinessRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Export Readiness",
+        "tags": [
+          "controlled export and feedback"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates/{candidate_id}/exports": {
+      "get": {
+        "operationId": "get_export_bundles_v1_projects__project_id__candidates__candidate_id__exports_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PrivateExportBundleRead"
+                  },
+                  "title": "Response Get Export Bundles V1 Projects  Project Id  Candidates  Candidate Id  Exports Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Export Bundles",
+        "tags": [
+          "controlled export and feedback"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates/{candidate_id}/feedback": {
+      "post": {
+        "operationId": "submit_feedback_v1_projects__project_id__candidates__candidate_id__feedback_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Feedback",
+        "tags": [
+          "controlled export and feedback"
+        ]
+      }
+    },
     "/v1/projects/{project_id}/candidates/{candidate_id}/preview": {
       "get": {
         "description": "Provide a short-lived private GLB URL; this is a viewer input, not export approval.",
@@ -4472,6 +5514,83 @@
         ]
       }
     },
+    "/v1/projects/{project_id}/candidates/{candidate_id}:approve-export": {
+      "post": {
+        "operationId": "approve_export_v1_projects__project_id__candidates__candidate_id__approve_export_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportApprovalCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportApprovalRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Approve Export",
+        "tags": [
+          "controlled export and feedback"
+        ]
+      }
+    },
     "/v1/projects/{project_id}/candidates/{candidate_id}:cancel": {
       "post": {
         "description": "Cancel a queued job or request cooperative cancellation before artifact storage.",
@@ -4529,6 +5648,83 @@
         ]
       }
     },
+    "/v1/projects/{project_id}/candidates/{candidate_id}:export": {
+      "post": {
+        "operationId": "create_export_v1_projects__project_id__candidates__candidate_id__export_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrivateExportCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateExportBundleRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Export",
+        "tags": [
+          "controlled export and feedback"
+        ]
+      }
+    },
     "/v1/projects/{project_id}/candidates/{candidate_id}:export-preflight": {
       "post": {
         "description": "Re-run shared gates without exposing an approval or export path in Phase 5.",
@@ -4583,6 +5779,72 @@
         "summary": "Export Preflight",
         "tags": [
           "CAD candidates"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates/{candidate_id}:report-hazard": {
+      "post": {
+        "operationId": "submit_hazard_v1_projects__project_id__candidates__candidate_id__report_hazard_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HazardCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HazardRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Hazard",
+        "tags": [
+          "controlled export and feedback"
         ]
       }
     },
@@ -5390,6 +6652,58 @@
         "summary": "Get Design Spec",
         "tags": [
           "CAD candidates"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/exports/{bundle_id}/download": {
+      "get": {
+        "operationId": "download_private_export_v1_projects__project_id__exports__bundle_id__download_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bundle_id",
+            "required": true,
+            "schema": {
+              "title": "Bundle Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/zip": {}
+            },
+            "description": "Authenticated private export bundle."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Download Private Export",
+        "tags": [
+          "controlled export and feedback"
         ]
       }
     },

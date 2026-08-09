@@ -358,6 +358,7 @@ export type DesignPlan = {
   tradeoffs: string[];
   design_spec_id: string;
   risk_assessment_id: string;
+  selected_candidate_id: string | null;
   proposals: DesignPlanProposal[];
   waiting_for_user_message: string | null;
   required_user_action: string | null;
@@ -370,6 +371,59 @@ export type ExportPreflight = {
   eligible_for_export: boolean;
   reasons: string[];
   phase_boundary: string;
+};
+export type ControlledExportAcknowledgements = {
+  exact_revision_reviewed: boolean;
+  limitations_understood: boolean;
+  non_human_controlled_validation_only: boolean;
+};
+export type ControlledExportReadiness = {
+  allowed: boolean;
+  reasons: string[];
+  acknowledgement_version: 'phase6-controlled-export.v1';
+  risk_input_hash: string | null;
+  risk_decision_hash: string | null;
+  validation_report_hash: string | null;
+  artifact_manifest_hash: string;
+  artifact_manifest: Record<string, unknown>;
+  protocol: Record<string, unknown>;
+  limitations: string;
+};
+export type ControlledExportApproval = {
+  id: string;
+  candidate_id: string;
+  status: string;
+  acknowledgement_version: string;
+  approval_hash: string;
+  approved_at: string;
+  invalidated_at: string | null;
+};
+export type PrivateExportBundle = {
+  id: string;
+  candidate_id: string;
+  approval_event_id: string;
+  filename: string;
+  status: string;
+  checksum_sha256: string;
+  size_bytes: number;
+  manifest_hash: string;
+  created_at: string;
+  revoked_at: string | null;
+};
+export type PrivateExportDownload = Blob;
+export type CandidateFeedback = {
+  id: string;
+  candidate_id: string | null;
+  category: string;
+  severity: string;
+  created_at: string;
+};
+export type HazardReport = {
+  id: string;
+  candidate_id: string;
+  feedback_report_id: string | null;
+  status: string;
+  reported_at: string;
 };
 type ProblemDetail = { title?: string; detail?: string };
 type ClientOptions = { baseUrl: string; getToken: () => Promise<string> };
@@ -404,6 +458,12 @@ export function createAccessForgeClient({ baseUrl, getToken }: ClientOptions) {
     const response = await sendRequest(path, init);
     if (!response.ok) await readError(response);
     return (await response.json()) as T;
+  }
+
+  async function requestPrivateZip(path: string): Promise<Blob> {
+    const response = await sendRequest(path, { headers: { Accept: 'application/zip' } });
+    if (!response.ok) await readError(response);
+    return response.blob();
   }
 
   async function requestOrNullOnNotFound<T>(path: string, init?: RequestInit): Promise<T | null> {
@@ -636,6 +696,71 @@ export function createAccessForgeClient({ baseUrl, getToken }: ClientOptions) {
       request<ExportPreflight>(
         `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}:export-preflight`,
         { method: 'POST' },
+      ),
+    getControlledExportReadiness: (projectId: string, candidateId: string) =>
+      request<ControlledExportReadiness>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}/export-readiness`,
+      ),
+    approveControlledExport: (
+      projectId: string,
+      candidateId: string,
+      acknowledgements: ControlledExportAcknowledgements,
+      idempotencyKey: string,
+    ) =>
+      request<ControlledExportApproval>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}:approve-export`,
+        {
+          method: 'POST',
+          headers: { 'Idempotency-Key': idempotencyKey },
+          body: JSON.stringify({
+            acknowledgement_version: 'phase6-controlled-export.v1',
+            acknowledgements,
+          }),
+        },
+      ),
+    createPrivateControlledExport: (
+      projectId: string,
+      candidateId: string,
+      approvalEventId: string,
+      idempotencyKey: string,
+    ) =>
+      request<PrivateExportBundle>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}:export`,
+        {
+          method: 'POST',
+          headers: { 'Idempotency-Key': idempotencyKey },
+          body: JSON.stringify({ approval_event_id: approvalEventId }),
+        },
+      ),
+    listPrivateControlledExports: (projectId: string, candidateId: string) =>
+      request<PrivateExportBundle[]>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}/exports`,
+      ),
+    downloadPrivateControlledExport: (projectId: string, bundleId: string) =>
+      requestPrivateZip(
+        `/v1/projects/${encodeURIComponent(projectId)}/exports/${encodeURIComponent(bundleId)}/download`,
+      ),
+    submitCandidateFeedback: (
+      projectId: string,
+      candidateId: string,
+      input: {
+        category: 'fit' | 'comfort' | 'breakage' | 'near_miss' | 'other';
+        severity: 'low' | 'medium' | 'high';
+        summary: string;
+      },
+    ) =>
+      request<CandidateFeedback>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}/feedback`,
+        { method: 'POST', body: JSON.stringify(input) },
+      ),
+    reportCandidateHazard: (
+      projectId: string,
+      candidateId: string,
+      input: { severity: 'high' | 'critical'; summary: string },
+    ) =>
+      request<HazardReport>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}:report-hazard`,
+        { method: 'POST', body: JSON.stringify(input) },
       ),
     generateCandidate: (projectId: string, designSpecId: string, idempotencyKey: string) =>
       request<CandidateDesign>(

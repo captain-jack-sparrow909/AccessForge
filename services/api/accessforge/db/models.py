@@ -585,6 +585,13 @@ class DesignPlan(Base):
     source_design_spec_id: Mapped[str] = mapped_column(
         ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
     )
+    # This is assigned only after every child in a completed comparison batch is
+    # terminal and the project owner chooses one successful candidate for the
+    # next review step.  Keeping the selection on the immutable plan lineage
+    # avoids deriving export authorization from mutable UI state.
+    selected_candidate_id: Mapped[str | None] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
     agent_run_id: Mapped[str | None] = mapped_column(
         ForeignKey("agent_runs.id", ondelete="SET NULL"), nullable=True, index=True
     )
@@ -689,3 +696,269 @@ class CandidateGenerationBatch(Base):
         DateTime(timezone=True), nullable=True
     )
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class RiskAssessmentContext(Base):
+    """Private sealed risk input retained only for deterministic export rechecks.
+
+    The public immutable risk snapshot deliberately hashes free text.  Phase 6
+    must nevertheless rerun the deterministic engine without trusting a browser
+    resubmission, so this separate record stores an authenticated encrypted
+    context and is never returned by an API response.
+    """
+
+    __tablename__ = "risk_assessment_contexts"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    risk_assessment_id: Mapped[str] = mapped_column(
+        ForeignKey("risk_assessments.id", ondelete="CASCADE"),
+        unique=True,
+        index=True,
+        nullable=False,
+    )
+    context_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    envelope_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    encrypted_context: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class ExportValidationRun(Base):
+    """Immutable pre-approval or pre-export revalidation evidence.
+
+    It is intentionally separate from the compiler's Phase 4/5 validation
+    records: the original validation report remains historical evidence while
+    this row records a fresh risk/lineage/artifact check at a specific boundary.
+    """
+
+    __tablename__ = "export_validation_runs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    risk_assessment_id: Mapped[str] = mapped_column(
+        ForeignKey("risk_assessments.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    design_spec_id: Mapped[str] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    validation_run_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_validation_runs.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    boundary: Mapped[str] = mapped_column(String(40), nullable=False)
+    risk_input_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    risk_decision_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    validation_report_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    artifact_manifest: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    artifact_manifest_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), nullable=False)
+    reasons: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class ApprovalEvent(Base):
+    """An immutable acknowledgement for one exact private export revision.
+
+    This is deliberately not professional, safety, manufacture, or physical-use
+    approval.  It merely binds a user acknowledgement to the exact lineage that
+    the server would need before it can make a private export bundle available.
+    """
+
+    __tablename__ = "approval_events"
+    __table_args__ = (
+        UniqueConstraint(
+            "project_id", "idempotency_key", name="uq_approval_events_project_idempotency"
+        ),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    design_plan_id: Mapped[str] = mapped_column(
+        ForeignKey("design_plans.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    generation_batch_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_generation_batches.id", ondelete="RESTRICT"),
+        index=True,
+        nullable=False,
+    )
+    requirements_revision_id: Mapped[str] = mapped_column(
+        ForeignKey("requirement_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    risk_assessment_id: Mapped[str] = mapped_column(
+        ForeignKey("risk_assessments.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    design_spec_id: Mapped[str] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    export_validation_run_id: Mapped[str] = mapped_column(
+        ForeignKey("export_validation_runs.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    idempotency_key: Mapped[str] = mapped_column(String(200), nullable=False)
+    acknowledgement_version: Mapped[str] = mapped_column(String(80), nullable=False)
+    acknowledgements: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    risk_decision_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    design_spec_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    template_manifest_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    validation_report_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    artifact_manifest_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    approval_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="active", nullable=False)
+    approved_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    approved_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+    invalidated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    invalidated_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class ExportBundle(Base):
+    """Private immutable ZIP metadata; object keys remain server-only."""
+
+    __tablename__ = "export_bundles"
+    __table_args__ = (
+        UniqueConstraint(
+            "project_id", "idempotency_key", name="uq_export_bundles_project_idempotency"
+        ),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    approval_event_id: Mapped[str] = mapped_column(
+        ForeignKey("approval_events.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    export_validation_run_id: Mapped[str] = mapped_column(
+        ForeignKey("export_validation_runs.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    idempotency_key: Mapped[str] = mapped_column(String(200), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="ready", nullable=False)
+    filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    object_key: Mapped[str] = mapped_column(String(500), unique=True, nullable=False)
+    checksum_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
+    manifest: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    manifest_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revoked_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class ControlledPhysicalValidationRecord(Base):
+    """Reviewer-recorded, non-human fixture or coupon evidence.
+
+    The row preserves measurements and stop criteria without elevating them to a
+    safety, fit, durability, or participant-use conclusion.
+    """
+
+    __tablename__ = "controlled_physical_validation_records"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    template_id: Mapped[str] = mapped_column(String(80), nullable=False)
+    template_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    template_manifest_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    protocol_version: Mapped[str] = mapped_column(String(80), nullable=False)
+    record_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    process_record: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    measured_dimensions: Mapped[list[dict[str, object]]] = mapped_column(JSON, nullable=False)
+    stop_criteria_observed: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    evidence_hashes: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    status: Mapped[str] = mapped_column(String(40), nullable=False)
+    recorded_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class FeedbackReport(Base):
+    """Private typed feedback about a candidate; it never becomes a safety conclusion."""
+
+    __tablename__ = "feedback_reports"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str | None] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="SET NULL"), index=True, nullable=True
+    )
+    category: Mapped[str] = mapped_column(String(40), nullable=False)
+    severity: Mapped[str] = mapped_column(String(40), nullable=False)
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    reported_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    reported_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class HazardReport(Base):
+    """A local hazard block that must be reviewed before any further export attempt."""
+
+    __tablename__ = "hazard_reports"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    feedback_report_id: Mapped[str | None] = mapped_column(
+        ForeignKey("feedback_reports.id", ondelete="SET NULL"), index=True, nullable=True
+    )
+    template_id: Mapped[str] = mapped_column(String(80), nullable=False)
+    template_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    template_manifest_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="reported", nullable=False)
+    reported_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    reported_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class TemplateReleaseControl(Base):
+    """Immutable safety-review control for a specific repository release.
+
+    A control can authorize *controlled, non-human validation only* or quarantine
+    a release.  It never makes a release safe, approved for manufacture, or
+    suitable for participant use.
+    """
+
+    __tablename__ = "template_release_controls"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    template_id: Mapped[str] = mapped_column(String(80), index=True, nullable=False)
+    template_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    template_manifest_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False)
+    protocol_version: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    evidence_hashes: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    control_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    recorded_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )

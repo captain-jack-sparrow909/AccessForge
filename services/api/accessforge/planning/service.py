@@ -740,6 +740,7 @@ async def select_compared_candidate(
             "comparison_selected" if proposal.id == matching.id else "comparison_ready"
         )
     plan.status = "comparison_selected"
+    plan.selected_candidate_id = candidate.id
     transition_project(
         session,
         project,

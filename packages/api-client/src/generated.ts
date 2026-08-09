@@ -72,6 +72,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/controlled-validation/template-release-controls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Template Release Control */
+        post: operations["submit_template_release_control_v1_controlled_validation_template_release_controls_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/model-providers": {
         parameters: {
             query?: never;
@@ -263,6 +280,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/projects/{project_id}/candidates/{candidate_id}/controlled-validation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Controlled Validation */
+        post: operations["submit_controlled_validation_v1_projects__project_id__candidates__candidate_id__controlled_validation_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}/export-readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Export Readiness */
+        get: operations["get_export_readiness_v1_projects__project_id__candidates__candidate_id__export_readiness_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Export Bundles */
+        get: operations["get_export_bundles_v1_projects__project_id__candidates__candidate_id__exports_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Feedback */
+        post: operations["submit_feedback_v1_projects__project_id__candidates__candidate_id__feedback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/projects/{project_id}/candidates/{candidate_id}/preview": {
         parameters: {
             query?: never;
@@ -277,6 +362,23 @@ export interface paths {
         get: operations["get_candidate_preview_v1_projects__project_id__candidates__candidate_id__preview_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}:approve-export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve Export */
+        post: operations["approve_export_v1_projects__project_id__candidates__candidate_id__approve_export_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -303,6 +405,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/projects/{project_id}/candidates/{candidate_id}:export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Export */
+        post: operations["create_export_v1_projects__project_id__candidates__candidate_id__export_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/projects/{project_id}/candidates/{candidate_id}:export-preflight": {
         parameters: {
             query?: never;
@@ -317,6 +436,23 @@ export interface paths {
          * @description Re-run shared gates without exposing an approval or export path in Phase 5.
          */
         post: operations["export_preflight_v1_projects__project_id__candidates__candidate_id__export_preflight_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}:report-hazard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Hazard */
+        post: operations["submit_hazard_v1_projects__project_id__candidates__candidate_id__report_hazard_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -505,6 +641,23 @@ export interface paths {
         };
         /** Get Design Spec */
         get: operations["get_design_spec_v1_projects__project_id__design_specs__design_spec_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/exports/{bundle_id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Private Export */
+        get: operations["download_private_export_v1_projects__project_id__exports__bundle_id__download_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -979,6 +1132,53 @@ export interface components {
             /** Records */
             records: components["schemas"]["ConsentRead"][];
         };
+        /** ControlledExportAcknowledgements */
+        ControlledExportAcknowledgements: {
+            /** Exact Revision Reviewed */
+            exact_revision_reviewed: boolean;
+            /** Limitations Understood */
+            limitations_understood: boolean;
+            /** Non Human Controlled Validation Only */
+            non_human_controlled_validation_only: boolean;
+        };
+        /** ControlledPhysicalValidationInput */
+        ControlledPhysicalValidationInput: {
+            /** Evidence Hashes */
+            evidence_hashes: string[];
+            /** Measured Dimensions */
+            measured_dimensions: components["schemas"]["RecordedDimensionInput"][];
+            process_record: components["schemas"]["PhysicalProcessRecordInput"];
+            /**
+             * Protocol Version
+             * @constant
+             */
+            protocol_version: "phase6-controlled-fixture.v1";
+            /**
+             * Record Type
+             * @enum {string}
+             */
+            record_type: "dimensional_fixture" | "physical_coupon";
+            /** Stop Criteria Observed */
+            stop_criteria_observed?: string[];
+        };
+        /** ControlledPhysicalValidationRead */
+        ControlledPhysicalValidationRead: {
+            /** Candidate Id */
+            candidate_id: string;
+            /** Id */
+            id: string;
+            /** Protocol Version */
+            protocol_version: string;
+            /** Record Type */
+            record_type: string;
+            /**
+             * Recorded At
+             * Format: date-time
+             */
+            recorded_at: string;
+            /** Status */
+            status: string;
+        };
         /** DesignPlanCreate */
         DesignPlanCreate: {
             /** Risk Assessment Id */
@@ -1021,6 +1221,8 @@ export interface components {
             required_user_action: string | null;
             /** Risk Assessment Id */
             risk_assessment_id: string;
+            /** Selected Candidate Id */
+            selected_candidate_id: string | null;
             /** Status */
             status: string;
             /** Tradeoffs */
@@ -1091,6 +1293,35 @@ export interface components {
             /** Template Version */
             template_version: string;
         };
+        /** ExportApprovalCreate */
+        ExportApprovalCreate: {
+            /**
+             * Acknowledgement Version
+             * @constant
+             */
+            acknowledgement_version: "phase6-controlled-export.v1";
+            acknowledgements: components["schemas"]["ControlledExportAcknowledgements"];
+        };
+        /** ExportApprovalRead */
+        ExportApprovalRead: {
+            /** Acknowledgement Version */
+            acknowledgement_version: string;
+            /** Approval Hash */
+            approval_hash: string;
+            /**
+             * Approved At
+             * Format: date-time
+             */
+            approved_at: string;
+            /** Candidate Id */
+            candidate_id: string;
+            /** Id */
+            id: string;
+            /** Invalidated At */
+            invalidated_at: string | null;
+            /** Status */
+            status: string;
+        };
         /** ExportPreflightRead */
         ExportPreflightRead: {
             /** Eligible For Export */
@@ -1099,6 +1330,64 @@ export interface components {
             phase_boundary: string;
             /** Reasons */
             reasons: string[];
+        };
+        /** ExportReadinessRead */
+        ExportReadinessRead: {
+            /** Acknowledgement Version */
+            acknowledgement_version: string;
+            /** Allowed */
+            allowed: boolean;
+            /** Artifact Manifest */
+            artifact_manifest: {
+                [key: string]: unknown;
+            };
+            /** Artifact Manifest Hash */
+            artifact_manifest_hash: string;
+            /** Limitations */
+            limitations: string;
+            /** Protocol */
+            protocol: {
+                [key: string]: unknown;
+            };
+            /** Reasons */
+            reasons: string[];
+            /** Risk Decision Hash */
+            risk_decision_hash: string | null;
+            /** Risk Input Hash */
+            risk_input_hash: string | null;
+            /** Validation Report Hash */
+            validation_report_hash: string | null;
+        };
+        /** FeedbackCreate */
+        FeedbackCreate: {
+            /**
+             * Category
+             * @enum {string}
+             */
+            category: "fit" | "comfort" | "breakage" | "near_miss" | "other";
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "low" | "medium" | "high";
+            /** Summary */
+            summary: string;
+        };
+        /** FeedbackRead */
+        FeedbackRead: {
+            /** Candidate Id */
+            candidate_id: string | null;
+            /** Category */
+            category: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: string;
+            /** Severity */
+            severity: string;
         };
         /** GenerateCandidateRequest */
         GenerateCandidateRequest: {
@@ -1109,6 +1398,32 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HazardCreate */
+        HazardCreate: {
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "high" | "critical";
+            /** Summary */
+            summary: string;
+        };
+        /** HazardRead */
+        HazardRead: {
+            /** Candidate Id */
+            candidate_id: string;
+            /** Feedback Report Id */
+            feedback_report_id: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Reported At
+             * Format: date-time
+             */
+            reported_at: string;
+            /** Status */
+            status: string;
         };
         /** LengthEntryInput */
         LengthEntryInput: {
@@ -1404,6 +1719,62 @@ export interface components {
             /** Role */
             role: string;
         };
+        /** PhysicalProcessRecordInput */
+        PhysicalProcessRecordInput: {
+            /** Calibration Reference */
+            calibration_reference: string;
+            /** Layer Height Mm */
+            layer_height_mm: number;
+            /** Material Batch Reference */
+            material_batch_reference: string;
+            /**
+             * Material Profile
+             * @enum {string}
+             */
+            material_profile: "pla_provisional" | "petg_provisional";
+            /** Nozzle Diameter Mm */
+            nozzle_diameter_mm: number;
+            /** Orientation Record */
+            orientation_record: string;
+            /** Printer Reference */
+            printer_reference: string;
+            /**
+             * Process
+             * @constant
+             */
+            process: "fdm";
+        };
+        /** PrivateExportBundleRead */
+        PrivateExportBundleRead: {
+            /** Approval Event Id */
+            approval_event_id: string;
+            /** Candidate Id */
+            candidate_id: string;
+            /** Checksum Sha256 */
+            checksum_sha256: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Filename */
+            filename: string;
+            /** Id */
+            id: string;
+            /** Manifest Hash */
+            manifest_hash: string;
+            /** Revoked At */
+            revoked_at: string | null;
+            /** Size Bytes */
+            size_bytes: number;
+            /** Status */
+            status: string;
+        };
+        /** PrivateExportCreate */
+        PrivateExportCreate: {
+            /** Approval Event Id */
+            approval_event_id: string;
+        };
         /** ProjectCreate */
         ProjectCreate: {
             /** Action Description */
@@ -1492,6 +1863,17 @@ export interface components {
             object_description?: string | null;
             /** Safety System */
             safety_system?: boolean | null;
+        };
+        /** RecordedDimensionInput */
+        RecordedDimensionInput: {
+            /** Label */
+            label: string;
+            /** Nominal Mm */
+            nominal_mm: number;
+            /** Observed Mm */
+            observed_mm: number;
+            /** Tolerance Mm */
+            tolerance_mm: number;
         };
         /**
          * RequirementProposal
@@ -1745,6 +2127,50 @@ export interface components {
             /** Unit */
             unit: string;
         };
+        /** TemplateReleaseControlCreate */
+        TemplateReleaseControlCreate: {
+            /**
+             * Control Status
+             * @enum {string}
+             */
+            control_status: "authorized_for_controlled_validation" | "quarantined";
+            /** Evidence Hashes */
+            evidence_hashes?: string[];
+            /** Protocol Version */
+            protocol_version?: string | null;
+            /** Reason */
+            reason: string;
+            /** Template Id */
+            template_id: string;
+            /** Template Manifest Sha256 */
+            template_manifest_sha256: string;
+            /** Template Version */
+            template_version: string;
+        };
+        /** TemplateReleaseControlRead */
+        TemplateReleaseControlRead: {
+            /** Control Hash */
+            control_hash: string;
+            /** Evidence Hashes */
+            evidence_hashes: string[];
+            /** Id */
+            id: string;
+            /** Protocol Version */
+            protocol_version: string | null;
+            /**
+             * Recorded At
+             * Format: date-time
+             */
+            recorded_at: string;
+            /** Status */
+            status: string;
+            /** Template Id */
+            template_id: string;
+            /** Template Manifest Sha256 */
+            template_manifest_sha256: string;
+            /** Template Version */
+            template_version: string;
+        };
         /** TemplateReleaseRead */
         TemplateReleaseRead: {
             /** Description */
@@ -1895,6 +2321,39 @@ export interface operations {
                     "application/json": {
                         [key: string]: string | null;
                     };
+                };
+            };
+        };
+    };
+    submit_template_release_control_v1_controlled_validation_template_release_controls_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemplateReleaseControlCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateReleaseControlRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -2365,6 +2824,142 @@ export interface operations {
             };
         };
     };
+    submit_controlled_validation_v1_projects__project_id__candidates__candidate_id__controlled_validation_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ControlledPhysicalValidationInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ControlledPhysicalValidationRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_export_readiness_v1_projects__project_id__candidates__candidate_id__export_readiness_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportReadinessRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_export_bundles_v1_projects__project_id__candidates__candidate_id__exports_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivateExportBundleRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_feedback_v1_projects__project_id__candidates__candidate_id__feedback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_candidate_preview_v1_projects__project_id__candidates__candidate_id__preview_get: {
         parameters: {
             query?: never;
@@ -2386,6 +2981,44 @@ export interface operations {
                     "application/json": {
                         [key: string]: string;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    approve_export_v1_projects__project_id__candidates__candidate_id__approve_export_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportApprovalCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportApprovalRead"];
                 };
             };
             /** @description Validation Error */
@@ -2431,6 +3064,44 @@ export interface operations {
             };
         };
     };
+    create_export_v1_projects__project_id__candidates__candidate_id__export_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrivateExportCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivateExportBundleRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     export_preflight_v1_projects__project_id__candidates__candidate_id__export_preflight_post: {
         parameters: {
             query?: never;
@@ -2450,6 +3121,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExportPreflightRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_hazard_v1_projects__project_id__candidates__candidate_id__report_hazard_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HazardCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HazardRead"];
                 };
             };
             /** @description Validation Error */
@@ -2913,6 +3620,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DesignSpecRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_private_export_v1_projects__project_id__exports__bundle_id__download_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                bundle_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authenticated private export bundle. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/zip": unknown;
                 };
             };
             /** @description Validation Error */

@@ -149,6 +149,37 @@ printability, material suitability, safety, or any physical outcome. See
 [ADR-0008](../architecture/ADR-0008-phase5-risk-and-comparison.md) for the
 complete boundary.
 
+## Phase 6 controlled-export source boundary
+
+The `/projects/:projectId/export` page exposes a server-owned, default-denied
+readiness result, exact-revision acknowledgement, private feedback, and a
+potential-hazard reporting path. It must be used with synthetic data only.
+An acknowledgement is not professional approval, a safety result, a fit result,
+a manufacturing authorization, or permission for human physical use.
+
+`RISK_CONTEXT_ENCRYPTION_KEY` must be a backend-only base64-encoded 32-byte
+key if the server is ever expected to replay a sealed risk context. Leaving it
+unset makes the Phase 6 recheck fail closed. Keep
+`PHASE6_CONTROLLED_VALIDATION_ENABLED=false` and
+`PHASE6_EXPORT_ENABLED=false`: setting either true does not approve a release
+and is not supported for ordinary local development. The current template
+releases have no independently reviewed release controls or non-human evidence
+and therefore remain blocked even if an operator changes a flag.
+
+The current protocol schema records only reviewer-entered hashes plus
+non-human dimensional-fixture/coupon observations. It accepts no evidence
+upload, does no scanning, and cannot establish fit, comfort, safety, strength,
+durability, printability, material performance, or physical suitability. Use
+the potential-hazard path to stop a candidate's current export path; it is a
+private report, not a diagnosis or a global recall notification system.
+
+When the future gate is independently approved, bundle bytes are delivered
+through an authenticated no-store API response after a fresh server recheck.
+AccessForge does not return an object-store presigned bearer URL for a Phase 6
+bundle, so a later hazard, evidence/control change, or policy disablement
+blocks future download requests. Bytes already delivered to a browser cannot
+be recalled.
+
 ## Checks
 
 ```bash
@@ -164,14 +195,14 @@ uv run --project services/api pytest services/api/tests/test_ai_providers.py ser
 ## Current limitations
 
 The Phase 3 AI workflow is limited to requirements extraction and clarification.
-Phase 4 adds synthetic fixture geometry and Phase 5 adds deterministic risk and
-private software comparison only; neither approves outputs, establishes
-fit/strength/printability/material behavior, or claims safety. Phase 6 still
-owns controlled physical work, approval, and export. Malware scanning,
+Phase 4 adds synthetic fixture geometry, Phase 5 adds deterministic risk and
+private software comparison, and Phase 6 adds default-denied export records
+only; none approve outputs, establish fit/strength/printability/material
+behavior, or claim safety. Malware scanning, evidence-upload verification,
 browser-level capture verification, deployment-grade no-egress isolation, and
 hosted queue recovery are also incomplete. The local API tests use an isolated
 SQLite database; a running MinIO/Postgres/Redis stack is still required to
-verify the full direct-upload, private-artifact, deletion-worker, and
-comparison-worker runtime. Do not put real participant data into this
-environment or use real provider keys before the required privacy, safety,
-accessibility, and lived-experience review.
+verify the full direct-upload, private-artifact, deletion-worker,
+comparison-worker, and export-bundle runtime. Do not put real participant data
+into this environment or use real provider keys before the required privacy,
+safety, accessibility, and lived-experience review.

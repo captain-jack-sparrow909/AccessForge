@@ -29,7 +29,14 @@ def phase_four_token(subject: str) -> str:
         .decode()
     )
     settings = get_settings()
-    settings.backend_token_public_keys_json = json.dumps({"phase4-test": public_pem})
+    # Keep previously issued test tokens valid.  Several HTTP tests exercise
+    # owner/non-owner behavior in one client session; replacing a fixed test
+    # key would otherwise invalidate the owner token before the request.
+    key_id = f"phase4-test-{uuid4()}"
+    configured_keys = json.loads(settings.backend_token_public_keys_json)
+    assert isinstance(configured_keys, dict)
+    configured_keys[key_id] = public_pem
+    settings.backend_token_public_keys_json = json.dumps(configured_keys)
     now = datetime.now(UTC)
     return jwt.encode(
         {
@@ -44,7 +51,7 @@ def phase_four_token(subject: str) -> str:
         },
         private_key,
         algorithm="ES256",
-        headers={"kid": "phase4-test"},
+        headers={"kid": key_id},
     )
 
 
