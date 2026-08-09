@@ -1,0 +1,24 @@
+{
+  "fixture_schema_version": "1.0.0",
+  "template_id": "cylindrical_grip_thickener",
+  "template_version": "1.0.0",
+  "generation_seed": "fixture-cylindrical-grip-thickener-1-0-0",
+  "description": "Synthetic deterministic fixture for preview and golden-geometry tests. It is not a physical-use recommendation.",
+  "parameters": {
+    "inner_diameter": 10.0,
+    "outer_diameter": 28.0,
+    "grip_length": 100.0,
+    "slit_width": 2.4,
+    "edge_radius": 1.0
+  },
+  "expected_dimensions_mm": {
+    "x": 25.6,
+    "y": 28.0,
+    "z": 100.0
+  },
+  "preview_annotations": [
+    "The x and y envelope follows outer_diameter; the axial envelope follows grip_length.",
+    "The fixture does not assert object retention, flexibility, ergonomic benefit, material compatibility, or comfort.",
+    "The inner opening and split remain subject to confirmed measurements and later risk/validation gates."
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "fixture_schema_version": "1.0.0",
+  "template_id": "handle_sleeve",
+  "template_version": "1.0.0",
+  "generation_seed": "fixture-handle-sleeve-1-0-0",
+  "description": "Synthetic deterministic fixture for preview and golden-geometry tests. It is not a physical-use recommendation.",
+  "parameters": {
+    "handle_diameter": 16.0,
+    "fit_clearance": 0.8,
+    "outer_diameter": 32.0,
+    "sleeve_length": 110.0,
+    "slit_width": 2.8,
+    "edge_radius": 1.2
+  },
+  "expected_dimensions_mm": {
+    "x": 29.2,
+    "y": 32.0,
+    "z": 110.0
+  },
+  "preview_annotations": [
+    "The x and y envelope follows outer_diameter; the axial envelope follows sleeve_length.",
+    "The fixture does not assert handle retention, pull force, material compatibility, mounting integrity, or safety.",
+    "Handle dimensions and clearance remain subject to confirmed measurements and later risk/validation gates."
+  ]
+}

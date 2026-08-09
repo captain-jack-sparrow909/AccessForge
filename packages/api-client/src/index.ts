@@ -14,6 +14,7 @@ export type Project = {
   scope_reason: string | null;
   model_provider_config_id: string | null;
   active_requirement_revision_id: string | null;
+  active_risk_assessment_id: string | null;
   status: string;
   version: number;
   created_at: string;
@@ -160,6 +161,216 @@ export type RequirementRevision = {
   confirmed_at: string | null;
   confirmed_by: string | null;
 };
+export type CadLengthUnit = 'm' | 'mm' | 'cm' | 'in';
+export type CadFieldCreator =
+  'user' | 'measurement' | 'rule' | 'ai_proposal' | 'template_default' | 'reviewer';
+export type TemplateParameter = {
+  label: string;
+  unit: string;
+  minimum: number;
+  maximum: number;
+  default: number;
+  description: string;
+};
+export type TemplateRelease = {
+  template_id: string;
+  version: string;
+  title: string;
+  description: string;
+  manifest_sha256: string;
+  status: string;
+  supported_uses: string[];
+  prohibited_uses: string[];
+  parameters: Record<string, TemplateParameter>;
+  expected_dimensions: Record<string, unknown>;
+  validation_policy: Record<string, unknown>;
+  print_guidance: Record<string, string>;
+  known_limitations: string[];
+};
+export type CadLengthInput = {
+  value: number;
+  unit: CadLengthUnit;
+  creator_type?: CadFieldCreator;
+  source_ref?: string;
+  rationale?: string;
+};
+export type DesignSpecCreateInput = {
+  template_id: string;
+  template_version: string;
+  parameters: Record<string, CadLengthInput>;
+  manufacturing: {
+    process: 'fdm';
+    material_profile: 'pla_provisional' | 'petg_provisional';
+    nozzle_diameter: CadLengthInput;
+    layer_height: CadLengthInput;
+    creator_type?: CadFieldCreator;
+    source_ref?: string;
+    rationale?: string;
+  };
+  fit_clearance: CadLengthInput;
+  dimensional_tolerance: CadLengthInput;
+  uses_assessed: string[];
+  uses_not_assessed: string[];
+  confirmed_assumptions?: string[];
+  unresolved_assumptions?: string[];
+  generation_seed: string;
+};
+export type DesignSpecRevision = {
+  id: string;
+  revision_number: number;
+  requirements_revision_id: string;
+  schema_version: string;
+  template_id: string;
+  template_version: string;
+  template_manifest_sha256: string;
+  spec_hash: string;
+  generation_seed: string;
+  parent_design_spec_id: string | null;
+  risk_assessment_id: string | null;
+  canonical_spec: Record<string, unknown>;
+  created_at: string;
+};
+export type CandidateArtifact = {
+  id: string;
+  kind: string;
+  filename: string;
+  content_type: string;
+  checksum_sha256: string;
+  size_bytes: number;
+  created_at: string;
+};
+export type CadJob = {
+  id: string;
+  status: string;
+  input_hash: string;
+  attempt_count: number;
+  failure_category: string | null;
+  requested_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+  cancel_requested_at: string | null;
+  cancelled_at: string | null;
+};
+export type CandidateDesign = {
+  id: string;
+  design_spec_id: string;
+  risk_assessment_id: string | null;
+  generation_batch_id: string | null;
+  variant_key: string | null;
+  variant_label: string | null;
+  candidate_number: number;
+  status: string;
+  template_id: string;
+  template_version: string;
+  template_manifest_sha256: string;
+  spec_hash: string;
+  generation_seed: string;
+  compiler_fingerprint: Record<string, unknown> | null;
+  geometry_summary: Record<string, unknown> | null;
+  validation_report: Record<string, unknown> | null;
+  validation_status: string | null;
+  provenance_hash: string | null;
+  failure_category: string | null;
+  created_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+  job: CadJob | null;
+  artifacts: CandidateArtifact[];
+};
+export type RiskTier = 'R0' | 'R1' | 'R2' | 'R3';
+export type RiskAssessmentInput = {
+  design_spec_id: string;
+  intended_use: string;
+  body_contact: 'none' | 'incidental' | 'prolonged' | 'unknown';
+  load: 'none' | 'low_energy_occasional' | 'repetitive' | 'high' | 'body_weight' | 'unknown';
+  temperature: 'room_temperature' | 'hot' | 'cold' | 'unknown';
+  chemicals: 'none' | 'household' | 'laboratory' | 'unknown';
+  electricity: 'none' | 'low_voltage' | 'mains' | 'unknown';
+  age_group: 'adult' | 'child' | 'unknown';
+  safety_feature_interaction: 'none' | 'possible' | 'yes' | 'unknown';
+  failure_consequence:
+    'minor_inconvenience' | 'loss_of_access' | 'injury' | 'safety_critical' | 'unknown';
+  duration: 'occasional' | 'prolonged' | 'unknown';
+  fatigue: 'not_expected' | 'possible' | 'likely' | 'unknown';
+  manufacturing_uncertainty: 'bounded' | 'provisional' | 'unknown';
+};
+export type MatchedRiskRule = {
+  rule_id: string;
+  tier: RiskTier;
+  status: string;
+  evidence_refs: string[];
+  explanation: string;
+  remediation: string | null;
+};
+export type RiskAssessment = {
+  id: string;
+  status: string;
+  tier: RiskTier;
+  ruleset_version: string;
+  ruleset_hash: string;
+  input_hash: string;
+  decision_hash: string;
+  design_spec_id: string;
+  resulting_design_spec_id: string | null;
+  requirements_revision_id: string;
+  matched_rules: MatchedRiskRule[];
+  unresolved_questions: string[];
+  allowed_actions: string[];
+  user_explanation: string;
+  created_at: string;
+  invalidated_at: string | null;
+  invalidated_reason: string | null;
+};
+export type DesignPlanProposal = {
+  id: string;
+  status: string;
+  label: string;
+  tradeoffs: string[];
+  design_spec_id: string;
+  explanation: string;
+};
+export type ComparisonCandidate = {
+  id: string;
+  design_spec_id: string;
+  candidate_number: number;
+  status: string;
+  variant_key: string | null;
+  variant_label: string | null;
+  validation_status: string | null;
+  validation_limitations: string[];
+  failure_category: string | null;
+};
+export type CandidateComparisonBatch = {
+  id: string;
+  status: string;
+  design_plan_id: string;
+  risk_assessment_id: string;
+  input_hash: string;
+  requested_at: string;
+  cancel_requested_at: string | null;
+  completed_at: string | null;
+  candidates: ComparisonCandidate[];
+};
+export type DesignPlan = {
+  id: string;
+  status: string;
+  label: string;
+  tradeoffs: string[];
+  design_spec_id: string;
+  risk_assessment_id: string;
+  proposals: DesignPlanProposal[];
+  waiting_for_user_message: string | null;
+  required_user_action: string | null;
+  failure_category: string | null;
+  comparison_batch: CandidateComparisonBatch | null;
+  created_at: string;
+  updated_at: string;
+};
+export type ExportPreflight = {
+  eligible_for_export: boolean;
+  reasons: string[];
+  phase_boundary: string;
+};
 type ProblemDetail = { title?: string; detail?: string };
 type ClientOptions = { baseUrl: string; getToken: () => Promise<string> };
 
@@ -175,9 +386,9 @@ async function readError(response: Response): Promise<never> {
 }
 
 export function createAccessForgeClient({ baseUrl, getToken }: ClientOptions) {
-  async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  async function sendRequest(path: string, init?: RequestInit): Promise<Response> {
     const token = await getToken();
-    const response = await fetch(`${baseUrl.replace(/\/$/, '')}${path}`, {
+    return fetch(`${baseUrl.replace(/\/$/, '')}${path}`, {
       ...init,
       headers: {
         Accept: 'application/json',
@@ -187,9 +398,21 @@ export function createAccessForgeClient({ baseUrl, getToken }: ClientOptions) {
       },
       cache: 'no-store',
     });
+  }
+
+  async function request<T>(path: string, init?: RequestInit): Promise<T> {
+    const response = await sendRequest(path, init);
     if (!response.ok) await readError(response);
     return (await response.json()) as T;
   }
+
+  async function requestOrNullOnNotFound<T>(path: string, init?: RequestInit): Promise<T | null> {
+    const response = await sendRequest(path, init);
+    if (response.status === 404) return null;
+    if (!response.ok) await readError(response);
+    return (await response.json()) as T;
+  }
+
   return {
     listProjects: () => request<Project[]>('/v1/projects'),
     createProject: (input: {
@@ -338,6 +561,90 @@ export function createAccessForgeClient({ baseUrl, getToken }: ClientOptions) {
       request<RequirementRevision>(
         `/v1/projects/${encodeURIComponent(projectId)}/requirements/${encodeURIComponent(revisionId)}:confirm`,
         { method: 'POST', body: JSON.stringify(input) },
+      ),
+    listTemplates: () => request<TemplateRelease[]>('/v1/templates'),
+    getTemplate: (templateId: string, templateVersion: string) =>
+      request<TemplateRelease>(
+        `/v1/templates/${encodeURIComponent(templateId)}/versions/${encodeURIComponent(templateVersion)}`,
+      ),
+    listDesignSpecs: (projectId: string) =>
+      request<DesignSpecRevision[]>(`/v1/projects/${encodeURIComponent(projectId)}/design-specs`),
+    getDesignSpec: (projectId: string, designSpecId: string) =>
+      request<DesignSpecRevision>(
+        `/v1/projects/${encodeURIComponent(projectId)}/design-specs/${encodeURIComponent(designSpecId)}`,
+      ),
+    createDesignSpec: (projectId: string, input: DesignSpecCreateInput) =>
+      request<DesignSpecRevision>(`/v1/projects/${encodeURIComponent(projectId)}/design-specs`, {
+        method: 'POST',
+        body: JSON.stringify(input),
+      }),
+    getRisk: (projectId: string) =>
+      requestOrNullOnNotFound<RiskAssessment>(`/v1/projects/${encodeURIComponent(projectId)}/risk`),
+    assessRisk: (projectId: string, input: RiskAssessmentInput) =>
+      request<RiskAssessment>(`/v1/projects/${encodeURIComponent(projectId)}/risk:assess`, {
+        method: 'POST',
+        body: JSON.stringify(input),
+      }),
+    listDesignPlans: (projectId: string) =>
+      request<DesignPlan[]>(`/v1/projects/${encodeURIComponent(projectId)}/design-plans`),
+    createDesignPlan: (projectId: string, riskAssessmentId: string) =>
+      request<DesignPlan>(`/v1/projects/${encodeURIComponent(projectId)}/design-plans`, {
+        method: 'POST',
+        body: JSON.stringify({ risk_assessment_id: riskAssessmentId }),
+      }),
+    selectDesignPlanProposal: (projectId: string, planId: string, proposalId: string) =>
+      request<DesignPlan>(
+        `/v1/projects/${encodeURIComponent(projectId)}/design-plans/${encodeURIComponent(planId)}/proposals/${encodeURIComponent(proposalId)}:select`,
+        { method: 'POST' },
+      ),
+    cancelDesignPlan: (projectId: string, planId: string) =>
+      request<DesignPlan>(
+        `/v1/projects/${encodeURIComponent(projectId)}/design-plans/${encodeURIComponent(planId)}:cancel`,
+        { method: 'POST' },
+      ),
+    generateComparison: (projectId: string, planId: string, idempotencyKey: string) =>
+      request<CandidateComparisonBatch>(
+        `/v1/projects/${encodeURIComponent(projectId)}/design-plans/${encodeURIComponent(planId)}:generate-comparison`,
+        { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey } },
+      ),
+    cancelComparison: (projectId: string, planId: string) =>
+      request<CandidateComparisonBatch>(
+        `/v1/projects/${encodeURIComponent(projectId)}/design-plans/${encodeURIComponent(planId)}/comparison:cancel`,
+        { method: 'POST' },
+      ),
+    selectComparisonCandidate: (projectId: string, planId: string, candidateId: string) =>
+      request<DesignPlan>(
+        `/v1/projects/${encodeURIComponent(projectId)}/design-plans/${encodeURIComponent(planId)}/comparison/candidates/${encodeURIComponent(candidateId)}:select`,
+        { method: 'POST' },
+      ),
+    listCandidates: (projectId: string) =>
+      request<CandidateDesign[]>(`/v1/projects/${encodeURIComponent(projectId)}/candidates`),
+    getCandidate: (projectId: string, candidateId: string) =>
+      request<CandidateDesign>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}`,
+      ),
+    getCandidatePreview: (projectId: string, candidateId: string) =>
+      request<{ preview_url: string; content_type: string }>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}/preview`,
+      ),
+    cancelCandidate: (projectId: string, candidateId: string) =>
+      request<CandidateDesign>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}:cancel`,
+        { method: 'POST' },
+      ),
+    getCandidateExportPreflight: (projectId: string, candidateId: string) =>
+      request<ExportPreflight>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates/${encodeURIComponent(candidateId)}:export-preflight`,
+        { method: 'POST' },
+      ),
+    generateCandidate: (projectId: string, designSpecId: string, idempotencyKey: string) =>
+      request<CandidateDesign>(
+        `/v1/projects/${encodeURIComponent(projectId)}/candidates:generate`,
+        {
+          method: 'POST',
+          headers: { 'Idempotency-Key': idempotencyKey },
+          body: JSON.stringify({ design_spec_id: designSpecId }),
+        },
       ),
   };
 }

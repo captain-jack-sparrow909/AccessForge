@@ -43,6 +43,12 @@ export default async function ProjectLayout({
           >
             Requirements
           </Link>
+          <Link className="af-button af-button-secondary" href={`/projects/${projectId}/risk`}>
+            Risk Review
+          </Link>
+          <Link className="af-button af-button-secondary" href={`/projects/${projectId}/designs`}>
+            DesignSpec
+          </Link>
         </nav>
       </div>
       {children}

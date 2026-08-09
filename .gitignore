@@ -19,9 +19,9 @@ services/api/.env
 *.sqlite3
 services/api/uploads/
 services/api/artifacts/
+services/api/build/
 .DS_Store
 .idea/
 .vscode/
 *.swp
 master-prompt.md
-

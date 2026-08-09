@@ -1,0 +1,131 @@
+{
+  'template_id': 'pull_tab_extender',
+  'version': '1.0.0',
+  'title': 'Pull-tab extender',
+  'description': 'Repository-reviewed deterministic geometry contract for a passive, low-energy zipper or pull-tab extender. This provisional 1.0.0 release is for software development and synthetic fixtures only; it is not approval for physical output or real-world use.',
+  'manifest_schema_version': '1.0.0',
+  'status': 'reviewed_repository_only',
+  'supported_uses':
+    [
+      'A passive room-temperature extension for a small zipper or pull tab during a low-energy occasional pull.',
+      'A bounded synthetic fixture used to exercise deterministic CAD compilation and validation reporting.',
+    ],
+  'prohibited_uses':
+    [
+      'Any load-bearing, mobility, transfer, brake, vehicle, bicycle, steering, safety-control, lock-bypass, or emergency-use part.',
+      'Any medical, diagnostic, therapeutic, prosthetic, orthotic, implant, medication-related, child-safety, weapon, hot, wet, chemical, electrical, gas, pressure, food-contact, or prolonged skin-contact use.',
+      'Any use with unknown load, unknown failure consequence, unknown attachment dimensions, or a request outside the confirmed project scope.',
+    ],
+  'parameters':
+    {
+      'attachment_slot_width':
+        {
+          'label': 'Attachment slot width',
+          'unit': 'mm',
+          'minimum': 4.0,
+          'maximum': 24.0,
+          'default': 12.0,
+          'description': 'Clear width of the opening that receives the existing pull tab before the specified attachment clearance is applied.',
+        },
+      'attachment_slot_height':
+        {
+          'label': 'Attachment slot height',
+          'unit': 'mm',
+          'minimum': 3.0,
+          'maximum': 16.0,
+          'default': 7.0,
+          'description': 'Clear height of the opening that receives the existing pull tab before the specified attachment clearance is applied.',
+        },
+      'attachment_clearance':
+        {
+          'label': 'Attachment clearance',
+          'unit': 'mm',
+          'minimum': 0.3,
+          'maximum': 2.0,
+          'default': 0.8,
+          'description': 'Additional clearance around the recorded pull-tab opening. It is a manufacturing/fit assumption, not a fit guarantee.',
+        },
+      'pull_loop_outer_width':
+        {
+          'label': 'Pull loop outer width',
+          'unit': 'mm',
+          'minimum': 20.0,
+          'maximum': 60.0,
+          'default': 36.0,
+          'description': 'Overall outside width of the graspable loop body.',
+        },
+      'pull_loop_outer_height':
+        {
+          'label': 'Pull loop outer height',
+          'unit': 'mm',
+          'minimum': 16.0,
+          'maximum': 60.0,
+          'default': 28.0,
+          'description': 'Overall outside height of the graspable loop body.',
+        },
+      'body_thickness':
+        {
+          'label': 'Body thickness',
+          'unit': 'mm',
+          'minimum': 2.4,
+          'maximum': 5.0,
+          'default': 3.2,
+          'description': 'Nominal through-thickness of the extender body.',
+        },
+      'edge_radius':
+        {
+          'label': 'Edge radius',
+          'unit': 'mm',
+          'minimum': 0.6,
+          'maximum': 3.0,
+          'default': 1.2,
+          'description': 'Nominal rounding radius used by the deterministic template; it does not assess all sharp-edge or comfort risks.',
+        },
+    },
+  'expected_dimensions':
+    {
+      'x': { 'source_parameter': 'pull_loop_outer_width' },
+      'y': { 'source_parameter': 'pull_loop_outer_height' },
+      'z': { 'source_parameter': 'body_thickness' },
+    },
+  'validation_policy':
+    {
+      'version': '1.0.0',
+      'required_confirmations':
+        [
+          'The existing pull-tab opening was measured with a recorded method and tolerance.',
+          'The intended action is a low-energy occasional pull in a dry room-temperature setting.',
+          'The attachment does not affect a safety, access-control, vehicle, mobility, medical, or emergency function.',
+        ],
+      'minimum_wall_thickness_mm': 2.4,
+      'minimum_attachment_clearance_mm': 0.3,
+      'required_checks':
+        [
+          'design_spec_schema',
+          'parameter_ranges',
+          'expected_dimensions',
+          'mesh_manifold_status',
+          'minimum_wall_thickness',
+          'artifact_hashes',
+        ],
+      'blocked_when':
+        [
+          "The attachment slot plus clearance cannot fit inside the loop body with the template's required material boundary.",
+          'A required measurement, unit, tolerance, confirmation, scope gate, risk decision, or deterministic validation result is missing or failed.',
+        ],
+    },
+  'print_guidance':
+    {
+      'orientation': 'Choose an orientation that keeps the loop body stable and minimizes unsupported internal openings; the compiler must report the selected orientation rather than infer a universal best choice.',
+      'supports': 'Review generated overhang findings before printing. Do not assume the template can print without supports on every machine or process.',
+      'material': 'Use only a material/process profile that has passed the future project-specific deterministic gate. This manifest does not endorse a material.',
+      'post_processing': 'Inspect for incomplete layers, cracks, rough edges, dimensional drift, and attachment interference before any controlled non-human fixture evaluation.',
+    },
+  'known_limitations':
+    [
+      'This metadata does not establish pull strength, fatigue life, comfort, pinch risk, fit, or material compatibility.',
+      'The template has not been approved for physical output or real-user testing.',
+      'Edge rounding is a geometric parameter only; it is not a complete sharp-edge or injury assessment.',
+      'A change to any parameter, material/process profile, confirmed requirement, or risk-relevant context requires a new immutable DesignSpec and candidate.',
+    ],
+}

@@ -78,7 +78,7 @@ export default function ProjectOverview({ params }: { params: Promise<{ projectI
           {project.scope_status.replaceAll('_', ' ')}
         </p>
       </section>
-      <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
         <WorkflowCard
           title="Consent"
           copy="Choose separately what you want to share."
@@ -102,6 +102,18 @@ export default function ProjectOverview({ params }: { params: Promise<{ projectI
           copy="Review AI proposals or continue with your own requirements."
           href={`/projects/${projectId}/requirements`}
           complete={Boolean(project.active_requirement_revision_id)}
+        />
+        <WorkflowCard
+          title="Risk Review"
+          copy="Record the declared use; only the server can allow candidate planning."
+          href={`/projects/${projectId}/risk`}
+          complete={project.status === 'ready_for_generation'}
+        />
+        <WorkflowCard
+          title="DesignSpec"
+          copy="Record bounded template parameters and see the Phase 5 generation gate."
+          href={`/projects/${projectId}/designs`}
+          complete={project.status === 'risk_review' || project.status === 'ready_for_generation'}
         />
       </div>
       <section className="mt-9" aria-labelledby="facts-heading">

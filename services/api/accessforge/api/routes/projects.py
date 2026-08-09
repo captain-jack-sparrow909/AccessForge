@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +14,7 @@ from accessforge.projects.workflow import (
     get_owned_project,
     transition_project,
 )
+from accessforge.risk.service import invalidate_active_risk_assessment
 
 router = APIRouter(prefix="/v1/projects", tags=["projects"])
 
@@ -58,6 +59,7 @@ class ProjectRead(BaseModel):
     scope_reason: str | None
     model_provider_config_id: str | None
     active_requirement_revision_id: str | None
+    active_risk_assessment_id: str | None
     status: str
     version: int
     created_at: datetime
@@ -129,6 +131,23 @@ async def update_project(
     session: AsyncSession = Depends(get_session),
 ) -> Project:
     project = await get_owned_project(session, principal, project_id)
+    risk_relevant_fields = {
+        "description",
+        "goal",
+        "object_description",
+        "action_description",
+        "environment",
+        "load_context",
+        "safety_system",
+        "age_context",
+    }
+    if project.status == "generating" and risk_relevant_fields.intersection(
+        payload.model_fields_set
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Cancel or wait for the CAD job before changing a risk-relevant project fact.",
+        )
     if payload.name is not None:
         project.name = payload.name.strip()
     if payload.description is not None:
@@ -155,6 +174,13 @@ async def update_project(
     )
     project.updated_at = utc_now()
     project.version += 1
+    if risk_relevant_fields.intersection(payload.model_fields_set):
+        await invalidate_active_risk_assessment(
+            session,
+            project=project,
+            actor_id=principal.subject,
+            reason="A project fact used by the deterministic risk assessment changed.",
+        )
     await session.commit()
     await session.refresh(project)
     return project

@@ -1,0 +1,124 @@
+{
+  'template_id': 'handle_sleeve',
+  'version': '1.0.0',
+  'title': 'Handle sleeve',
+  'description': 'Repository-reviewed deterministic geometry contract for a split passive sleeve around a cabinet or drawer handle used at room temperature. This provisional 1.0.0 release is for software development and synthetic fixtures only; it is not approval for physical output or real-world use.',
+  'manifest_schema_version': '1.0.0',
+  'status': 'reviewed_repository_only',
+  'supported_uses':
+    [
+      'A removable passive sleeve for a non-safety-critical cabinet or drawer handle during a low-energy occasional pull.',
+      'A bounded synthetic fixture used to exercise deterministic CAD compilation and validation reporting.',
+    ],
+  'prohibited_uses':
+    [
+      'Any handle that controls a lock, child-safety feature, emergency exit, appliance, vehicle, mobility aid, brake, safety system, access-control system, or load-bearing equipment.',
+      'Any medical, diagnostic, therapeutic, prosthetic, orthotic, implant, medication-related, weapon, hot, wet, chemical, electrical, gas, pressure, food-contact, or prolonged skin-contact use.',
+      'Any use where the handle geometry, mounting, load, environment, failure consequence, or material/process profile is unknown.',
+    ],
+  'parameters':
+    {
+      'handle_diameter':
+        {
+          'label': 'Handle diameter',
+          'unit': 'mm',
+          'minimum': 6.0,
+          'maximum': 35.0,
+          'default': 16.0,
+          'description': 'Measured nominal diameter of the existing cylindrical handle at the intended sleeve position.',
+        },
+      'fit_clearance':
+        {
+          'label': 'Fit clearance',
+          'unit': 'mm',
+          'minimum': 0.3,
+          'maximum': 2.0,
+          'default': 0.8,
+          'description': 'Additional nominal radial/diametral fit allowance as defined by the compiler contract. It is a manufacturing assumption, not a fit guarantee.',
+        },
+      'outer_diameter':
+        {
+          'label': 'Outer diameter',
+          'unit': 'mm',
+          'minimum': 18.0,
+          'maximum': 55.0,
+          'default': 32.0,
+          'description': 'Overall outside diameter of the sleeve. The deterministic contract must preserve required wall thickness after the handle opening and clearance are applied.',
+        },
+      'sleeve_length':
+        {
+          'label': 'Sleeve length',
+          'unit': 'mm',
+          'minimum': 35.0,
+          'maximum': 220.0,
+          'default': 110.0,
+          'description': 'Axial length of the handle sleeve.',
+        },
+      'slit_width':
+        {
+          'label': 'Split opening width',
+          'unit': 'mm',
+          'minimum': 0.8,
+          'maximum': 6.0,
+          'default': 2.8,
+          'description': 'Nominal width of the longitudinal split used by the template. It is not evidence that a particular material will flex or remain attached.',
+        },
+      'edge_radius':
+        {
+          'label': 'Edge radius',
+          'unit': 'mm',
+          'minimum': 0.5,
+          'maximum': 3.0,
+          'default': 1.2,
+          'description': 'Nominal rounding radius used by the deterministic template; it does not assess all sharp-edge, comfort, or skin-contact risks.',
+        },
+    },
+  'expected_dimensions':
+    {
+      'x': { 'source_parameter': 'outer_diameter', 'subtract_parameter': 'slit_width' },
+      'y': { 'source_parameter': 'outer_diameter' },
+      'z': { 'source_parameter': 'sleeve_length' },
+    },
+  'validation_policy':
+    {
+      'version': '1.0.0',
+      'required_confirmations':
+        [
+          'The handle is not part of a lock, child-safety feature, emergency exit, appliance safety control, vehicle, mobility aid, or other safety-critical system.',
+          'The handle diameter was measured with a recorded method and tolerance.',
+          'The intended action is a low-energy occasional pull in a dry room-temperature setting with no unknown load or failure consequence.',
+        ],
+      'minimum_wall_thickness_mm': 2.4,
+      'minimum_fit_clearance_mm': 0.3,
+      'required_checks':
+        [
+          'design_spec_schema',
+          'parameter_ranges',
+          'outer_diameter_wall_constraint',
+          'expected_dimensions',
+          'mesh_manifold_status',
+          'minimum_wall_thickness',
+          'artifact_hashes',
+        ],
+      'blocked_when':
+        [
+          "The outer diameter does not preserve the template's required wall thickness around the recorded handle and clearance.",
+          'The target handle participates in a safety-critical or prohibited function.',
+          'A required measurement, unit, tolerance, confirmation, scope gate, risk decision, or deterministic validation result is missing or failed.',
+        ],
+    },
+  'print_guidance':
+    {
+      'orientation': 'Choose and record an orientation that reduces unsupported longitudinal features while preserving the documented dimensions; the compiler must report the assumption rather than claim a universal best orientation.',
+      'supports': 'Review generated overhang, bridge, and build-volume findings for the selected process. The split is not proof of flexibility or retention.',
+      'material': 'Use only a material/process profile accepted by the future deterministic gate. This manifest does not recommend a material or printer setting.',
+      'post_processing': 'Inspect the inner opening, split, end edges, layer adhesion, handle clearance, and measured dimensions before any controlled non-human fixture evaluation.',
+    },
+  'known_limitations':
+    [
+      'This metadata does not establish handle retention, pull force, fatigue life, comfort, skin compatibility, mounting integrity, material performance, or accessibility benefit.',
+      'The template has not been approved for physical output or real-user testing.',
+      'The split opening does not guarantee that a sleeve can be fitted, removed, or retained without excessive force.',
+      'A change to any parameter, material/process profile, confirmed requirement, or risk-relevant context requires a new immutable DesignSpec and candidate.',
+    ],
+}

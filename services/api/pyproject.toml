@@ -17,10 +17,19 @@ dependencies = [
   "redis>=6,<7",
   "sqlalchemy[asyncio]>=2.0.43,<3",
   "uvicorn[standard]>=0.35,<1",
+  "cadquery>=2.8,<2.9",
+  "trimesh>=5.0,<6",
+  "pyyaml>=6.0,<7",
 ]
 
 [dependency-groups]
-dev = ["mypy>=1.17,<2", "pytest>=8.4,<9", "pytest-asyncio>=1.1,<2", "ruff>=0.12,<1"]
+dev = [
+    "mypy>=1.17,<2",
+    "pytest>=8.4,<9",
+    "pytest-asyncio>=1.1,<2",
+    "ruff>=0.12,<1",
+    "types-pyyaml>=6.0.12,<7",
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -45,3 +54,11 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["accessforge*"]
+
+[tool.setuptools.package-data]
+"accessforge.cad" = [
+  "template_assets/**/*.json",
+  "template_assets/**/*.md",
+  "template_assets/**/*.yaml",
+]
+"accessforge.risk" = ["*.json"]

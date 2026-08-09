@@ -1,0 +1,26 @@
+{
+  "fixture_schema_version": "1.0.0",
+  "template_id": "pull_tab_extender",
+  "template_version": "1.0.0",
+  "generation_seed": "fixture-pull-tab-extender-1-0-0",
+  "description": "Synthetic deterministic fixture for preview and golden-geometry tests. It is not a physical-use recommendation.",
+  "parameters": {
+    "attachment_slot_width": 12.0,
+    "attachment_slot_height": 7.0,
+    "attachment_clearance": 0.8,
+    "pull_loop_outer_width": 36.0,
+    "pull_loop_outer_height": 28.0,
+    "body_thickness": 3.2,
+    "edge_radius": 1.2
+  },
+  "expected_dimensions_mm": {
+    "x": 36.0,
+    "y": 28.0,
+    "z": 3.2
+  },
+  "preview_annotations": [
+    "Outer loop dimensions are derived from pull_loop_outer_width and pull_loop_outer_height.",
+    "Attachment dimensions remain assumptions until a confirmed measurement and later risk/validation gates exist.",
+    "No safety, fit, strength, or material-performance conclusion is represented by this fixture."
+  ]
+}

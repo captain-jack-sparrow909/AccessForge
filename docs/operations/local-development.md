@@ -103,6 +103,28 @@ after accepting that SSRF protection is relaxed; use
 See [ADR-0007](../architecture/ADR-0007-model-provider-boundary.md) for the
 full provider, data, and credential boundary.
 
+## Phase 4 CAD foundation
+
+Phase 4 ships only three fixed, repository-owned template releases and accepts
+only an immutable, unit-bearing DesignSpec. The normal project candidate route
+is deliberately unavailable until Phase 5 records a deterministic R1 decision
+with no unresolved assumptions. Do not change a project state manually to try
+to exercise compilation.
+
+The deterministic compiler is exercised with synthetic repository fixtures:
+
+```bash
+uv run --project services/api pytest services/api/tests/test_cad_engine.py
+```
+
+The worker uses a disposable subprocess workspace, fixed artifact names,
+resource limits where the host supports them, and Python-level socket blocking.
+Those controls are not an enforceable deployed no-egress boundary: the current
+Compose and Render worker have normal network access. Do not feed real-user
+data into a CAD job, treat a preview as a physical-fit result, or make a
+physical output claim from this environment. See
+[ADR-0005](../architecture/ADR-0005-cad-engine.md) for the full boundary.
+
 ## Checks
 
 ```bash
@@ -118,10 +140,12 @@ uv run --project services/api pytest services/api/tests/test_ai_providers.py ser
 ## Current limitations
 
 The Phase 3 AI workflow is limited to requirements extraction and clarification.
-It does not accept raw media, generate geometry, lower risk, approve outputs, or
-claim safety. CAD, template execution, physical output, malware scanning, and
-browser-level capture verification are not complete. The local API tests use an
-isolated SQLite database; a running MinIO/Postgres/Redis stack is still required
-to verify the full direct-upload and deletion-worker runtime. Do not put real
-participant data into this environment or use real provider keys before the
-required privacy, safety, accessibility, and lived-experience review.
+Phase 4 adds synthetic fixture geometry only; it does not lower risk, approve
+outputs, establish fit/strength/printability/material behavior, or claim safety.
+No normal user candidate can compile until the later Phase 5 gate, and Phase 6
+still owns controlled physical work. Malware scanning and browser-level capture
+verification are also incomplete. The local API tests use an isolated SQLite
+database; a running MinIO/Postgres/Redis stack is still required to verify the
+full direct-upload, private-artifact, and deletion-worker runtime. Do not put
+real participant data into this environment or use real provider keys before
+the required privacy, safety, accessibility, and lived-experience review.

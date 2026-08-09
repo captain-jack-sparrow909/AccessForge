@@ -1,7 +1,17 @@
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -48,6 +58,11 @@ class Project(Base):
         ForeignKey("model_provider_configs.id", ondelete="SET NULL"), nullable=True, index=True
     )
     active_requirement_revision_id: Mapped[str | None] = mapped_column(
+        String(36), nullable=True, index=True
+    )
+    # This is a convenience pointer only.  The immutable RiskAssessment row and
+    # its bound input hashes remain the source of truth for every gate.
+    active_risk_assessment_id: Mapped[str | None] = mapped_column(
         String(36), nullable=True, index=True
     )
     status: Mapped[str] = mapped_column(String(40), default="draft", nullable=False)
@@ -350,3 +365,327 @@ class Requirement(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, nullable=False
     )
+
+
+class DesignSpecRevision(Base):
+    """An immutable canonical input to a fixed reviewed CAD template release."""
+
+    __tablename__ = "design_spec_revisions"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    requirements_revision_id: Mapped[str] = mapped_column(
+        ForeignKey("requirement_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    parent_design_spec_id: Mapped[str | None] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
+    # Kept as a durable lineage ID rather than a database foreign key so a risk
+    # decision can point back to its resulting immutable revision without a
+    # circular migration dependency.
+    risk_assessment_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    revision_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    schema_version: Mapped[str] = mapped_column(String(20), nullable=False)
+    template_id: Mapped[str] = mapped_column(String(80), nullable=False)
+    template_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    template_manifest_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    canonical_spec: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    spec_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    generation_seed: Mapped[str] = mapped_column(String(120), nullable=False)
+    created_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class CandidateDesign(Base):
+    """A mutable job status around otherwise immutable candidate inputs and outputs."""
+
+    __tablename__ = "candidate_designs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    design_spec_id: Mapped[str] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    risk_assessment_id: Mapped[str | None] = mapped_column(
+        ForeignKey("risk_assessments.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
+    generation_batch_id: Mapped[str | None] = mapped_column(
+        ForeignKey("candidate_generation_batches.id", ondelete="RESTRICT"),
+        nullable=True,
+        index=True,
+    )
+    variant_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    variant_label: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    candidate_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="queued", nullable=False)
+    template_id: Mapped[str] = mapped_column(String(80), nullable=False)
+    template_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    template_manifest_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    spec_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    generation_seed: Mapped[str] = mapped_column(String(120), nullable=False)
+    compiler_fingerprint: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    geometry_summary: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    validation_report: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    validation_status: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    provenance_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    failure_category: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    failure_detail: Mapped[str | None] = mapped_column(Text, nullable=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class CadJob(Base):
+    """Durable queue metadata; worker inputs are always database IDs only."""
+
+    __tablename__ = "cad_jobs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="CASCADE"),
+        unique=True,
+        index=True,
+        nullable=False,
+    )
+    idempotency_key: Mapped[str] = mapped_column(String(200), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="queued", nullable=False)
+    input_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    attempt_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    failure_category: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    failure_detail: Mapped[str | None] = mapped_column(Text, nullable=True)
+    requested_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    requested_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cancel_requested_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class CandidateArtifact(Base):
+    """Private immutable artifact metadata; object keys are never public API values."""
+
+    __tablename__ = "candidate_artifacts"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    content_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_key: Mapped[str] = mapped_column(String(500), unique=True, nullable=False)
+    checksum_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class RiskAssessment(Base):
+    """Immutable result of a versioned deterministic risk evaluation."""
+
+    __tablename__ = "risk_assessments"
+    __table_args__ = (
+        UniqueConstraint(
+            "project_id", "assessment_number", name="uq_risk_assessments_project_number"
+        ),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    requirements_revision_id: Mapped[str] = mapped_column(
+        ForeignKey("requirement_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    design_spec_id: Mapped[str] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    resulting_design_spec_id: Mapped[str | None] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
+    previous_assessment_id: Mapped[str | None] = mapped_column(
+        String(36), nullable=True, index=True
+    )
+    assessment_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    assessment_scope: Mapped[str] = mapped_column(String(40), nullable=False)
+    project_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    ruleset_version: Mapped[str] = mapped_column(String(120), nullable=False)
+    ruleset_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_snapshot: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    input_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    tier: Mapped[str] = mapped_column(String(8), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="current", nullable=False)
+    allowed_actions: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    unresolved_questions: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    user_explanation: Mapped[str] = mapped_column(Text, nullable=False)
+    decision_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+    invalidated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    invalidated_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class RiskFinding(Base):
+    """Normalized deterministic evidence for an immutable risk assessment."""
+
+    __tablename__ = "risk_findings"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    risk_assessment_id: Mapped[str] = mapped_column(
+        ForeignKey("risk_assessments.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    rule_id: Mapped[str] = mapped_column(String(160), nullable=False)
+    rule_version: Mapped[str] = mapped_column(String(80), nullable=False)
+    tier: Mapped[str] = mapped_column(String(8), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), nullable=False)
+    evidence_refs: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    explanation: Mapped[str] = mapped_column(Text, nullable=False)
+    remediation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class DesignPlan(Base):
+    """A bounded, checkpointed plan of reviewed-template parameter variants."""
+
+    __tablename__ = "design_plans"
+    __table_args__ = (
+        UniqueConstraint("project_id", "plan_number", name="uq_design_plans_project_number"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    risk_assessment_id: Mapped[str] = mapped_column(
+        ForeignKey("risk_assessments.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    source_design_spec_id: Mapped[str] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    agent_run_id: Mapped[str | None] = mapped_column(
+        ForeignKey("agent_runs.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    plan_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="waiting_for_user", nullable=False)
+    input_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    template_matches: Mapped[list[dict[str, object]]] = mapped_column(JSON, nullable=False)
+    critique_summary: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    user_checkpoint: Mapped[str] = mapped_column(Text, nullable=False)
+    created_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class DesignPlanProposal(Base):
+    """An immutable, server-validated parameter variant in a design plan."""
+
+    __tablename__ = "design_plan_proposals"
+    __table_args__ = (
+        UniqueConstraint("plan_id", "proposal_number", name="uq_design_plan_proposals_plan_number"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    plan_id: Mapped[str] = mapped_column(
+        ForeignKey("design_plans.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    design_spec_id: Mapped[str] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    proposal_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    variant_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    label: Mapped[str] = mapped_column(String(160), nullable=False)
+    rationale: Mapped[str] = mapped_column(Text, nullable=False)
+    tradeoffs: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    critique: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="proposed", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class CandidateValidationRun(Base):
+    """Immutable normalization of deterministic post-generation checks."""
+
+    __tablename__ = "candidate_validation_runs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    candidate_id: Mapped[str] = mapped_column(
+        ForeignKey("candidate_designs.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    risk_assessment_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    design_spec_id: Mapped[str] = mapped_column(
+        ForeignKey("design_spec_revisions.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    validator_version: Mapped[str] = mapped_column(String(120), nullable=False)
+    validator_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    overall_status: Mapped[str] = mapped_column(String(40), nullable=False)
+    report: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    report_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
+class CandidateGenerationBatch(Base):
+    """Durable multi-variant queue coordination for a selected design plan."""
+
+    __tablename__ = "candidate_generation_batches"
+    __table_args__ = (
+        UniqueConstraint(
+            "project_id",
+            "idempotency_key",
+            name="uq_candidate_generation_batches_project_idempotency",
+        ),
+        UniqueConstraint("design_plan_id", name="uq_candidate_generation_batches_design_plan"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    design_plan_id: Mapped[str] = mapped_column(
+        ForeignKey("design_plans.id", ondelete="RESTRICT"), nullable=False, index=True
+    )
+    risk_assessment_id: Mapped[str] = mapped_column(
+        ForeignKey("risk_assessments.id", ondelete="RESTRICT"), index=True, nullable=False
+    )
+    idempotency_key: Mapped[str] = mapped_column(String(200), nullable=False)
+    input_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), default="queued", nullable=False)
+    requested_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    requested_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+    cancel_requested_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

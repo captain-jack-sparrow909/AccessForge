@@ -209,6 +209,452 @@
         "title": "AssetRead",
         "type": "object"
       },
+      "CadJobRead": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_count": {
+            "title": "Attempt Count",
+            "type": "integer"
+          },
+          "cancel_requested_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancel Requested At"
+          },
+          "cancelled_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelled At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "failure_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Category"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "input_hash": {
+            "title": "Input Hash",
+            "type": "string"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "title": "Requested At",
+            "type": "string"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "input_hash",
+          "attempt_count",
+          "failure_category",
+          "requested_at",
+          "started_at",
+          "completed_at",
+          "cancel_requested_at",
+          "cancelled_at"
+        ],
+        "title": "CadJobRead",
+        "type": "object"
+      },
+      "CandidateArtifactRead": {
+        "additionalProperties": false,
+        "properties": {
+          "checksum_sha256": {
+            "title": "Checksum Sha256",
+            "type": "string"
+          },
+          "content_type": {
+            "title": "Content Type",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "filename": {
+            "title": "Filename",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "size_bytes": {
+            "title": "Size Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "filename",
+          "content_type",
+          "checksum_sha256",
+          "size_bytes",
+          "created_at"
+        ],
+        "title": "CandidateArtifactRead",
+        "type": "object"
+      },
+      "CandidateComparisonBatchRead": {
+        "additionalProperties": false,
+        "properties": {
+          "cancel_requested_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancel Requested At"
+          },
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/ComparisonCandidateRead"
+            },
+            "title": "Candidates",
+            "type": "array"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "design_plan_id": {
+            "title": "Design Plan Id",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "input_hash": {
+            "title": "Input Hash",
+            "type": "string"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "title": "Requested At",
+            "type": "string"
+          },
+          "risk_assessment_id": {
+            "title": "Risk Assessment Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "design_plan_id",
+          "risk_assessment_id",
+          "input_hash",
+          "requested_at",
+          "cancel_requested_at",
+          "completed_at",
+          "candidates"
+        ],
+        "title": "CandidateComparisonBatchRead",
+        "type": "object"
+      },
+      "CandidateDesignRead": {
+        "additionalProperties": false,
+        "properties": {
+          "artifacts": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateArtifactRead"
+            },
+            "title": "Artifacts",
+            "type": "array"
+          },
+          "candidate_number": {
+            "title": "Candidate Number",
+            "type": "integer"
+          },
+          "compiler_fingerprint": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compiler Fingerprint"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "design_spec_id": {
+            "title": "Design Spec Id",
+            "type": "string"
+          },
+          "failure_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Category"
+          },
+          "generation_batch_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generation Batch Id"
+          },
+          "generation_seed": {
+            "title": "Generation Seed",
+            "type": "string"
+          },
+          "geometry_summary": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geometry Summary"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "job": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CadJobRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provenance_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provenance Hash"
+          },
+          "risk_assessment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Assessment Id"
+          },
+          "spec_hash": {
+            "title": "Spec Hash",
+            "type": "string"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "template_id": {
+            "title": "Template Id",
+            "type": "string"
+          },
+          "template_manifest_sha256": {
+            "title": "Template Manifest Sha256",
+            "type": "string"
+          },
+          "template_version": {
+            "title": "Template Version",
+            "type": "string"
+          },
+          "validation_report": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validation Report"
+          },
+          "validation_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validation Status"
+          },
+          "variant_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Key"
+          },
+          "variant_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Label"
+          }
+        },
+        "required": [
+          "id",
+          "design_spec_id",
+          "risk_assessment_id",
+          "generation_batch_id",
+          "variant_key",
+          "variant_label",
+          "candidate_number",
+          "status",
+          "template_id",
+          "template_version",
+          "template_manifest_sha256",
+          "spec_hash",
+          "generation_seed",
+          "compiler_fingerprint",
+          "geometry_summary",
+          "validation_report",
+          "validation_status",
+          "provenance_hash",
+          "failure_category",
+          "created_at",
+          "started_at",
+          "completed_at",
+          "job",
+          "artifacts"
+        ],
+        "title": "CandidateDesignRead",
+        "type": "object"
+      },
       "ClarifyingQuestion": {
         "additionalProperties": false,
         "properties": {
@@ -251,6 +697,91 @@
           "priority"
         ],
         "title": "ClarifyingQuestion",
+        "type": "object"
+      },
+      "ComparisonCandidateRead": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_number": {
+            "title": "Candidate Number",
+            "type": "integer"
+          },
+          "design_spec_id": {
+            "title": "Design Spec Id",
+            "type": "string"
+          },
+          "failure_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Category"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "validation_limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Validation Limitations",
+            "type": "array"
+          },
+          "validation_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validation Status"
+          },
+          "variant_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Key"
+          },
+          "variant_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Label"
+          }
+        },
+        "required": [
+          "id",
+          "design_spec_id",
+          "candidate_number",
+          "status",
+          "variant_key",
+          "variant_label",
+          "validation_status",
+          "validation_limitations",
+          "failure_category"
+        ],
+        "title": "ComparisonCandidateRead",
         "type": "object"
       },
       "ConsentCreate": {
@@ -379,6 +910,392 @@
         "title": "ConsentResponse",
         "type": "object"
       },
+      "DesignPlanCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "risk_assessment_id": {
+            "maxLength": 36,
+            "minLength": 1,
+            "title": "Risk Assessment Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "risk_assessment_id"
+        ],
+        "title": "DesignPlanCreate",
+        "type": "object"
+      },
+      "DesignPlanProposalRead": {
+        "additionalProperties": false,
+        "properties": {
+          "design_spec_id": {
+            "title": "Design Spec Id",
+            "type": "string"
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tradeoffs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tradeoffs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "label",
+          "tradeoffs",
+          "design_spec_id",
+          "explanation"
+        ],
+        "title": "DesignPlanProposalRead",
+        "type": "object"
+      },
+      "DesignPlanRead": {
+        "additionalProperties": false,
+        "properties": {
+          "comparison_batch": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CandidateComparisonBatchRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "design_spec_id": {
+            "title": "Design Spec Id",
+            "type": "string"
+          },
+          "failure_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Category"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "proposals": {
+            "items": {
+              "$ref": "#/components/schemas/DesignPlanProposalRead"
+            },
+            "title": "Proposals",
+            "type": "array"
+          },
+          "required_user_action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required User Action"
+          },
+          "risk_assessment_id": {
+            "title": "Risk Assessment Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tradeoffs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tradeoffs",
+            "type": "array"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "waiting_for_user_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Waiting For User Message"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "label",
+          "tradeoffs",
+          "design_spec_id",
+          "risk_assessment_id",
+          "proposals",
+          "waiting_for_user_message",
+          "required_user_action",
+          "failure_category",
+          "comparison_batch",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "DesignPlanRead",
+        "type": "object"
+      },
+      "DesignSpecCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "confirmed_assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 30,
+            "title": "Confirmed Assumptions",
+            "type": "array"
+          },
+          "dimensional_tolerance": {
+            "$ref": "#/components/schemas/LengthEntryInput"
+          },
+          "fit_clearance": {
+            "$ref": "#/components/schemas/LengthEntryInput"
+          },
+          "generation_seed": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Generation Seed",
+            "type": "string"
+          },
+          "manufacturing": {
+            "$ref": "#/components/schemas/ManufacturingProfileInput"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/LengthEntryInput"
+            },
+            "maxProperties": 30,
+            "minProperties": 1,
+            "title": "Parameters",
+            "type": "object"
+          },
+          "template_id": {
+            "pattern": "^[a-z][a-z0-9_]{1,79}$",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "template_version": {
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Template Version",
+            "type": "string"
+          },
+          "unresolved_assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 30,
+            "title": "Unresolved Assumptions",
+            "type": "array"
+          },
+          "uses_assessed": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Uses Assessed",
+            "type": "array"
+          },
+          "uses_not_assessed": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Uses Not Assessed",
+            "type": "array"
+          }
+        },
+        "required": [
+          "template_id",
+          "template_version",
+          "parameters",
+          "manufacturing",
+          "fit_clearance",
+          "dimensional_tolerance",
+          "uses_assessed",
+          "uses_not_assessed",
+          "generation_seed"
+        ],
+        "title": "DesignSpecCreate",
+        "type": "object"
+      },
+      "DesignSpecRead": {
+        "additionalProperties": false,
+        "properties": {
+          "canonical_spec": {
+            "additionalProperties": true,
+            "title": "Canonical Spec",
+            "type": "object"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "generation_seed": {
+            "title": "Generation Seed",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "parent_design_spec_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Design Spec Id"
+          },
+          "requirements_revision_id": {
+            "title": "Requirements Revision Id",
+            "type": "string"
+          },
+          "revision_number": {
+            "title": "Revision Number",
+            "type": "integer"
+          },
+          "risk_assessment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Assessment Id"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "spec_hash": {
+            "title": "Spec Hash",
+            "type": "string"
+          },
+          "template_id": {
+            "title": "Template Id",
+            "type": "string"
+          },
+          "template_manifest_sha256": {
+            "title": "Template Manifest Sha256",
+            "type": "string"
+          },
+          "template_version": {
+            "title": "Template Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "revision_number",
+          "requirements_revision_id",
+          "schema_version",
+          "template_id",
+          "template_version",
+          "template_manifest_sha256",
+          "spec_hash",
+          "generation_seed",
+          "parent_design_spec_id",
+          "risk_assessment_id",
+          "canonical_spec",
+          "created_at"
+        ],
+        "title": "DesignSpecRead",
+        "type": "object"
+      },
+      "ExportPreflightRead": {
+        "additionalProperties": false,
+        "properties": {
+          "eligible_for_export": {
+            "title": "Eligible For Export",
+            "type": "boolean"
+          },
+          "phase_boundary": {
+            "title": "Phase Boundary",
+            "type": "string"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          }
+        },
+        "required": [
+          "eligible_for_export",
+          "reasons",
+          "phase_boundary"
+        ],
+        "title": "ExportPreflightRead",
+        "type": "object"
+      },
+      "GenerateCandidateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "design_spec_id": {
+            "maxLength": 36,
+            "minLength": 1,
+            "title": "Design Spec Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "design_spec_id"
+        ],
+        "title": "GenerateCandidateRequest",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -390,6 +1307,168 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "LengthEntryInput": {
+        "additionalProperties": false,
+        "properties": {
+          "creator_type": {
+            "default": "user",
+            "enum": [
+              "user",
+              "measurement",
+              "rule",
+              "ai_proposal",
+              "template_default",
+              "reviewer"
+            ],
+            "title": "Creator Type",
+            "type": "string"
+          },
+          "rationale": {
+            "default": "Entered directly by the project owner.",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "source_ref": {
+            "default": "user:direct-parameter",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Source Ref",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "m",
+              "mm",
+              "cm",
+              "in"
+            ],
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 100000.0,
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "unit"
+        ],
+        "title": "LengthEntryInput",
+        "type": "object"
+      },
+      "ManufacturingProfileInput": {
+        "additionalProperties": false,
+        "properties": {
+          "creator_type": {
+            "default": "user",
+            "enum": [
+              "user",
+              "measurement",
+              "rule",
+              "ai_proposal",
+              "template_default",
+              "reviewer"
+            ],
+            "title": "Creator Type",
+            "type": "string"
+          },
+          "layer_height": {
+            "$ref": "#/components/schemas/LengthEntryInput"
+          },
+          "material_profile": {
+            "enum": [
+              "pla_provisional",
+              "petg_provisional"
+            ],
+            "title": "Material Profile",
+            "type": "string"
+          },
+          "nozzle_diameter": {
+            "$ref": "#/components/schemas/LengthEntryInput"
+          },
+          "process": {
+            "const": "fdm",
+            "title": "Process",
+            "type": "string"
+          },
+          "rationale": {
+            "default": "Chosen for a provisional deterministic geometry fixture.",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "source_ref": {
+            "default": "user:manufacturing-profile",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Source Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "process",
+          "material_profile",
+          "nozzle_diameter",
+          "layer_height"
+        ],
+        "title": "ManufacturingProfileInput",
+        "type": "object"
+      },
+      "MatchedRiskRuleRead": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_refs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "remediation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remediation"
+          },
+          "rule_id": {
+            "title": "Rule Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rule_id",
+          "tier",
+          "status",
+          "evidence_refs",
+          "explanation",
+          "remediation"
+        ],
+        "title": "MatchedRiskRuleRead",
         "type": "object"
       },
       "MeasurementCreate": {
@@ -1274,6 +2353,17 @@
             ],
             "title": "Active Requirement Revision Id"
           },
+          "active_risk_assessment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Risk Assessment Id"
+          },
           "age_context": {
             "anyOf": [
               {
@@ -1419,6 +2509,7 @@
           "scope_reason",
           "model_provider_config_id",
           "active_requirement_revision_id",
+          "active_risk_assessment_id",
           "status",
           "version",
           "created_at",
@@ -1952,6 +3043,276 @@
         "title": "RequirementsExtractRequest",
         "type": "object"
       },
+      "RiskAssessmentCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "age_group": {
+            "enum": [
+              "adult",
+              "child",
+              "unknown"
+            ],
+            "title": "Age Group",
+            "type": "string"
+          },
+          "body_contact": {
+            "enum": [
+              "none",
+              "incidental",
+              "prolonged",
+              "unknown"
+            ],
+            "title": "Body Contact",
+            "type": "string"
+          },
+          "chemicals": {
+            "enum": [
+              "none",
+              "household",
+              "laboratory",
+              "unknown"
+            ],
+            "title": "Chemicals",
+            "type": "string"
+          },
+          "design_spec_id": {
+            "maxLength": 36,
+            "minLength": 1,
+            "title": "Design Spec Id",
+            "type": "string"
+          },
+          "duration": {
+            "enum": [
+              "occasional",
+              "prolonged",
+              "unknown"
+            ],
+            "title": "Duration",
+            "type": "string"
+          },
+          "electricity": {
+            "enum": [
+              "none",
+              "low_voltage",
+              "mains",
+              "unknown"
+            ],
+            "title": "Electricity",
+            "type": "string"
+          },
+          "failure_consequence": {
+            "enum": [
+              "minor_inconvenience",
+              "loss_of_access",
+              "injury",
+              "safety_critical",
+              "unknown"
+            ],
+            "title": "Failure Consequence",
+            "type": "string"
+          },
+          "fatigue": {
+            "enum": [
+              "not_expected",
+              "possible",
+              "likely",
+              "unknown"
+            ],
+            "title": "Fatigue",
+            "type": "string"
+          },
+          "intended_use": {
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Intended Use",
+            "type": "string"
+          },
+          "load": {
+            "enum": [
+              "none",
+              "low_energy_occasional",
+              "repetitive",
+              "high",
+              "body_weight",
+              "unknown"
+            ],
+            "title": "Load",
+            "type": "string"
+          },
+          "manufacturing_uncertainty": {
+            "enum": [
+              "bounded",
+              "provisional",
+              "unknown"
+            ],
+            "title": "Manufacturing Uncertainty",
+            "type": "string"
+          },
+          "safety_feature_interaction": {
+            "enum": [
+              "none",
+              "possible",
+              "yes",
+              "unknown"
+            ],
+            "title": "Safety Feature Interaction",
+            "type": "string"
+          },
+          "temperature": {
+            "enum": [
+              "room_temperature",
+              "hot",
+              "cold",
+              "unknown"
+            ],
+            "title": "Temperature",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intended_use",
+          "body_contact",
+          "load",
+          "temperature",
+          "chemicals",
+          "electricity",
+          "age_group",
+          "safety_feature_interaction",
+          "failure_consequence",
+          "duration",
+          "fatigue",
+          "manufacturing_uncertainty",
+          "design_spec_id"
+        ],
+        "title": "RiskAssessmentCreate",
+        "type": "object"
+      },
+      "RiskAssessmentRead": {
+        "additionalProperties": false,
+        "properties": {
+          "allowed_actions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Allowed Actions",
+            "type": "array"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "decision_hash": {
+            "title": "Decision Hash",
+            "type": "string"
+          },
+          "design_spec_id": {
+            "title": "Design Spec Id",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "input_hash": {
+            "title": "Input Hash",
+            "type": "string"
+          },
+          "invalidated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invalidated At"
+          },
+          "invalidated_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invalidated Reason"
+          },
+          "matched_rules": {
+            "items": {
+              "$ref": "#/components/schemas/MatchedRiskRuleRead"
+            },
+            "title": "Matched Rules",
+            "type": "array"
+          },
+          "requirements_revision_id": {
+            "title": "Requirements Revision Id",
+            "type": "string"
+          },
+          "resulting_design_spec_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resulting Design Spec Id"
+          },
+          "ruleset_hash": {
+            "title": "Ruleset Hash",
+            "type": "string"
+          },
+          "ruleset_version": {
+            "title": "Ruleset Version",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "unresolved_questions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unresolved Questions",
+            "type": "array"
+          },
+          "user_explanation": {
+            "title": "User Explanation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "tier",
+          "ruleset_version",
+          "ruleset_hash",
+          "input_hash",
+          "decision_hash",
+          "design_spec_id",
+          "resulting_design_spec_id",
+          "requirements_revision_id",
+          "matched_rules",
+          "unresolved_questions",
+          "allowed_actions",
+          "user_explanation",
+          "created_at",
+          "invalidated_at",
+          "invalidated_reason"
+        ],
+        "title": "RiskAssessmentRead",
+        "type": "object"
+      },
       "RiskSignal": {
         "additionalProperties": false,
         "properties": {
@@ -1991,6 +3352,136 @@
           "source_refs"
         ],
         "title": "RiskSignal",
+        "type": "object"
+      },
+      "TemplateParameterRead": {
+        "additionalProperties": false,
+        "properties": {
+          "default": {
+            "title": "Default",
+            "type": "number"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "maximum": {
+            "title": "Maximum",
+            "type": "number"
+          },
+          "minimum": {
+            "title": "Minimum",
+            "type": "number"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "unit",
+          "minimum",
+          "maximum",
+          "default",
+          "description"
+        ],
+        "title": "TemplateParameterRead",
+        "type": "object"
+      },
+      "TemplateReleaseRead": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "expected_dimensions": {
+            "additionalProperties": true,
+            "title": "Expected Dimensions",
+            "type": "object"
+          },
+          "known_limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Known Limitations",
+            "type": "array"
+          },
+          "manifest_sha256": {
+            "title": "Manifest Sha256",
+            "type": "string"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TemplateParameterRead"
+            },
+            "title": "Parameters",
+            "type": "object"
+          },
+          "print_guidance": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Print Guidance",
+            "type": "object"
+          },
+          "prohibited_uses": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Prohibited Uses",
+            "type": "array"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "supported_uses": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Supported Uses",
+            "type": "array"
+          },
+          "template_id": {
+            "title": "Template Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "validation_policy": {
+            "additionalProperties": true,
+            "title": "Validation Policy",
+            "type": "object"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id",
+          "version",
+          "title",
+          "description",
+          "manifest_sha256",
+          "status",
+          "supported_uses",
+          "prohibited_uses",
+          "parameters",
+          "expected_dimensions",
+          "validation_policy",
+          "print_guidance",
+          "known_limitations"
+        ],
+        "title": "TemplateReleaseRead",
         "type": "object"
       },
       "UnknownItem": {
@@ -2813,6 +4304,356 @@
         ]
       }
     },
+    "/v1/projects/{project_id}/candidates": {
+      "get": {
+        "operationId": "list_candidates_v1_projects__project_id__candidates_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CandidateDesignRead"
+                  },
+                  "title": "Response List Candidates V1 Projects  Project Id  Candidates Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Candidates",
+        "tags": [
+          "CAD candidates"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates/{candidate_id}": {
+      "get": {
+        "operationId": "get_candidate_v1_projects__project_id__candidates__candidate_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateDesignRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Candidate",
+        "tags": [
+          "CAD candidates"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates/{candidate_id}/preview": {
+      "get": {
+        "description": "Provide a short-lived private GLB URL; this is a viewer input, not export approval.",
+        "operationId": "get_candidate_preview_v1_projects__project_id__candidates__candidate_id__preview_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Get Candidate Preview V1 Projects  Project Id  Candidates  Candidate Id  Preview Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Candidate Preview",
+        "tags": [
+          "CAD candidates"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates/{candidate_id}:cancel": {
+      "post": {
+        "description": "Cancel a queued job or request cooperative cancellation before artifact storage.",
+        "operationId": "cancel_candidate_v1_projects__project_id__candidates__candidate_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateDesignRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel Candidate",
+        "tags": [
+          "CAD candidates"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates/{candidate_id}:export-preflight": {
+      "post": {
+        "description": "Re-run shared gates without exposing an approval or export path in Phase 5.",
+        "operationId": "export_preflight_v1_projects__project_id__candidates__candidate_id__export_preflight_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportPreflightRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Export Preflight",
+        "tags": [
+          "CAD candidates"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/candidates:generate": {
+      "post": {
+        "operationId": "generate_candidate_v1_projects__project_id__candidates_generate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateCandidateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateDesignRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Generate Candidate",
+        "tags": [
+          "CAD candidates"
+        ]
+      }
+    },
     "/v1/projects/{project_id}/consents": {
       "get": {
         "operationId": "list_consents_v1_projects__project_id__consents_get",
@@ -2972,6 +4813,583 @@
         "summary": "Revoke Consent",
         "tags": [
           "consent"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/design-plans": {
+      "get": {
+        "operationId": "list_design_plans_v1_projects__project_id__design_plans_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DesignPlanRead"
+                  },
+                  "title": "Response List Design Plans V1 Projects  Project Id  Design Plans Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Design Plans",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      },
+      "post": {
+        "operationId": "create_design_plan_v1_projects__project_id__design_plans_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DesignPlanCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignPlanRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Design Plan",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/design-plans/{plan_id}/comparison/candidates/{candidate_id}:select": {
+      "post": {
+        "operationId": "select_comparison_candidate_v1_projects__project_id__design_plans__plan_id__comparison_candidates__candidate_id__select_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignPlanRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Select Comparison Candidate",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/design-plans/{plan_id}/comparison:cancel": {
+      "post": {
+        "operationId": "cancel_comparison_v1_projects__project_id__design_plans__plan_id__comparison_cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateComparisonBatchRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel Comparison",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/design-plans/{plan_id}/proposals/{proposal_id}:select": {
+      "post": {
+        "operationId": "select_design_plan_proposal_v1_projects__project_id__design_plans__plan_id__proposals__proposal_id__select_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "proposal_id",
+            "required": true,
+            "schema": {
+              "title": "Proposal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignPlanRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Select Design Plan Proposal",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/design-plans/{plan_id}:cancel": {
+      "post": {
+        "operationId": "cancel_design_plan_v1_projects__project_id__design_plans__plan_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignPlanRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel Design Plan",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/design-plans/{plan_id}:generate-comparison": {
+      "post": {
+        "operationId": "generate_comparison_v1_projects__project_id__design_plans__plan_id__generate_comparison_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateComparisonBatchRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Generate Comparison",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/design-specs": {
+      "get": {
+        "operationId": "list_design_specs_v1_projects__project_id__design_specs_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DesignSpecRead"
+                  },
+                  "title": "Response List Design Specs V1 Projects  Project Id  Design Specs Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Design Specs",
+        "tags": [
+          "CAD candidates"
+        ]
+      },
+      "post": {
+        "operationId": "create_design_spec_v1_projects__project_id__design_specs_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DesignSpecCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignSpecRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Design Spec",
+        "tags": [
+          "CAD candidates"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/design-specs/{design_spec_id}": {
+      "get": {
+        "operationId": "get_design_spec_v1_projects__project_id__design_specs__design_spec_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "design_spec_id",
+            "required": true,
+            "schema": {
+              "title": "Design Spec Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignSpecRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Design Spec",
+        "tags": [
+          "CAD candidates"
         ]
       }
     },
@@ -3424,6 +5842,186 @@
         "summary": "Extract Requirements",
         "tags": [
           "requirements"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/risk": {
+      "get": {
+        "operationId": "get_risk_v1_projects__project_id__risk_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskAssessmentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Risk",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/risk:assess": {
+      "post": {
+        "operationId": "assess_risk_v1_projects__project_id__risk_assess_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RiskAssessmentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskAssessmentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Assess Risk",
+        "tags": [
+          "risk and bounded planning"
+        ]
+      }
+    },
+    "/v1/templates": {
+      "get": {
+        "operationId": "list_templates_v1_templates_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TemplateReleaseRead"
+                  },
+                  "title": "Response List Templates V1 Templates Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Templates",
+        "tags": [
+          "templates"
+        ]
+      }
+    },
+    "/v1/templates/{template_id}/versions/{template_version}": {
+      "get": {
+        "operationId": "get_template_v1_templates__template_id__versions__template_version__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "title": "Template Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "template_version",
+            "required": true,
+            "schema": {
+              "title": "Template Version",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateReleaseRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Template",
+        "tags": [
+          "templates"
         ]
       }
     }

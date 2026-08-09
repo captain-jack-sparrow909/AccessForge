@@ -11,12 +11,15 @@ from accessforge.api.routes import (
     assets,
     auth,
     consents,
+    designs,
     health,
     measurements,
     model_providers,
     observations,
     projects,
     requirements,
+    risk,
+    templates,
 )
 from accessforge.core.config import get_settings
 from accessforge.db.session import initialize_database
@@ -88,3 +91,6 @@ app.include_router(measurements.router)
 app.include_router(assets.router)
 app.include_router(model_providers.router)
 app.include_router(requirements.router)
+app.include_router(templates.router)
+app.include_router(designs.router)
+app.include_router(risk.router)

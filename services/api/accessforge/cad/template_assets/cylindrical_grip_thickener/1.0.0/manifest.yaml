@@ -1,0 +1,114 @@
+{
+  'template_id': 'cylindrical_grip_thickener',
+  'version': '1.0.0',
+  'title': 'Cylindrical grip thickener',
+  'description': 'Repository-reviewed deterministic geometry contract for a split cylindrical sleeve around a low-energy pen, stylus, brush, or similar handheld object. This provisional 1.0.0 release is for software development and synthetic fixtures only; it is not approval for physical output or real-world use.',
+  'manifest_schema_version': '1.0.0',
+  'status': 'reviewed_repository_only',
+  'supported_uses':
+    [
+      'A removable passive thickener for a pen, stylus, brush, or similar low-energy cylindrical handheld object in a dry room-temperature setting.',
+      'A bounded synthetic fixture used to exercise deterministic CAD compilation and validation reporting.',
+    ],
+  'prohibited_uses':
+    [
+      'Any sustained skin-contact, high-cycle, load-bearing, mobility, vehicle, brake, steering, safety-control, lock-bypass, emergency-use, or access-control function.',
+      'Any medical, diagnostic, therapeutic, prosthetic, orthotic, implant, medication-related, child-safety, weapon, hot, wet, chemical, electrical, gas, pressure, food-contact, or unknown-material use.',
+      'Any use where the target object diameter, intended load, environment, failure consequence, or material/process profile is unknown.',
+    ],
+  'parameters':
+    {
+      'inner_diameter':
+        {
+          'label': 'Inner diameter',
+          'unit': 'mm',
+          'minimum': 4.0,
+          'maximum': 22.0,
+          'default': 10.0,
+          'description': 'Measured nominal diameter of the cylindrical object at the intended grip position.',
+        },
+      'outer_diameter':
+        {
+          'label': 'Outer diameter',
+          'unit': 'mm',
+          'minimum': 16.0,
+          'maximum': 45.0,
+          'default': 28.0,
+          'description': 'Overall outside diameter of the thickened grip. The deterministic contract must retain the required wall thickness after subtracting the inner opening.',
+        },
+      'grip_length':
+        {
+          'label': 'Grip length',
+          'unit': 'mm',
+          'minimum': 35.0,
+          'maximum': 160.0,
+          'default': 100.0,
+          'description': 'Axial length of the grip sleeve.',
+        },
+      'slit_width':
+        {
+          'label': 'Split opening width',
+          'unit': 'mm',
+          'minimum': 0.8,
+          'maximum': 5.0,
+          'default': 2.4,
+          'description': 'Nominal width of the longitudinal split used by the template. It is not evidence that a particular material will flex or retain the object.',
+        },
+      'edge_radius':
+        {
+          'label': 'Edge radius',
+          'unit': 'mm',
+          'minimum': 0.5,
+          'maximum': 2.5,
+          'default': 1.0,
+          'description': 'Nominal rounding radius used by the deterministic template; it does not assess all sharp-edge, comfort, or skin-contact risks.',
+        },
+    },
+  'expected_dimensions':
+    {
+      'x': { 'source_parameter': 'outer_diameter', 'subtract_parameter': 'slit_width' },
+      'y': { 'source_parameter': 'outer_diameter' },
+      'z': { 'source_parameter': 'grip_length' },
+    },
+  'validation_policy':
+    {
+      'version': '1.0.0',
+      'required_confirmations':
+        [
+          'The target object is a low-energy handheld cylindrical object and not a safety-critical control.',
+          'The inner diameter was measured with a recorded method and tolerance.',
+          'The intended use is occasional and does not involve sustained skin contact, unknown load, heat, moisture, chemicals, or food contact.',
+        ],
+      'minimum_wall_thickness_mm': 2.4,
+      'minimum_split_width_mm': 0.8,
+      'required_checks':
+        [
+          'design_spec_schema',
+          'parameter_ranges',
+          'outer_diameter_wall_constraint',
+          'expected_dimensions',
+          'mesh_manifold_status',
+          'minimum_wall_thickness',
+          'artifact_hashes',
+        ],
+      'blocked_when':
+        [
+          "The outer diameter does not preserve the template's required wall thickness around the inner opening.",
+          'A required measurement, unit, tolerance, confirmation, scope gate, risk decision, or deterministic validation result is missing or failed.',
+        ],
+    },
+  'print_guidance':
+    {
+      'orientation': 'Choose and record an orientation that avoids an unsupported long split where possible; the compiler must report its assumption rather than imply a universal printing result.',
+      'supports': 'Review generated overhang and bridge findings for the selected process. The split is not proof of flexibility or retention.',
+      'material': 'Use only a material/process profile accepted by the future deterministic gate. This manifest does not recommend a material or printer setting.',
+      'post_processing': 'Inspect the inner opening, split, end edges, layer adhesion, and measured dimensions before any controlled non-human fixture evaluation.',
+    },
+  'known_limitations':
+    [
+      'This metadata does not establish grip comfort, dexterity benefit, hygiene, skin compatibility, retention force, fatigue life, or material performance.',
+      'The template has not been approved for physical output or real-user testing.',
+      'The split opening does not guarantee that a sleeve can be fitted or removed without excessive force.',
+      'A change to any parameter, material/process profile, confirmed requirement, or risk-relevant context requires a new immutable DesignSpec and candidate.',
+    ],
+}

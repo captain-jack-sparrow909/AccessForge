@@ -14,6 +14,9 @@ class PromptTemplate:
 PROMPT_FILES = {
     "requirements_extractor": "requirements-extractor.v1.md",
     "clarification_planner": "clarification-planner.v1.md",
+    "template_matcher": "template-matcher.v1.md",
+    "design_planner": "design-planner.v1.md",
+    "design_critic": "design-critic.v1.md",
 }
 
 

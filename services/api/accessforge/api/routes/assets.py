@@ -1,6 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
-from botocore.exceptions import BotoCoreError, ClientError  # type: ignore[import-untyped]
+from botocore.exceptions import BotoCoreError, ClientError
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
@@ -191,8 +191,10 @@ async def complete_asset_upload(
     remote_content_type: str | None = None
     try:
         remote_metadata = head_object(object_key=asset.object_key)
-        remote_size = int(remote_metadata.get("ContentLength", -1))
-        remote_content_type = str(remote_metadata.get("ContentType", ""))
+        content_length = remote_metadata.get("ContentLength")
+        content_type = remote_metadata.get("ContentType")
+        remote_size = content_length if isinstance(content_length, int) else None
+        remote_content_type = content_type if isinstance(content_type, str) else None
     except (BotoCoreError, ClientError):
         remote_size = None
     if (

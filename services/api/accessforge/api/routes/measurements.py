@@ -9,6 +9,7 @@ from accessforge.core.security import Principal, get_current_principal
 from accessforge.db.models import AuditEvent, Measurement, utc_now
 from accessforge.db.session import get_session
 from accessforge.projects.workflow import get_owned_project
+from accessforge.risk.service import invalidate_active_risk_assessment
 
 router = APIRouter(prefix="/v1/projects/{project_id}/measurements", tags=["measurements"])
 
@@ -79,6 +80,11 @@ async def get_measurement(
     project_id: str, measurement_id: str, principal: Principal, session: AsyncSession
 ) -> Measurement:
     project = await get_owned_project(session, principal, project_id)
+    if project.status == "generating":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Cancel or wait for the CAD job before changing a risk-relevant measurement.",
+        )
     measurement = await session.scalar(
         select(Measurement).where(
             Measurement.id == measurement_id, Measurement.project_id == project.id
@@ -112,6 +118,11 @@ async def create_measurement(
     session: AsyncSession = Depends(get_session),
 ) -> Measurement:
     project = await get_owned_project(session, principal, project_id)
+    if project.status == "generating":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Cancel or wait for the CAD job before changing a risk-relevant measurement.",
+        )
     measurement = Measurement(
         project_id=project.id,
         kind=payload.kind.strip(),
@@ -135,6 +146,12 @@ async def create_measurement(
             details={"measurement_id": measurement.id, "unknown": payload.unknown},
         )
     )
+    await invalidate_active_risk_assessment(
+        session,
+        project=project,
+        actor_id=principal.subject,
+        reason="A measurement used by deterministic risk and DesignSpec provenance was recorded.",
+    )
     await session.commit()
     await session.refresh(measurement)
     return measurement
@@ -148,6 +165,12 @@ async def update_measurement(
     principal: Principal = Depends(get_current_principal),
     session: AsyncSession = Depends(get_session),
 ) -> Measurement:
+    project = await get_owned_project(session, principal, project_id)
+    if project.status == "generating":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Cancel or wait for the CAD job before changing a risk-relevant measurement.",
+        )
     measurement = await get_measurement(project_id, measurement_id, principal, session)
     values = payload.model_dump(exclude_unset=True)
     for key, value in values.items():
@@ -175,6 +198,12 @@ async def update_measurement(
             reason="Manual measurement updated.",
             details={"measurement_id": measurement.id},
         )
+    )
+    await invalidate_active_risk_assessment(
+        session,
+        project=project,
+        actor_id=principal.subject,
+        reason="A measurement used by deterministic risk and DesignSpec provenance changed.",
     )
     await session.commit()
     await session.refresh(measurement)

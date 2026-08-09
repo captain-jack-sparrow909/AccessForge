@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,6 +9,7 @@ from accessforge.core.security import Principal, get_current_principal
 from accessforge.db.models import AuditEvent, Observation
 from accessforge.db.session import get_session
 from accessforge.projects.workflow import get_owned_project, transition_project
+from accessforge.risk.service import invalidate_active_risk_assessment
 
 router = APIRouter(prefix="/v1/projects/{project_id}/observations", tags=["observations"])
 
@@ -52,9 +53,12 @@ async def create_observation(
     session: AsyncSession = Depends(get_session),
 ) -> Observation:
     project = await get_owned_project(session, principal, project_id)
+    if project.status == "generating":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Cancel or wait for the CAD job before recording a risk-relevant observation.",
+        )
     if payload.input_mode == "text" and not payload.text.strip():
-        from fastapi import HTTPException
-
         raise HTTPException(status_code=422, detail="Add a short description or choose skip.")
     observation = Observation(
         project_id=project.id,
@@ -82,6 +86,12 @@ async def create_observation(
             actor_id=principal.subject,
             reason="Observation step completed.",
         )
+    await invalidate_active_risk_assessment(
+        session,
+        project=project,
+        actor_id=principal.subject,
+        reason="A text observation used by deterministic risk assessment was recorded.",
+    )
     await session.commit()
     await session.refresh(observation)
     return observation

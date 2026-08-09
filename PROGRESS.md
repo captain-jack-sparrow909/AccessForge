@@ -2,9 +2,16 @@
 
 ## Current phase
 
-**Phase 3 — Provider-neutral AI requirements assistance**
+**Phase 4 — Deterministic template CAD foundation**
 
-Status: `implementation_complete_pending_exit_gate`, Phase 3 is authorized by the project owner. The implementation and automated verification are complete; keyboard/screen-reader review and the required human safety, privacy, accessibility, and lived-experience review remain before real participant data, production provider credentials, or physical outputs. Phase 1 Docker/browser runtime checks remain environment-limited.
+Status: `implementation_complete_pending_exit_gate`, Phase 4 is authorized by
+the project owner. The source foundation is intentionally limited to
+repository-owned synthetic fixtures and bounded software artifacts. Phase 5
+still owns a real project's deterministic R1 risk decision and validation gate;
+Phase 6 still owns approval, export, and controlled physical work. Human
+safety, privacy, accessibility, and lived-experience review remain required
+before real participant data or physical outputs. The enforced compiler
+no-egress sandbox and Docker runtime verification remain open operational gates.
 
 ## Phase 0 checklist
 
@@ -25,7 +32,10 @@ Status: `implementation_complete_pending_exit_gate`, Phase 3 is authorized by th
 - [ ] Review by lived-experience contributors and qualified professionals.
 - [ ] Approve Phase 0 exit gate.
 
-The project owner explicitly authorized beginning Phase 1 and continuing through Phase 3 in the task conversation. This does not authorize collecting real participant data, connecting production credentials, or generating physical designs.
+The project owner explicitly authorized beginning Phase 1 and continuing through
+the Phase 4 deterministic foundation in the task conversation. This does not
+authorize collecting real participant data, connecting production credentials,
+generating a real-user candidate, or producing physical designs.
 
 ## Phase 1 checklist
 
@@ -81,6 +91,21 @@ The project owner explicitly authorized beginning Phase 1 and continuing through
 - [ ] Verify the model settings and requirements pages with keyboard and screen-reader review.
 - [ ] Complete the Phase 3 exit gate.
 
+## Phase 4 checklist
+
+- [x] Add an immutable, provenance-bearing DesignSpec with canonical SI lengths and exact template-release references.
+- [x] Add a static registry for the three repository-bundled template families and reject arbitrary paths, modules, archives, geometry text, and community code.
+- [x] Add versioned manifests, synthetic fixtures, bounded parameter contracts, print/limitation documentation, and golden software tests.
+- [x] Add deterministic CadQuery STEP/STL/GLB compilation, fixed artifact names, provenance, and hash metadata for synthetic fixtures.
+- [x] Add private candidate/artifact persistence and an ID-only background-job boundary.
+- [x] Add a short-lived compiler subprocess with a disposable workspace, stripped environment, Python socket safeguards, fixed outputs, wall-clock limit, and best-effort Unix resource limits.
+- [x] Make the normal candidate route require a current Phase 5 R1 decision and no unresolved assumptions; Phase 4 creates pre-risk R0 DesignSpecs only.
+- [x] Complete source, migration, API-client, frontend, and fresh-database verification for the Phase 4 implementation.
+- [ ] Verify the Phase 4 Docker CAD image and Compose worker runtime (Docker daemon unavailable in this environment).
+- [ ] Demonstrate a production-grade no-egress compiler sandbox at the kernel/container/platform layer; the current socket/subprocess controls are not sufficient evidence.
+- [ ] Complete template-specific non-human fixture and controlled physical validation required by later phases.
+- [ ] Complete the Phase 4 exit gate.
+
 ## Phase 2 verification evidence
 
 Passed:
@@ -127,6 +152,52 @@ Passed on a fresh temporary SQLite database:
 No real provider call, production credential, participant data, or media was
 used. External-provider smoke testing remains deliberately out of routine CI
 and requires synthetic input plus separately approved non-production credentials.
+
+## Phase 4 implementation notes
+
+- `reviewed_repository_only` means a release is bundled and resolved by the
+  static registry. It is not a physical-use approval, safety certification, or
+  cryptographic signature. No user/community template code is executable.
+- The compiler receives only a validated DesignSpec JSON document, resolves a
+  fixed generator, writes a fixed artifact set into a disposable workspace, and
+  returns hashes and structured metadata. Its subprocess removes inherited
+  secrets/proxy variables, sets resource limits where supported, bounds native
+  library threads, and disables Python-level socket/DNS/connection creation.
+- Those safeguards do not block native-code/raw-syscall networking and the
+  current Compose/Render worker still has a normal container network. A
+  verifiable no-egress sandbox remains an operational requirement before making
+  a no-network claim or enabling real-user compilation.
+- The Phase 4 report performs limited software/mesh checks and explicitly marks
+  minimum wall thickness and print-orientation/overhang as not assessed. It
+  does not demonstrate fit, retention, strength, durability, material behavior,
+  comfort, printability, accessibility benefit, or physical safety.
+- Synthetic fixture compilation is permitted in automated tests. Normal project
+  DesignSpecs are R0 pre-risk records, so the user candidate route remains
+  unavailable until Phase 5 creates a current R1 decision with no unresolved
+  assumptions. Phase 6 remains required for approval/export and controlled
+  physical validation.
+
+## Phase 4 verification evidence
+
+Passed:
+
+- fresh Alembic upgrade through `0004_phase4_cad_candidates` against a
+  disposable SQLite database;
+- backend format, lint, and strict `mypy` checks;
+- fresh-database backend suite — 64 tests passed, including deterministic
+  STEP/STL/GLB/provenance hashes, manifest/range/cross-parameter rejection,
+  static-template trust boundaries, private artifact persistence/cleanup, and
+  the Phase 5 generation hard gate;
+- generated OpenAPI/client, frontend formatting/lint/type checks, and the
+  production Next.js build with the DesignSpec and private GLB viewer route.
+- a disposable wheel build contained the reviewed manifests, synthetic
+  fixtures, and template documentation required at runtime.
+
+Environment-limited:
+
+- `docker compose build api worker` could not run because this environment's
+  Docker daemon is not running. No container image or Compose runtime claim is
+  made from this session.
 
 ## Phase 1 verification evidence
 
@@ -184,6 +255,7 @@ No production credentials, real participant data, or physical-design workflows w
 | D-004 | Select the first identity provider and GitHub OAuth application owner. | Proposed Auth.js + GitHub; open for review | Technical maintainer | Phase 1 |
 | D-005 | Approve research consent wording and data-retention period. | Open | Project owner + privacy reviewer | Before recruitment |
 | D-006 | Validate that all three template families are genuinely low-risk in the intended contexts. | Open physical assumption | Safety advisory group | Phase 6 |
+| D-007 | Choose and verify a deployment-grade, no-egress compiler sandbox for the Render/container runtime. | Open operational security gate | Technical maintainer + security reviewer | Phase 4 exit |
 
 ## Phase 0 exit gate
 
@@ -204,6 +276,17 @@ Phase 3 is complete only when:
 4. The model settings and requirements pages have keyboard and screen-reader review.
 5. No real participant data, raw media, or production provider key has been used for implementation verification.
 
+## Phase 4 exit gate
+
+Phase 4 is complete only when:
+
+1. A fixed DesignSpec, exact bundled template release, seed, and supported build environment reproduce the documented geometry/hash evidence for every synthetic fixture.
+2. Every template contract rejects missing, non-finite, out-of-range, and invalid-combination values before compilation.
+3. The registry cannot execute untrusted template code, paths, modules, archives, or geometry text.
+4. Candidate artifacts are private, immutable, and tied to their exact DesignSpec/template/provenance records.
+5. The compiler's resource and no-egress isolation are demonstrated at the deployment layer, rather than inferred from the subprocess or Python socket controls.
+6. No real-user candidate compilation, physical-output approval, or safety claim is enabled until Phase 5/6 gates are satisfied.
+
 ## Change log
 
 ### 2026-08-08
@@ -212,3 +295,4 @@ Phase 3 is complete only when:
 - Marked all research and physical testing as planning only; no real participant data has been collected.
 - Implemented the Phase 2 consent-first project workflow, manual measurements, capture/upload boundaries, and deletion foundations.
 - Completed the Phase 3 optional, provider-neutral requirements-assistance boundary with explicit consent, no raw-media transfer, encrypted BYOK, offline fake-provider controls, immutable user-confirmed requirements, and provider telemetry.
+- Began the Phase 4 deterministic CAD foundation: repository-only template contracts, immutable DesignSpecs, synthetic fixture compilation, private artifact plumbing, and subprocess/resource/socket safeguards. The production no-egress compiler sandbox and all real-user/physical-output gates remain open.

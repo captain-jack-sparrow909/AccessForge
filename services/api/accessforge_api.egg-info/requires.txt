@@ -11,3 +11,6 @@ pyjwt[crypto]<3,>=2.10
 redis<7,>=6
 sqlalchemy[asyncio]<3,>=2.0.43
 uvicorn[standard]<1,>=0.35
+cadquery<2.9,>=2.8
+trimesh<6,>=5.0
+pyyaml<7,>=6.0

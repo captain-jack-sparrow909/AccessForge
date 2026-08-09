@@ -229,6 +229,117 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/projects/{project_id}/candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Candidates */
+        get: operations["list_candidates_v1_projects__project_id__candidates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Candidate */
+        get: operations["get_candidate_v1_projects__project_id__candidates__candidate_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Candidate Preview
+         * @description Provide a short-lived private GLB URL; this is a viewer input, not export approval.
+         */
+        get: operations["get_candidate_preview_v1_projects__project_id__candidates__candidate_id__preview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}:cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel Candidate
+         * @description Cancel a queued job or request cooperative cancellation before artifact storage.
+         */
+        post: operations["cancel_candidate_v1_projects__project_id__candidates__candidate_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates/{candidate_id}:export-preflight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Export Preflight
+         * @description Re-run shared gates without exposing an approval or export path in Phase 5.
+         */
+        post: operations["export_preflight_v1_projects__project_id__candidates__candidate_id__export_preflight_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/candidates:generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate Candidate */
+        post: operations["generate_candidate_v1_projects__project_id__candidates_generate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/projects/{project_id}/consents": {
         parameters: {
             query?: never;
@@ -258,6 +369,144 @@ export interface paths {
         put?: never;
         /** Revoke Consent */
         post: operations["revoke_consent_v1_projects__project_id__consents__consent_id__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/design-plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Design Plans */
+        get: operations["list_design_plans_v1_projects__project_id__design_plans_get"];
+        put?: never;
+        /** Create Design Plan */
+        post: operations["create_design_plan_v1_projects__project_id__design_plans_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/design-plans/{plan_id}/comparison/candidates/{candidate_id}:select": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Select Comparison Candidate */
+        post: operations["select_comparison_candidate_v1_projects__project_id__design_plans__plan_id__comparison_candidates__candidate_id__select_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/design-plans/{plan_id}/comparison:cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel Comparison */
+        post: operations["cancel_comparison_v1_projects__project_id__design_plans__plan_id__comparison_cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/design-plans/{plan_id}/proposals/{proposal_id}:select": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Select Design Plan Proposal */
+        post: operations["select_design_plan_proposal_v1_projects__project_id__design_plans__plan_id__proposals__proposal_id__select_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/design-plans/{plan_id}:cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel Design Plan */
+        post: operations["cancel_design_plan_v1_projects__project_id__design_plans__plan_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/design-plans/{plan_id}:generate-comparison": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate Comparison */
+        post: operations["generate_comparison_v1_projects__project_id__design_plans__plan_id__generate_comparison_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/design-specs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Design Specs */
+        get: operations["list_design_specs_v1_projects__project_id__design_specs_get"];
+        put?: never;
+        /** Create Design Spec */
+        post: operations["create_design_spec_v1_projects__project_id__design_specs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/design-specs/{design_spec_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Design Spec */
+        get: operations["get_design_spec_v1_projects__project_id__design_specs__design_spec_id__get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -368,6 +617,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/projects/{project_id}/risk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Risk */
+        get: operations["get_risk_v1_projects__project_id__risk_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/risk:assess": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Assess Risk */
+        post: operations["assess_risk_v1_projects__project_id__risk_assess_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Templates */
+        get: operations["list_templates_v1_templates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/templates/{template_id}/versions/{template_version}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Template */
+        get: operations["get_template_v1_templates__template_id__versions__template_version__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -453,6 +770,135 @@ export interface components {
             /** Version */
             version: number;
         };
+        /** CadJobRead */
+        CadJobRead: {
+            /** Attempt Count */
+            attempt_count: number;
+            /** Cancel Requested At */
+            cancel_requested_at: string | null;
+            /** Cancelled At */
+            cancelled_at: string | null;
+            /** Completed At */
+            completed_at: string | null;
+            /** Failure Category */
+            failure_category: string | null;
+            /** Id */
+            id: string;
+            /** Input Hash */
+            input_hash: string;
+            /**
+             * Requested At
+             * Format: date-time
+             */
+            requested_at: string;
+            /** Started At */
+            started_at: string | null;
+            /** Status */
+            status: string;
+        };
+        /** CandidateArtifactRead */
+        CandidateArtifactRead: {
+            /** Checksum Sha256 */
+            checksum_sha256: string;
+            /** Content Type */
+            content_type: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Filename */
+            filename: string;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Size Bytes */
+            size_bytes: number;
+        };
+        /** CandidateComparisonBatchRead */
+        CandidateComparisonBatchRead: {
+            /** Cancel Requested At */
+            cancel_requested_at: string | null;
+            /** Candidates */
+            candidates: components["schemas"]["ComparisonCandidateRead"][];
+            /** Completed At */
+            completed_at: string | null;
+            /** Design Plan Id */
+            design_plan_id: string;
+            /** Id */
+            id: string;
+            /** Input Hash */
+            input_hash: string;
+            /**
+             * Requested At
+             * Format: date-time
+             */
+            requested_at: string;
+            /** Risk Assessment Id */
+            risk_assessment_id: string;
+            /** Status */
+            status: string;
+        };
+        /** CandidateDesignRead */
+        CandidateDesignRead: {
+            /** Artifacts */
+            artifacts: components["schemas"]["CandidateArtifactRead"][];
+            /** Candidate Number */
+            candidate_number: number;
+            /** Compiler Fingerprint */
+            compiler_fingerprint: {
+                [key: string]: unknown;
+            } | null;
+            /** Completed At */
+            completed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Design Spec Id */
+            design_spec_id: string;
+            /** Failure Category */
+            failure_category: string | null;
+            /** Generation Batch Id */
+            generation_batch_id: string | null;
+            /** Generation Seed */
+            generation_seed: string;
+            /** Geometry Summary */
+            geometry_summary: {
+                [key: string]: unknown;
+            } | null;
+            /** Id */
+            id: string;
+            job: components["schemas"]["CadJobRead"] | null;
+            /** Provenance Hash */
+            provenance_hash: string | null;
+            /** Risk Assessment Id */
+            risk_assessment_id: string | null;
+            /** Spec Hash */
+            spec_hash: string;
+            /** Started At */
+            started_at: string | null;
+            /** Status */
+            status: string;
+            /** Template Id */
+            template_id: string;
+            /** Template Manifest Sha256 */
+            template_manifest_sha256: string;
+            /** Template Version */
+            template_version: string;
+            /** Validation Report */
+            validation_report: {
+                [key: string]: unknown;
+            } | null;
+            /** Validation Status */
+            validation_status: string | null;
+            /** Variant Key */
+            variant_key: string | null;
+            /** Variant Label */
+            variant_label: string | null;
+        };
         /** ClarifyingQuestion */
         ClarifyingQuestion: {
             /** Id */
@@ -465,6 +911,27 @@ export interface components {
             related_source_refs?: string[];
             /** Why It Matters */
             why_it_matters: string;
+        };
+        /** ComparisonCandidateRead */
+        ComparisonCandidateRead: {
+            /** Candidate Number */
+            candidate_number: number;
+            /** Design Spec Id */
+            design_spec_id: string;
+            /** Failure Category */
+            failure_category: string | null;
+            /** Id */
+            id: string;
+            /** Status */
+            status: string;
+            /** Validation Limitations */
+            validation_limitations: string[];
+            /** Validation Status */
+            validation_status: string | null;
+            /** Variant Key */
+            variant_key: string | null;
+            /** Variant Label */
+            variant_label: string | null;
         };
         /** ConsentCreate */
         ConsentCreate: {
@@ -512,10 +979,208 @@ export interface components {
             /** Records */
             records: components["schemas"]["ConsentRead"][];
         };
+        /** DesignPlanCreate */
+        DesignPlanCreate: {
+            /** Risk Assessment Id */
+            risk_assessment_id: string;
+        };
+        /** DesignPlanProposalRead */
+        DesignPlanProposalRead: {
+            /** Design Spec Id */
+            design_spec_id: string;
+            /** Explanation */
+            explanation: string;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Status */
+            status: string;
+            /** Tradeoffs */
+            tradeoffs: string[];
+        };
+        /** DesignPlanRead */
+        DesignPlanRead: {
+            comparison_batch: components["schemas"]["CandidateComparisonBatchRead"] | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Design Spec Id */
+            design_spec_id: string;
+            /** Failure Category */
+            failure_category: string | null;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Proposals */
+            proposals: components["schemas"]["DesignPlanProposalRead"][];
+            /** Required User Action */
+            required_user_action: string | null;
+            /** Risk Assessment Id */
+            risk_assessment_id: string;
+            /** Status */
+            status: string;
+            /** Tradeoffs */
+            tradeoffs: string[];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Waiting For User Message */
+            waiting_for_user_message: string | null;
+        };
+        /** DesignSpecCreate */
+        DesignSpecCreate: {
+            /** Confirmed Assumptions */
+            confirmed_assumptions?: string[];
+            dimensional_tolerance: components["schemas"]["LengthEntryInput"];
+            fit_clearance: components["schemas"]["LengthEntryInput"];
+            /** Generation Seed */
+            generation_seed: string;
+            manufacturing: components["schemas"]["ManufacturingProfileInput"];
+            /** Parameters */
+            parameters: {
+                [key: string]: components["schemas"]["LengthEntryInput"];
+            };
+            /** Template Id */
+            template_id: string;
+            /** Template Version */
+            template_version: string;
+            /** Unresolved Assumptions */
+            unresolved_assumptions?: string[];
+            /** Uses Assessed */
+            uses_assessed: string[];
+            /** Uses Not Assessed */
+            uses_not_assessed: string[];
+        };
+        /** DesignSpecRead */
+        DesignSpecRead: {
+            /** Canonical Spec */
+            canonical_spec: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Generation Seed */
+            generation_seed: string;
+            /** Id */
+            id: string;
+            /** Parent Design Spec Id */
+            parent_design_spec_id: string | null;
+            /** Requirements Revision Id */
+            requirements_revision_id: string;
+            /** Revision Number */
+            revision_number: number;
+            /** Risk Assessment Id */
+            risk_assessment_id: string | null;
+            /** Schema Version */
+            schema_version: string;
+            /** Spec Hash */
+            spec_hash: string;
+            /** Template Id */
+            template_id: string;
+            /** Template Manifest Sha256 */
+            template_manifest_sha256: string;
+            /** Template Version */
+            template_version: string;
+        };
+        /** ExportPreflightRead */
+        ExportPreflightRead: {
+            /** Eligible For Export */
+            eligible_for_export: boolean;
+            /** Phase Boundary */
+            phase_boundary: string;
+            /** Reasons */
+            reasons: string[];
+        };
+        /** GenerateCandidateRequest */
+        GenerateCandidateRequest: {
+            /** Design Spec Id */
+            design_spec_id: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** LengthEntryInput */
+        LengthEntryInput: {
+            /**
+             * Creator Type
+             * @default user
+             * @enum {string}
+             */
+            creator_type: "user" | "measurement" | "rule" | "ai_proposal" | "template_default" | "reviewer";
+            /**
+             * Rationale
+             * @default Entered directly by the project owner.
+             */
+            rationale: string;
+            /**
+             * Source Ref
+             * @default user:direct-parameter
+             */
+            source_ref: string;
+            /**
+             * Unit
+             * @enum {string}
+             */
+            unit: "m" | "mm" | "cm" | "in";
+            /** Value */
+            value: number;
+        };
+        /** ManufacturingProfileInput */
+        ManufacturingProfileInput: {
+            /**
+             * Creator Type
+             * @default user
+             * @enum {string}
+             */
+            creator_type: "user" | "measurement" | "rule" | "ai_proposal" | "template_default" | "reviewer";
+            layer_height: components["schemas"]["LengthEntryInput"];
+            /**
+             * Material Profile
+             * @enum {string}
+             */
+            material_profile: "pla_provisional" | "petg_provisional";
+            nozzle_diameter: components["schemas"]["LengthEntryInput"];
+            /**
+             * Process
+             * @constant
+             */
+            process: "fdm";
+            /**
+             * Rationale
+             * @default Chosen for a provisional deterministic geometry fixture.
+             */
+            rationale: string;
+            /**
+             * Source Ref
+             * @default user:manufacturing-profile
+             */
+            source_ref: string;
+        };
+        /** MatchedRiskRuleRead */
+        MatchedRiskRuleRead: {
+            /** Evidence Refs */
+            evidence_refs: string[];
+            /** Explanation */
+            explanation: string;
+            /** Remediation */
+            remediation: string | null;
+            /** Rule Id */
+            rule_id: string;
+            /** Status */
+            status: string;
+            /** Tier */
+            tier: string;
         };
         /** MeasurementCreate */
         MeasurementCreate: {
@@ -766,6 +1431,8 @@ export interface components {
             action_description: string | null;
             /** Active Requirement Revision Id */
             active_requirement_revision_id: string | null;
+            /** Active Risk Assessment Id */
+            active_risk_assessment_id: string | null;
             /** Age Context */
             age_context: string | null;
             /**
@@ -947,6 +1614,108 @@ export interface components {
             /** Provider Config Id */
             provider_config_id?: string | null;
         };
+        /** RiskAssessmentCreate */
+        RiskAssessmentCreate: {
+            /**
+             * Age Group
+             * @enum {string}
+             */
+            age_group: "adult" | "child" | "unknown";
+            /**
+             * Body Contact
+             * @enum {string}
+             */
+            body_contact: "none" | "incidental" | "prolonged" | "unknown";
+            /**
+             * Chemicals
+             * @enum {string}
+             */
+            chemicals: "none" | "household" | "laboratory" | "unknown";
+            /** Design Spec Id */
+            design_spec_id: string;
+            /**
+             * Duration
+             * @enum {string}
+             */
+            duration: "occasional" | "prolonged" | "unknown";
+            /**
+             * Electricity
+             * @enum {string}
+             */
+            electricity: "none" | "low_voltage" | "mains" | "unknown";
+            /**
+             * Failure Consequence
+             * @enum {string}
+             */
+            failure_consequence: "minor_inconvenience" | "loss_of_access" | "injury" | "safety_critical" | "unknown";
+            /**
+             * Fatigue
+             * @enum {string}
+             */
+            fatigue: "not_expected" | "possible" | "likely" | "unknown";
+            /** Intended Use */
+            intended_use: string;
+            /**
+             * Load
+             * @enum {string}
+             */
+            load: "none" | "low_energy_occasional" | "repetitive" | "high" | "body_weight" | "unknown";
+            /**
+             * Manufacturing Uncertainty
+             * @enum {string}
+             */
+            manufacturing_uncertainty: "bounded" | "provisional" | "unknown";
+            /**
+             * Safety Feature Interaction
+             * @enum {string}
+             */
+            safety_feature_interaction: "none" | "possible" | "yes" | "unknown";
+            /**
+             * Temperature
+             * @enum {string}
+             */
+            temperature: "room_temperature" | "hot" | "cold" | "unknown";
+        };
+        /** RiskAssessmentRead */
+        RiskAssessmentRead: {
+            /** Allowed Actions */
+            allowed_actions: string[];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Decision Hash */
+            decision_hash: string;
+            /** Design Spec Id */
+            design_spec_id: string;
+            /** Id */
+            id: string;
+            /** Input Hash */
+            input_hash: string;
+            /** Invalidated At */
+            invalidated_at: string | null;
+            /** Invalidated Reason */
+            invalidated_reason: string | null;
+            /** Matched Rules */
+            matched_rules: components["schemas"]["MatchedRiskRuleRead"][];
+            /** Requirements Revision Id */
+            requirements_revision_id: string;
+            /** Resulting Design Spec Id */
+            resulting_design_spec_id: string | null;
+            /** Ruleset Hash */
+            ruleset_hash: string;
+            /** Ruleset Version */
+            ruleset_version: string;
+            /** Status */
+            status: string;
+            /** Tier */
+            tier: string;
+            /** Unresolved Questions */
+            unresolved_questions: string[];
+            /** User Explanation */
+            user_explanation: string;
+        };
         /** RiskSignal */
         RiskSignal: {
             /** Explanation */
@@ -960,6 +1729,58 @@ export interface components {
             level: "needs_confirmation" | "blocked";
             /** Source Refs */
             source_refs: string[];
+        };
+        /** TemplateParameterRead */
+        TemplateParameterRead: {
+            /** Default */
+            default: number;
+            /** Description */
+            description: string;
+            /** Label */
+            label: string;
+            /** Maximum */
+            maximum: number;
+            /** Minimum */
+            minimum: number;
+            /** Unit */
+            unit: string;
+        };
+        /** TemplateReleaseRead */
+        TemplateReleaseRead: {
+            /** Description */
+            description: string;
+            /** Expected Dimensions */
+            expected_dimensions: {
+                [key: string]: unknown;
+            };
+            /** Known Limitations */
+            known_limitations: string[];
+            /** Manifest Sha256 */
+            manifest_sha256: string;
+            /** Parameters */
+            parameters: {
+                [key: string]: components["schemas"]["TemplateParameterRead"];
+            };
+            /** Print Guidance */
+            print_guidance: {
+                [key: string]: string;
+            };
+            /** Prohibited Uses */
+            prohibited_uses: string[];
+            /** Status */
+            status: string;
+            /** Supported Uses */
+            supported_uses: string[];
+            /** Template Id */
+            template_id: string;
+            /** Title */
+            title: string;
+            /** Validation Policy */
+            validation_policy: {
+                [key: string]: unknown;
+            };
+            /** Version */
+            version: string;
         };
         /** UnknownItem */
         UnknownItem: {
@@ -1481,6 +2302,204 @@ export interface operations {
             };
         };
     };
+    list_candidates_v1_projects__project_id__candidates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateDesignRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_candidate_v1_projects__project_id__candidates__candidate_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateDesignRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_candidate_preview_v1_projects__project_id__candidates__candidate_id__preview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_candidate_v1_projects__project_id__candidates__candidate_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateDesignRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_preflight_v1_projects__project_id__candidates__candidate_id__export_preflight_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportPreflightRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    generate_candidate_v1_projects__project_id__candidates_generate_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerateCandidateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateDesignRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_consents_v1_projects__project_id__consents_get: {
         parameters: {
             query?: never;
@@ -1566,6 +2585,334 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConsentRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_design_plans_v1_projects__project_id__design_plans_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignPlanRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_design_plan_v1_projects__project_id__design_plans_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesignPlanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignPlanRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    select_comparison_candidate_v1_projects__project_id__design_plans__plan_id__comparison_candidates__candidate_id__select_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                plan_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignPlanRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_comparison_v1_projects__project_id__design_plans__plan_id__comparison_cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateComparisonBatchRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    select_design_plan_proposal_v1_projects__project_id__design_plans__plan_id__proposals__proposal_id__select_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                plan_id: string;
+                proposal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignPlanRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_design_plan_v1_projects__project_id__design_plans__plan_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignPlanRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    generate_comparison_v1_projects__project_id__design_plans__plan_id__generate_comparison_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                project_id: string;
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateComparisonBatchRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_design_specs_v1_projects__project_id__design_specs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignSpecRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_design_spec_v1_projects__project_id__design_specs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesignSpecCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignSpecRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_design_spec_v1_projects__project_id__design_specs__design_spec_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+                design_spec_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignSpecRead"];
                 };
             };
             /** @description Validation Error */
@@ -1836,6 +3183,124 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RequirementRevisionRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_risk_v1_projects__project_id__risk_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RiskAssessmentRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    assess_risk_v1_projects__project_id__risk_assess_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RiskAssessmentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RiskAssessmentRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_templates_v1_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateReleaseRead"][];
+                };
+            };
+        };
+    };
+    get_template_v1_templates__template_id__versions__template_version__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+                template_version: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateReleaseRead"];
                 };
             };
             /** @description Validation Error */
