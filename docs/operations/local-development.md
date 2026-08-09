@@ -125,6 +125,30 @@ data into a CAD job, treat a preview as a physical-fit result, or make a
 physical output claim from this environment. See
 [ADR-0005](../architecture/ADR-0005-cad-engine.md) for the full boundary.
 
+## Phase 5 deterministic risk and private comparison
+
+Phase 5 adds a versioned deterministic R0–R3 review at
+`/projects/:projectId/risk`. For synthetic development only, create a confirmed
+requirements revision and DesignSpec, record every risk-context field, then
+read the server's current decision. Only a current R1 decision that explicitly
+permits private generation can create a bounded plan.
+
+The preferred plan path presents two or three reviewed-template variants at a
+waiting-for-user checkpoint. Choosing **Queue private comparison** creates a
+durable private batch; it does not grant approval, export, manufacture, or
+physical-use permission. The comparison view reports tradeoffs, compiler state,
+deterministic validation state, and unknown or unassessed properties. A later
+selection is for software review only.
+
+Queued job rows are the durable dispatch record. When a Celery beat process is
+configured, the API's periodic recovery task republishes queued candidate IDs
+and terminally resolves stale worker claims. This source-level behavior has
+only been verified with synthetic SQLite fixtures. Do not treat it as evidence
+of deployed Redis/Celery/PostgreSQL recovery, no-egress isolation, fit,
+printability, material suitability, safety, or any physical outcome. See
+[ADR-0008](../architecture/ADR-0008-phase5-risk-and-comparison.md) for the
+complete boundary.
+
 ## Checks
 
 ```bash
@@ -140,12 +164,14 @@ uv run --project services/api pytest services/api/tests/test_ai_providers.py ser
 ## Current limitations
 
 The Phase 3 AI workflow is limited to requirements extraction and clarification.
-Phase 4 adds synthetic fixture geometry only; it does not lower risk, approve
-outputs, establish fit/strength/printability/material behavior, or claim safety.
-No normal user candidate can compile until the later Phase 5 gate, and Phase 6
-still owns controlled physical work. Malware scanning and browser-level capture
-verification are also incomplete. The local API tests use an isolated SQLite
-database; a running MinIO/Postgres/Redis stack is still required to verify the
-full direct-upload, private-artifact, and deletion-worker runtime. Do not put
-real participant data into this environment or use real provider keys before
-the required privacy, safety, accessibility, and lived-experience review.
+Phase 4 adds synthetic fixture geometry and Phase 5 adds deterministic risk and
+private software comparison only; neither approves outputs, establishes
+fit/strength/printability/material behavior, or claims safety. Phase 6 still
+owns controlled physical work, approval, and export. Malware scanning,
+browser-level capture verification, deployment-grade no-egress isolation, and
+hosted queue recovery are also incomplete. The local API tests use an isolated
+SQLite database; a running MinIO/Postgres/Redis stack is still required to
+verify the full direct-upload, private-artifact, deletion-worker, and
+comparison-worker runtime. Do not put real participant data into this
+environment or use real provider keys before the required privacy, safety,
+accessibility, and lived-experience review.

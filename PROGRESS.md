@@ -2,16 +2,17 @@
 
 ## Current phase
 
-**Phase 4 — Deterministic template CAD foundation**
+**Phase 5 — Risk engine, validation, and bounded design agent**
 
-Status: `implementation_complete_pending_exit_gate`, Phase 4 is authorized by
-the project owner. The source foundation is intentionally limited to
-repository-owned synthetic fixtures and bounded software artifacts. Phase 5
-still owns a real project's deterministic R1 risk decision and validation gate;
+Status: `implementation_complete_pending_exit_gate`. The project owner
+authorized the Phase 5 source foundation in the task conversation. It adds a
+versioned deterministic R1–R3 decision, immutable lineage, bounded private
+comparison, validation limitations, cancellation, and durable job recovery.
 Phase 6 still owns approval, export, and controlled physical work. Human
 safety, privacy, accessibility, and lived-experience review remain required
 before real participant data or physical outputs. The enforced compiler
-no-egress sandbox and Docker runtime verification remain open operational gates.
+no-egress sandbox, deployed PostgreSQL/Redis/worker recovery exercise, and
+Docker runtime verification remain open operational gates.
 
 ## Phase 0 checklist
 
@@ -33,9 +34,9 @@ no-egress sandbox and Docker runtime verification remain open operational gates.
 - [ ] Approve Phase 0 exit gate.
 
 The project owner explicitly authorized beginning Phase 1 and continuing through
-the Phase 4 deterministic foundation in the task conversation. This does not
-authorize collecting real participant data, connecting production credentials,
-generating a real-user candidate, or producing physical designs.
+the Phase 5 source foundation in the task conversation. This does not authorize
+collecting real participant data, connecting production credentials, generating
+a physical design, exporting an artifact, or making a physical-use claim.
 
 ## Phase 1 checklist
 
@@ -105,6 +106,21 @@ generating a real-user candidate, or producing physical designs.
 - [ ] Demonstrate a production-grade no-egress compiler sandbox at the kernel/container/platform layer; the current socket/subprocess controls are not sufficient evidence.
 - [ ] Complete template-specific non-human fixture and controlled physical validation required by later phases.
 - [ ] Complete the Phase 4 exit gate.
+
+## Phase 5 checklist
+
+- [x] Add a versioned deterministic R0–R3 risk engine with explainable findings, hashes, immutable assessment records, and R2/R3 fail-closed behavior independent of a model.
+- [x] Add pre-generation and pre-export server gates that require current confirmed requirements, a current R1 decision, exact reviewed-template DesignSpec lineage, and no unresolved assumptions.
+- [x] Invalidate stale risk decisions after risk-relevant project, observation, measurement, or requirements changes; block those edits while private generation is active.
+- [x] Add bounded deterministic Template Matcher, Design Planner, and Design Critic roles with typed allowlisted tools, persisted checkpoints, and explicit model/tool ceilings.
+- [x] Add server-validated two-or-three-variant plans, immutable plan proposals, and user-controlled waiting, single-selection, cancellation, and comparison paths.
+- [x] Add durable private comparison batches with idempotent queue creation, candidate/job lineage, conditional cancellation, batch-only finalization, and post-comparison software-review selection.
+- [x] Add normalized deterministic validation records and accessible comparison views that show tradeoffs, outcomes, and unassessed limitations.
+- [x] Add durable queued-job dispatch recovery, stale-worker terminal recovery, and compare-and-set worker claim/finalization fencing.
+- [x] Regenerate OpenAPI/client contract and verify source, migration, backend, and web checks.
+- [ ] Exercise the broker, Celery acknowledgement/redelivery, PostgreSQL locking, S3 cleanup, and worker-loss recovery paths in a deployed or Docker runtime.
+- [ ] Complete keyboard and screen-reader review of the risk and comparison workflow.
+- [ ] Complete the Phase 5 exit gate.
 
 ## Phase 2 verification evidence
 
@@ -199,6 +215,55 @@ Environment-limited:
   Docker daemon is not running. No container image or Compose runtime claim is
   made from this session.
 
+## Phase 5 implementation notes
+
+- The deterministic risk engine is the sole source of R0–R3 decisions and
+  generation permissions. The configured model-provider boundary is not called
+  by this workflow and cannot lower risk, select a template, execute code,
+  change immutable records, approve, export, manufacture, or authorize use.
+- A successful R1 decision produces a risk-bound immutable DesignSpec. Plans,
+  comparison batches, candidates, validation runs, and artifacts retain that
+  lineage and fail closed when it becomes stale.
+- The preferred path queues two or three reviewed-template variants only after
+  a waiting-for-user checkpoint. A selection records a private candidate for
+  software review only; it is not approval or a physical-use conclusion.
+- The validation report distinguishes deterministic software findings from
+  needs-confirmation and not-assessed limitations. It does not establish fit,
+  strength, printability, material behavior, comfort, accessibility benefit, or
+  physical safety.
+- A committed queued `CadJob` is the durable dispatch record. The source-level
+  periodic dispatcher safely re-publishes queued IDs; worker claims,
+  cancellation, finalization, and stale-lease recovery use conditional durable
+  state changes. This has not yet been exercised with deployed PostgreSQL,
+  Redis/Celery, object storage, or process loss.
+
+## Phase 5 verification evidence
+
+Passed with synthetic fixtures and a fresh temporary SQLite database:
+
+- `uv run --project services/api ruff check services/api`;
+- `uv run --project . mypy accessforge` from `services/api` — strict typecheck
+  passed for 73 source files;
+- fresh-database backend suite — 91 tests passed, covering R2/R3 and
+  prompt-injection corpus decisions, stale-input invalidation, immutable
+  lineage, direct-plan-bypass rejection, private comparison lifecycle,
+  cancellation, duplicate delivery, broker-publish recovery, stale leases, and
+  validation limitations;
+- fresh Alembic upgrade through `0005_phase5_risk_and_planning`, downgrade to
+  `0004_phase4_cad_candidates`, and upgrade again;
+- regenerated OpenAPI and TypeScript client, then `pnpm format:check`,
+  `pnpm lint`, and `pnpm typecheck`;
+- `pnpm --filter @accessforge/web exec next build --webpack` completed a
+  production web build.
+
+Environment-limited:
+
+- The default Next.js Turbopack build cannot bind a sandbox port while processing
+  CSS in this environment. The webpack production build above completed; no
+  browser, deployed Vercel, or hosted API/worker runtime claim is made here.
+- Docker is unavailable, so PostgreSQL/Redis/MinIO/Celery and deployment-grade
+  compiler-isolation recovery remain open operational checks.
+
 ## Phase 1 verification evidence
 
 Passed:
@@ -239,6 +304,7 @@ No production credentials, real participant data, or physical-design workflows w
 - `docs/architecture/ADR-0005-cad-engine.md`
 - `docs/architecture/ADR-0006-deployment.md`
 - `docs/architecture/ADR-0007-model-provider-boundary.md`
+- `docs/architecture/ADR-0008-phase5-risk-and-comparison.md`
 - `README.md`
 - `CONTRIBUTING.md`
 - `CODE_OF_CONDUCT.md`
@@ -256,6 +322,7 @@ No production credentials, real participant data, or physical-design workflows w
 | D-005 | Approve research consent wording and data-retention period. | Open | Project owner + privacy reviewer | Before recruitment |
 | D-006 | Validate that all three template families are genuinely low-risk in the intended contexts. | Open physical assumption | Safety advisory group | Phase 6 |
 | D-007 | Choose and verify a deployment-grade, no-egress compiler sandbox for the Render/container runtime. | Open operational security gate | Technical maintainer + security reviewer | Phase 4 exit |
+| D-008 | Exercise the durable CAD dispatch/recovery model with PostgreSQL, Celery/Redis, storage, worker loss, and cancellation races. | Open operational security gate | Technical maintainer | Phase 5 exit |
 
 ## Phase 0 exit gate
 
@@ -287,6 +354,26 @@ Phase 4 is complete only when:
 5. The compiler's resource and no-egress isolation are demonstrated at the deployment layer, rather than inferred from the subprocess or Python socket controls.
 6. No real-user candidate compilation, physical-output approval, or safety claim is enabled until Phase 5/6 gates are satisfied.
 
+## Phase 5 exit gate
+
+Phase 5 is complete only when:
+
+1. Deterministic R2/R3 corpus cases are blocked without any model decision,
+   and stale inputs invalidate the current R1 decision before generation.
+2. Every private candidate traces to a confirmed requirements revision, current
+   risk assessment, exact reviewed-template DesignSpec, plan/batch where
+   applicable, validation record, and private artifact metadata.
+3. The bounded planner cannot execute code, dynamically load an unreviewed
+   template, lower risk, bypass validation, approve, export, manufacture, or
+   authorize physical use.
+4. The comparison is keyboard/screen-reader reviewed and clearly exposes each
+   variant's tradeoffs, outcome, unknowns, and unassessed properties.
+5. A deployed or Docker runtime demonstrates broker outage recovery, duplicate
+   delivery fencing, cancellation/completion races, worker loss/stale-lease
+   recovery, PostgreSQL finalization locking, and private object cleanup.
+6. No Phase 5 output is presented as approved, exportable, fit, safe, or ready
+   for physical use; Phase 6 retains those gates.
+
 ## Change log
 
 ### 2026-08-08
@@ -296,3 +383,13 @@ Phase 4 is complete only when:
 - Implemented the Phase 2 consent-first project workflow, manual measurements, capture/upload boundaries, and deletion foundations.
 - Completed the Phase 3 optional, provider-neutral requirements-assistance boundary with explicit consent, no raw-media transfer, encrypted BYOK, offline fake-provider controls, immutable user-confirmed requirements, and provider telemetry.
 - Began the Phase 4 deterministic CAD foundation: repository-only template contracts, immutable DesignSpecs, synthetic fixture compilation, private artifact plumbing, and subprocess/resource/socket safeguards. The production no-egress compiler sandbox and all real-user/physical-output gates remain open.
+
+### 2026-08-09
+
+- Implemented the Phase 5 deterministic risk, validation, bounded comparison,
+  immutable-lineage, cancellation, and durable recovery source foundation.
+- Verified the source implementation with a fresh SQLite migration round-trip,
+  strict backend checks, 91 backend tests, regenerated API client, and a
+  webpack production web build.
+- Kept approval, export, manufacturing, physical use, deployed queue recovery,
+  no-egress isolation, and human accessibility review as explicit open gates.
