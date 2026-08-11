@@ -10,18 +10,15 @@ export default async function ProjectLayout({
   if (!session?.user) redirect('/sign-in');
   const { projectId } = await params;
   return (
-    <div className="af-container py-10">
-      <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
+    <div className="af-container py-8 sm:py-10">
+      <div className="mb-9 grid gap-5">
         <div>
-          <Link
-            href="/dashboard"
-            className="text-sm text-[var(--af-muted)] underline underline-offset-4"
-          >
-            ← All projects
+          <Link href="/dashboard" className="af-button af-button-ghost min-h-0 px-0 py-1 text-sm">
+            <span aria-hidden="true">←</span> All projects
           </Link>
           <p className="af-eyebrow mt-4">Private co-design workspace</p>
         </div>
-        <nav aria-label="Project workflow" className="flex flex-wrap gap-2 text-sm">
+        <nav aria-label="Project workflow" className="af-workflow-nav flex flex-wrap gap-1 text-sm">
           <Link className="af-button af-button-secondary" href={`/projects/${projectId}`}>
             Overview
           </Link>

@@ -45,16 +45,44 @@ export default function NewProjectForm() {
     }
   }
   return (
-    <div className="max-w-3xl">
-      <p className="af-eyebrow">New private project</p>
-      <h1 className="mt-4 text-4xl font-bold tracking-tight">
-        What would you like to be able to do?
-      </h1>
-      <p className="mt-4 max-w-2xl leading-7 text-[var(--af-muted)]">
-        Describe the outcome in your own words. You do not need to name a diagnosis or explain your
-        body. Unknown answers stay unknown and pause later design work.
-      </p>
-      <form className="af-card mt-8 space-y-6 p-7" onSubmit={submit}>
+    <div className="af-container af-section grid gap-10 lg:grid-cols-[0.68fr_1.32fr] lg:items-start">
+      <aside className="lg:sticky lg:top-28">
+        <span className="af-badge">
+          <span className="af-badge-dot" aria-hidden="true" />
+          New private project
+        </span>
+        <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+          What would you like to be able to do?
+        </h1>
+        <p className="mt-5 max-w-xl leading-7 text-[var(--af-muted)]">
+          Describe the outcome in your own words. You do not need to name a diagnosis or explain
+          your body. Unknown answers stay unknown and pause later design work.
+        </p>
+        <div className="mt-8 grid gap-3 text-sm text-[var(--af-ink-soft)]">
+          {[
+            'Your project starts private',
+            'Text is enough to begin',
+            'Unknown answers remain visible',
+          ].map((item) => (
+            <p className="flex items-center gap-3 font-semibold" key={item}>
+              <span
+                className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--af-primary-soft)] text-[var(--af-primary-dark)]"
+                aria-hidden="true"
+              >
+                ✓
+              </span>
+              {item}
+            </p>
+          ))}
+        </div>
+      </aside>
+      <form className="af-card space-y-7 p-6 sm:p-9" onSubmit={submit}>
+        <div className="border-b border-[var(--af-line)] pb-6">
+          <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-[var(--af-primary)]">
+            Project brief
+          </p>
+          <h2 className="mt-2 text-2xl font-extrabold">Start with the everyday interaction</h2>
+        </div>
         <div>
           <label className="font-semibold" htmlFor="name">
             Project name
@@ -166,9 +194,9 @@ export default function NewProjectForm() {
             </select>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4 border-t border-[var(--af-line)] pt-6">
           <button className="af-button af-button-primary" type="submit" disabled={busy}>
-            {busy ? 'Saving…' : 'Continue'}
+            {busy ? 'Saving…' : 'Continue'} <span aria-hidden="true">→</span>
           </button>
           <button
             className="af-button af-button-secondary"

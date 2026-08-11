@@ -15,46 +15,81 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to content
         </a>
         <div className="af-shell">
-          <header className="border-b border-[var(--af-line)] bg-[var(--af-surface)]">
-            <div className="af-container flex min-h-16 flex-wrap items-center justify-between gap-4 py-3">
-              <Link className="font-bold tracking-tight" href="/" aria-label="AccessForge home">
-                Access<span className="text-[var(--af-primary)]">Forge</span>
+          <header className="af-site-header">
+            <div className="af-container flex min-h-20 flex-wrap items-center justify-between gap-4 py-3">
+              <Link className="af-brand" href="/" aria-label="AccessForge home">
+                <span className="af-brand-mark" aria-hidden="true">
+                  AF
+                </span>
+                <span>
+                  Access<span className="text-[var(--af-primary)]">Forge</span>
+                </span>
               </Link>
               <nav
                 aria-label="Primary navigation"
-                className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"
+                className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm"
               >
-                <Link
-                  className="inline-flex min-h-11 items-center hover:text-[var(--af-primary)]"
-                  href="/how-it-works"
-                >
+                <Link className="af-nav-link min-h-11" href="/how-it-works">
                   How it works
                 </Link>
-                <Link
-                  className="inline-flex min-h-11 items-center hover:text-[var(--af-primary)]"
-                  href="/safety"
-                >
+                <Link className="af-nav-link min-h-11" href="/safety">
                   Safety limits
                 </Link>
-                <Link
-                  className="inline-flex min-h-11 items-center hover:text-[var(--af-primary)]"
-                  href="/settings/models"
-                >
-                  Model settings
+                <Link className="af-nav-link min-h-11" href="/privacy">
+                  Privacy
                 </Link>
-                <Link className="af-button af-button-secondary" href="/dashboard">
-                  Dashboard
+                <Link className="af-button af-button-primary" href="/dashboard">
+                  Open workspace <span aria-hidden="true">↗</span>
                 </Link>
               </nav>
             </div>
           </header>
-          <main id="main-content">{children}</main>
-          <footer className="border-t border-[var(--af-line)] py-8 text-sm text-[var(--af-muted)]">
-            <div className="af-container flex flex-wrap justify-between gap-3">
-              <span>AccessForge is early-stage software, not a safety certification.</span>
-              <Link href="/privacy" className="underline underline-offset-4">
-                Privacy principles
-              </Link>
+          <main className="flex-1" id="main-content">
+            {children}
+          </main>
+          <footer className="af-site-footer py-12 text-sm text-[var(--af-muted)]">
+            <div className="af-container grid gap-10 md:grid-cols-[1.4fr_0.7fr_0.7fr]">
+              <div className="max-w-md">
+                <Link className="af-brand text-[var(--af-ink)]" href="/">
+                  <span className="af-brand-mark" aria-hidden="true">
+                    AF
+                  </span>
+                  AccessForge
+                </Link>
+                <p className="mt-4 leading-6">
+                  A transparent, privacy-minded co-design workspace for exploring bounded everyday
+                  access ideas.
+                </p>
+                <p className="mt-3 text-xs leading-5">
+                  Early-stage software. Not a medical device, professional approval, or safety
+                  certification service.
+                </p>
+              </div>
+              <div>
+                <p className="font-bold text-[var(--af-ink)]">Explore</p>
+                <div className="mt-4 grid gap-3">
+                  <Link className="hover:text-[var(--af-primary-dark)]" href="/how-it-works">
+                    How it works
+                  </Link>
+                  <Link className="hover:text-[var(--af-primary-dark)]" href="/safety">
+                    Safety limits
+                  </Link>
+                  <Link className="hover:text-[var(--af-primary-dark)]" href="/dashboard">
+                    Your workspace
+                  </Link>
+                </div>
+              </div>
+              <div>
+                <p className="font-bold text-[var(--af-ink)]">Principles</p>
+                <div className="mt-4 grid gap-3">
+                  <Link className="hover:text-[var(--af-primary-dark)]" href="/privacy">
+                    Privacy by default
+                  </Link>
+                  <Link className="hover:text-[var(--af-primary-dark)]" href="/settings/models">
+                    Model settings
+                  </Link>
+                </div>
+              </div>
             </div>
           </footer>
         </div>

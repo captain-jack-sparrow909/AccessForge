@@ -52,12 +52,14 @@ export default function ProjectOverview({ params }: { params: Promise<{ projectI
   }
   if (!project) return <p role="status">{message}</p>;
   return (
-    <div className="max-w-4xl">
+    <div>
       <div className="flex flex-wrap items-start justify-between gap-5">
         <div>
-          <p className="af-eyebrow">{project.status.replaceAll('_', ' ')}</p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight">{project.name}</h1>
-          <p className="mt-3 max-w-2xl leading-7 text-[var(--af-muted)]">
+          <span className="af-status-pill">{project.status.replaceAll('_', ' ')}</span>
+          <h1 className="mt-5 max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">
+            {project.name}
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--af-muted)]">
             {project.goal || project.description}
           </p>
         </div>
@@ -69,16 +71,31 @@ export default function ProjectOverview({ params }: { params: Promise<{ projectI
           Delete project
         </button>
       </div>
-      <section className="af-card mt-8 p-6" aria-labelledby="scope-heading">
-        <h2 id="scope-heading" className="text-xl font-bold">
-          Scope pre-screen
-        </h2>
-        <p className="mt-2 text-sm leading-6 text-[var(--af-muted)]">{project.scope_reason}</p>
-        <p className="mt-3 inline-flex rounded-full border border-[var(--af-line)] px-3 py-1 text-sm font-semibold">
-          {project.scope_status.replaceAll('_', ' ')}
-        </p>
+      <section
+        className="af-card mt-9 grid gap-5 p-6 sm:grid-cols-[auto_1fr_auto] sm:items-center sm:p-7"
+        aria-labelledby="scope-heading"
+      >
+        <span className="af-icon-tile" aria-hidden="true">
+          ◎
+        </span>
+        <div>
+          <h2 id="scope-heading" className="text-xl font-extrabold">
+            Scope pre-screen
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-[var(--af-muted)]">{project.scope_reason}</p>
+        </div>
+        <p className="af-status-pill w-fit">{project.scope_status.replaceAll('_', ' ')}</p>
       </section>
-      <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+      <div className="mt-12 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="af-eyebrow">Guided workflow</p>
+          <h2 className="mt-3 text-3xl font-extrabold">Build the record step by step</h2>
+        </div>
+        <p className="max-w-md text-sm leading-6 text-[var(--af-muted)]">
+          Each step keeps its source, status, and limitations visible.
+        </p>
+      </div>
+      <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         <WorkflowCard
           title="Consent"
           copy="Choose separately what you want to share."
@@ -122,8 +139,9 @@ export default function ProjectOverview({ params }: { params: Promise<{ projectI
           complete={project.status === 'export_ready'}
         />
       </div>
-      <section className="mt-9" aria-labelledby="facts-heading">
-        <h2 id="facts-heading" className="text-xl font-bold">
+      <section className="mt-12" aria-labelledby="facts-heading">
+        <p className="af-eyebrow">Current context</p>
+        <h2 id="facts-heading" className="mt-3 text-3xl font-extrabold">
           Project facts
         </h2>
         <dl className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -152,22 +170,25 @@ function WorkflowCard({
   complete: boolean;
 }) {
   return (
-    <Link
-      className="af-card block p-6 transition hover:-translate-y-0.5 hover:border-[var(--af-primary)]"
-      href={href}
-    >
-      <p className="text-sm font-semibold text-[var(--af-primary)]">
-        {complete ? 'Recorded' : 'Next step'}
-      </p>
-      <h2 className="mt-2 text-xl font-bold">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-[var(--af-muted)]">{copy}</p>
+    <Link className="af-card af-card-link group block p-6" href={href}>
+      <div className="flex items-center justify-between gap-4">
+        <p className="af-status-pill">{complete ? 'Recorded' : 'Next step'}</p>
+        <span
+          className="text-xl text-[var(--af-line-strong)] transition group-hover:text-[var(--af-primary)]"
+          aria-hidden="true"
+        >
+          ↗
+        </span>
+      </div>
+      <h2 className="mt-6 text-xl font-extrabold">{title}</h2>
+      <p className="mt-3 text-sm leading-6 text-[var(--af-muted)]">{copy}</p>
     </Link>
   );
 }
 
 function Fact({ label, value }: { label: string; value: string | null }) {
   return (
-    <div className="rounded-lg border border-[var(--af-line)] bg-[var(--af-surface)] p-4">
+    <div className="af-fact">
       <dt className="text-sm text-[var(--af-muted)]">{label}</dt>
       <dd className="mt-1 font-semibold">{value || 'Not provided yet'}</dd>
     </div>
