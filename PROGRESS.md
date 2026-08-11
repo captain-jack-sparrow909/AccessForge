@@ -142,6 +142,7 @@ a physical design, exporting an artifact, or making a physical-use claim.
 
 - [x] Make the structured candidate report primary and load the private 3D preview only after an explicit user action.
 - [x] Add source contracts for optional 3D, native upload controls, visible focus, reduced motion, forced colors, and wrapped navigation; run them in CI.
+- [x] Define fail-closed Core Web Vitals, transfer, low-end-device, and slow-network performance budgets without inventing a measured pass.
 - [x] Add a durable deletion outbox with opaque owner status, compare-and-set leases, bounded retry, stale-lease recovery, and conservative timeout/manual-review handling.
 - [x] Prevent concurrent initial deletion requests from creating duplicate active outboxes or returning an integrity-error response.
 - [x] Fence deletion against direct-upload and CAD/export write windows, reconcile the complete fixed private-project prefix, and require two separated empty confirmations before success.
@@ -300,6 +301,9 @@ Environment-limited:
   validation, and limitation report renders first and remains usable when the
   preview is never requested or cannot load. This is a source-level safeguard,
   not a claim of accessibility conformance.
+- Phase 7 now has explicit Core Web Vitals, cold-transfer, low-end lab, and
+  real-device budgets. No Lighthouse, field-data, or real-device result has
+  been recorded, so the performance evidence gate remains open.
 - Private cleanup is a durable database outbox. Worker leases and finalization
   use conditional state changes; failures expose only bounded opaque categories
   to an owner. A timeout stops automatic retry and requires manual review so a
@@ -501,3 +505,5 @@ Phase 7 is complete only when:
   migration round-trip, 3 web source tests, and a webpack production build.
   PostgreSQL/object-store recovery drills, accessibility/pilot evidence,
   backup/restore, and independent security review remain open.
+- Defined low-end-device, slow-network, Core Web Vitals, and cold-transfer
+  budgets as future release gates; no measurement result was fabricated.

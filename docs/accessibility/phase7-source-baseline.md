@@ -1,7 +1,7 @@
 # Phase 7 Accessibility Source Baseline
 
 Status: source-level safeguards implemented; browser, assistive-technology, and pilot evidence not yet collected
-Last updated: 2026-08-09
+Last updated: 2026-08-11
 
 ## Purpose
 
@@ -37,3 +37,7 @@ Before any accessibility/pilot exit decision, record dated evidence for each of 
 - a public remediation log that excludes participant-identifying information and names an owner/status for each finding.
 
 No unchecked checklist item should be changed to complete based only on this source baseline.
+
+The future low-end-device and slow-network evidence must use the explicit
+[Phase 7 performance budgets](../performance/phase7-budgets.md); defining those
+budgets is not a measured pass.

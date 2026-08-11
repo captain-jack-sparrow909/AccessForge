@@ -226,7 +226,9 @@ review path. Use the structured report without opening it. Source-level web
 checks are documented in the
 [Phase 7 accessibility baseline](../accessibility/phase7-source-baseline.md);
 they do not replace browser, assistive-technology, low-end-device, or
-participant testing.
+participant testing. The [Phase 7 performance budgets](../performance/phase7-budgets.md)
+define the future low-end and slow-network release evidence without claiming
+that a browser or real-device pass has occurred.
 
 ## Checks
 
