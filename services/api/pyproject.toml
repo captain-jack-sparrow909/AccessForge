@@ -47,6 +47,10 @@ ignore = ["B008"]
 python_version = "3.12"
 strict = true
 ignore_missing_imports = true
+# boto3/botocore and Celery in the pinned runtime do not ship usable typing
+# metadata. Keep strict checks for AccessForge code while isolating that
+# external-package limitation to the import boundary.
+disable_error_code = ["import-untyped"]
 
 [build-system]
 requires = ["setuptools>=75"]

@@ -180,6 +180,54 @@ bundle, so a later hazard, evidence/control change, or policy disablement
 blocks future download requests. Bytes already delivered to a browser cannot
 be recalled.
 
+## Phase 7 accessibility and reliability source boundary
+
+Phase 7 source work does not complete an accessibility audit, a participant
+pilot, a security review, or a deployment/recovery drill. Keep all project data
+synthetic while validating this foundation.
+
+The local Compose file now declares a separate `scheduler` service for Celery
+beat. It schedules the durable deletion outbox and CAD recovery every minute;
+workers remain separately scalable. The schedule file is ephemeral, while
+deletion state belongs in the database. This configuration has not been
+exercised against the local Docker runtime in this environment.
+
+After a project is soft-deleted, ordinary project routes hide it immediately.
+Its owner can retrieve only sanitized cleanup progress from:
+
+```bash
+curl -H "Authorization: Bearer <short-lived-backend-token>" \
+  http://localhost:8000/v1/projects/<project-id>/deletion-status
+```
+
+The status exposes an opaque error category, attempt count, lease/retry times,
+two-pass reconciliation progress, and terminal status; it never returns raw
+object-store errors, object keys, credentials, or the requester identity.
+Deletion first fences queued/running CAD work on the project row. Cleanup then
+waits for every issued direct-upload authorization to expire plus a settlement
+window, waits for server-side CAD work to quiesce, deletes known metadata keys,
+and reconciles every object under the fixed `private/<project-id>/` prefix. It
+requires two complete empty prefix inventories separated in time before it can
+report success. A late object resets that confirmation sequence.
+
+Storage cleanup retries with bounded backoff. An incomplete/bounded prefix
+inventory or a defensive SDK-operation timeout goes directly to
+`manual_review_required`; neither path is allowed to claim success. The timeout
+path is deliberately not requeued because the underlying SDK thread may still
+be in flight. The deployed object-store identity therefore needs paginated
+list and delete permission on only the private project prefix as well as the
+existing object operations. Do not change a row directly to mark deletion
+complete; follow the unexercised, synthetic-only [deletion and recovery
+runbook](runbooks/deletion-recovery.md) once an owner approves an isolated
+drill.
+
+The optional 3D preview is intentionally not part of the primary candidate
+review path. Use the structured report without opening it. Source-level web
+checks are documented in the
+[Phase 7 accessibility baseline](../accessibility/phase7-source-baseline.md);
+they do not replace browser, assistive-technology, low-end-device, or
+participant testing.
+
 ## Checks
 
 ```bash
@@ -190,19 +238,24 @@ pnpm typecheck
 pnpm build
 uv run --project services/api pytest
 uv run --project services/api pytest services/api/tests/test_ai_providers.py services/api/tests/test_ai_security.py
+uv run --project services/api pytest services/api/tests/test_phase7_deletion_recovery.py
+pnpm --filter @accessforge/web test
 ```
 
 ## Current limitations
 
 The Phase 3 AI workflow is limited to requirements extraction and clarification.
 Phase 4 adds synthetic fixture geometry, Phase 5 adds deterministic risk and
-private software comparison, and Phase 6 adds default-denied export records
-only; none approve outputs, establish fit/strength/printability/material
-behavior, or claim safety. Malware scanning, evidence-upload verification,
-browser-level capture verification, deployment-grade no-egress isolation, and
-hosted queue recovery are also incomplete. The local API tests use an isolated
-SQLite database; a running MinIO/Postgres/Redis stack is still required to
-verify the full direct-upload, private-artifact, deletion-worker,
-comparison-worker, and export-bundle runtime. Do not put real participant data
-into this environment or use real provider keys before the required privacy,
-safety, accessibility, and lived-experience review.
+private software comparison, Phase 6 adds default-denied export records, and
+Phase 7 adds source-level accessibility/reliability safeguards only; none
+approve outputs, establish fit/strength/printability/material behavior, claim
+safety, claim accessibility conformance, or demonstrate recovery. Malware
+scanning, evidence-upload verification, browser-level capture verification,
+deployment-grade no-egress isolation, browser/assistive-technology testing,
+participant pilot work, backup/restore evidence, and deployed queue/deletion
+recovery are incomplete. The local API tests use an isolated SQLite database;
+a running MinIO/Postgres/Redis stack is still required to verify the full
+direct-upload, private-artifact, deletion-worker, scheduler, comparison-worker,
+and export-bundle runtime. Do not put real participant data into this
+environment or use real provider keys before the required privacy, safety,
+accessibility, and lived-experience review.

@@ -20,7 +20,9 @@ def upgrade() -> None:
         sa.Column("envelope_version", sa.String(length=40), nullable=False),
         sa.Column("encrypted_context", sa.Text(), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
-        sa.ForeignKeyConstraint(["risk_assessment_id"], ["risk_assessments.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["risk_assessment_id"], ["risk_assessments.id"], ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("risk_assessment_id"),
     )
@@ -260,7 +262,11 @@ def upgrade() -> None:
         sa.Column("recorded_at", sa.DateTime(timezone=True), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index("ix_template_release_controls_template_id", "template_release_controls", ["template_id"])
+    op.create_index(
+        "ix_template_release_controls_template_id",
+        "template_release_controls",
+        ["template_id"],
+    )
 
     # SQLite needs a table rebuild to add this foreign key.  The durable
     # selected-candidate pointer makes later approval/export lineage explicit
@@ -285,7 +291,9 @@ def downgrade() -> None:
         batch_op.drop_constraint("fk_design_plans_selected_candidate_id", type_="foreignkey")
         batch_op.drop_column("selected_candidate_id")
 
-    op.drop_index("ix_template_release_controls_template_id", table_name="template_release_controls")
+    op.drop_index(
+        "ix_template_release_controls_template_id", table_name="template_release_controls"
+    )
     op.drop_table("template_release_controls")
 
     for column in ("feedback_report_id", "candidate_id", "project_id"):

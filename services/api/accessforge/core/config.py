@@ -1,7 +1,7 @@
 import json
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -28,6 +28,11 @@ class Settings(BaseSettings):
     s3_bucket_private: str = "accessforge-private"
     s3_access_key_id: str = "minioadmin"
     s3_secret_access_key: str = Field(default="minioadmin", repr=False)
+    # A single object-store request must complete within the deletion worker's
+    # defensive timeout. Automatic retries are deliberately disabled at the
+    # SDK layer so the outbox owns the retry policy and audit trail.
+    s3_connect_timeout_seconds: float = Field(default=10.0, ge=1.0, le=30.0)
+    s3_read_timeout_seconds: float = Field(default=40.0, ge=1.0, le=50.0)
     asset_presign_ttl_seconds: int = Field(default=600, ge=60, le=3600)
     asset_max_bytes: int = Field(default=100_000_000, ge=1_000, le=1_000_000_000)
     asset_retention_days: int = Field(default=30, ge=1, le=3650)
@@ -58,6 +63,17 @@ class Settings(BaseSettings):
     phase6_reviewer_roles: str = "safety_reviewer"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    @model_validator(mode="after")
+    def validate_s3_request_timeout_budget(self) -> "Settings":
+        """Keep one SDK attempt inside the deletion worker's 60-second guard."""
+
+        if self.s3_connect_timeout_seconds + self.s3_read_timeout_seconds >= 60:
+            raise ValueError(
+                "S3 connect and read timeouts must total less than 60 seconds "
+                "for deletion recovery."
+            )
+        return self
 
     @property
     def cors_origin_list(self) -> list[str]:

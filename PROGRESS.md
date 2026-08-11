@@ -2,19 +2,17 @@
 
 ## Current phase
 
-**Phase 6 — Controlled export and non-human validation source foundation**
+**Phase 7 — Accessibility and reliability source foundation**
 
 Status: `implementation_complete_pending_exit_gate`. The project owner
-authorized the Phase 6 source foundation in the task conversation. It adds
-default-denied server gates, sealed risk-context revalidation, exact-revision
-acknowledgement and bundle records, fixed-layout ZIP verification,
-feedback/hazard containment, reviewer-only release controls, and a restricted
-non-human fixture/coupon evidence schema. No current template release or
-deployment setting can pass the full gate. Human safety, privacy,
-accessibility, lived-experience, qualified-review, and real operational
-evidence remain required before any controlled export or physical output. The
-enforced compiler no-egress sandbox, deployed PostgreSQL/Redis/worker recovery
-exercise, and Docker runtime verification remain open operational gates.
+authorized the Phase 7 source foundation in the task conversation. It adds an
+optional, on-demand 3D preview behind a structured report; source-level
+accessibility contracts; a durable, sanitized deletion outbox with write
+quiescence and project-prefix reconciliation; a separately configured Celery
+scheduler; and unexercised incident
+runbooks. It does not complete an accessibility audit, a compensated pilot, a
+security review, a backup/restore exercise, or a deployed recovery drill. No
+new setting approves a template, physical output, or physical-use claim.
 
 ## Phase 0 checklist
 
@@ -139,6 +137,20 @@ a physical design, exporting an artifact, or making a physical-use claim.
 - [ ] Complete accessibility, privacy, safety, qualified-review, and lived-experience review before enabling any Phase 6 deployment policy.
 - [ ] Implement a trusted reviewer-role provisioning path. The current browser-to-API token intentionally carries `member`, so the `safety_reviewer` controls remain fail-closed.
 - [ ] Complete the Phase 6 exit gate. No current template release is eligible for controlled export.
+
+## Phase 7 checklist
+
+- [x] Make the structured candidate report primary and load the private 3D preview only after an explicit user action.
+- [x] Add source contracts for optional 3D, native upload controls, visible focus, reduced motion, forced colors, and wrapped navigation; run them in CI.
+- [x] Add a durable deletion outbox with opaque owner status, compare-and-set leases, bounded retry, stale-lease recovery, and conservative timeout/manual-review handling.
+- [x] Prevent concurrent initial deletion requests from creating duplicate active outboxes or returning an integrity-error response.
+- [x] Fence deletion against direct-upload and CAD/export write windows, reconcile the complete fixed private-project prefix, and require two separated empty confirmations before success.
+- [x] Configure a dedicated Celery beat scheduler, clean-process task/schedule checks, one API migration owner, and read-only schema-head startup gates for independently deployed workers.
+- [x] Add synthetic-only response runbooks for provider outage, queue failure, deletion/recovery, backup/restore, and incident/security response.
+- [ ] Run browser/assistive-technology/keyboard/forced-colors/low-end-device checks and an authorized, compensated participant pilot.
+- [ ] Exercise provider outage, queue failure, deletion/recovery, backup/restore, and incident paths in an approved isolated Docker or deployed environment.
+- [ ] Complete independent security review and remediation.
+- [ ] Complete the Phase 7 exit gate.
 
 ## Phase 2 verification evidence
 
@@ -282,6 +294,51 @@ Environment-limited:
 - Docker is unavailable, so PostgreSQL/Redis/MinIO/Celery and deployment-grade
   compiler-isolation recovery remain open operational checks.
 
+## Phase 7 implementation notes
+
+- A 3D GLB preview is optional. The candidate's structured parameter,
+  validation, and limitation report renders first and remains usable when the
+  preview is never requested or cannot load. This is a source-level safeguard,
+  not a claim of accessibility conformance.
+- Private cleanup is a durable database outbox. Worker leases and finalization
+  use conditional state changes; failures expose only bounded opaque categories
+  to an owner. A timeout stops automatic retry and requires manual review so a
+  still-running SDK thread cannot overlap another automatic cleanup attempt.
+- Project deletion and server-side private writers share a project-row barrier.
+  Cleanup waits out previously issued direct-upload URLs, waits for active CAD
+  jobs, deletes both known and orphaned project-prefix keys, and requires two
+  separated complete empty inventories. Incomplete inventory evidence fails
+  closed to manual review.
+- The separate scheduler publishes deletion and CAD recovery work from a
+  declarative Celery beat schedule. The API alone owns hosted migrations;
+  worker/scheduler startup performs a read-only repository-head comparison.
+  Source configuration and clean-process registration are covered, but no
+  Docker, Redis, PostgreSQL, object-storage, deployment, backup, or incident
+  exercise was run here.
+- Runbooks are restricted to owner-approved, isolated, synthetic exercises.
+  They deliberately do not invent contacts, outcomes, security findings, or
+  participant evidence.
+
+## Phase 7 verification evidence
+
+Passed on synthetic/local source fixtures:
+
+- `DATABASE_URL=<disposable-sqlite-url> AUTO_CREATE_DB=true uv run --project services/api pytest -q` — 125 passed, 1 PostgreSQL-only concurrency regression skipped.
+- `uv run --project services/api pytest services/api/tests/test_phase7_deletion_recovery.py -q` — 17 passed, 1 PostgreSQL-only concurrency regression skipped.
+- `uv run --project services/api ruff check services/api`
+- `uv run --project services/api mypy --config-file services/api/pyproject.toml services/api/accessforge` — 80 source files checked.
+- Fresh SQLite migration `0006 -> 0007 -> 0006 -> 0007` round-trip and `python -m accessforge.db.schema_gate` at head.
+- `pnpm generate:api`, `pnpm lint`, `pnpm typecheck`, and `pnpm format:check`.
+- `vitest run` — 3 Phase 7 accessibility source tests passed.
+- `next build --webpack` — production web build completed with the deletion-status route.
+- `docker compose config --quiet` and `git diff --check`.
+
+The concurrent first-DELETE regression remains executable only against
+PostgreSQL because SQLite does not implement `SELECT FOR UPDATE`; it returns a
+database-lock error for that artificial two-writer interleave. No deployed
+PostgreSQL, Redis, object-store, Render, Vercel, browser, assistive-technology,
+participant, backup/restore, security, or incident exercise is claimed.
+
 ## Phase 1 verification evidence
 
 Passed:
@@ -392,6 +449,21 @@ Phase 5 is complete only when:
 6. No Phase 5 output is presented as approved, exportable, fit, safe, or ready
    for physical use; Phase 6 retains those gates.
 
+## Phase 7 exit gate
+
+Phase 7 is complete only when:
+
+1. No critical accessibility, privacy, security, or safety issue remains open
+   for core tasks, based on dated evidence rather than source inspection alone.
+2. Core workflows are independently shown to work without camera, audio,
+   mouse, or a 3D-only interaction, including with relevant assistive
+   technology and a compensated, authorized participant pilot.
+3. Provider outage, queue failure, deletion/recovery, backup/restore, and
+   incident procedures are exercised in an approved isolated environment and
+   their outcomes/remediations are recorded without private data.
+4. An independent security review is complete and all release-blocking findings
+   are remediated or explicitly accepted by the authorized owner.
+
 ## Change log
 
 ### 2026-08-08
@@ -411,3 +483,21 @@ Phase 5 is complete only when:
   webpack production web build.
 - Kept approval, export, manufacturing, physical use, deployed queue recovery,
   no-egress isolation, and human accessibility review as explicit open gates.
+- Implemented the Phase 6 default-denied export and non-human-validation source
+  foundation; no template release was enabled for export or physical use.
+- Implemented the Phase 7 source foundation: optional 3D viewing, accessibility
+  source contracts, durable deletion recovery, scheduler configuration, and
+  synthetic-only response runbooks. Pilot, browser, security, backup/restore,
+  and deployed recovery evidence remain open.
+
+### 2026-08-11
+
+- Hardened Phase 7 cleanup against outstanding direct-upload URLs and
+  server-side private writes, added complete project-prefix orphan cleanup, and
+  required two separated empty reconciliations before success.
+- Made the API the single hosted migration owner and added read-only migration
+  head gates for independently deployed worker and scheduler processes.
+- Verified the source foundation with 125 backend tests, strict checks, a fresh
+  migration round-trip, 3 web source tests, and a webpack production build.
+  PostgreSQL/object-store recovery drills, accessibility/pilot evidence,
+  backup/restore, and independent security review remain open.

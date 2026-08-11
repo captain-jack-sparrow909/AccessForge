@@ -20,6 +20,18 @@ export type Project = {
   created_at: string;
   updated_at: string;
 };
+export type DeletionStatus = {
+  status: string;
+  requested_at: string;
+  attempt_count: number;
+  started_at: string | null;
+  next_attempt_at: string | null;
+  last_error_code: string | null;
+  last_error_at: string | null;
+  reconciliation_passes: number;
+  last_reconciled_at: string | null;
+  completed_at: string | null;
+};
 export type ConsentRecord = {
   id: string;
   participant_id: string;
@@ -496,6 +508,8 @@ export function createAccessForgeClient({ baseUrl, getToken }: ClientOptions) {
       request<{ project_id: string; status: string }>(`/v1/projects/${encodeURIComponent(id)}`, {
         method: 'DELETE',
       }),
+    getDeletionStatus: (id: string) =>
+      request<DeletionStatus>(`/v1/projects/${encodeURIComponent(id)}/deletion-status`),
     listConsents: (id: string) =>
       request<ConsentResponse[]>(`/v1/projects/${encodeURIComponent(id)}/consents`),
     createConsent: (

@@ -29,6 +29,7 @@ accessforge/api/routes/assets.py
 accessforge/api/routes/auth.py
 accessforge/api/routes/consents.py
 accessforge/api/routes/designs.py
+accessforge/api/routes/exports.py
 accessforge/api/routes/health.py
 accessforge/api/routes/measurements.py
 accessforge/api/routes/model_providers.py
@@ -63,7 +64,12 @@ accessforge/core/security.py
 accessforge/db/__init__.py
 accessforge/db/models.py
 accessforge/db/results.py
+accessforge/db/schema_gate.py
 accessforge/db/session.py
+accessforge/exports/__init__.py
+accessforge/exports/bundle.py
+accessforge/exports/protocol.py
+accessforge/exports/service.py
 accessforge/jobs/__init__.py
 accessforge/jobs/celery_app.py
 accessforge/jobs/tasks.py
@@ -76,6 +82,7 @@ accessforge/requirements/__init__.py
 accessforge/requirements/service.py
 accessforge/risk/__init__.py
 accessforge/risk/engine.py
+accessforge/risk/private_context.py
 accessforge/risk/ruleset-v1.json
 accessforge/risk/schemas.py
 accessforge/risk/service.py
@@ -99,3 +106,6 @@ tests/test_phase4_design_api.py
 tests/test_phase5_job_recovery.py
 tests/test_phase5_risk_api.py
 tests/test_phase5_risk_engine.py
+tests/test_phase6_export_api.py
+tests/test_phase6_pure_utilities.py
+tests/test_phase7_deletion_recovery.py

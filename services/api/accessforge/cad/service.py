@@ -392,6 +392,15 @@ async def _persist_success(
         await session.refresh(candidate)
         await session.refresh(job)
         await session.refresh(project)
+        locked_project = await session.scalar(
+            select(Project)
+            .where(Project.id == project.id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        if locked_project is None:  # pragma: no cover - protected by candidate ownership
+            return "already_processed"
+        project = locked_project
         if candidate.status == "cancel_requested" or job.cancel_requested_at is not None:
             await mark_candidate_cancelled(
                 session,
@@ -466,24 +475,11 @@ async def _persist_success(
                 )
             )
         # Re-check once the compiler output has been staged but before any
-        # artifact metadata can be committed. This narrows the cooperative
-        # cancellation window and removes staged private objects on request.
+        # artifact metadata can be committed. The project row lock acquired
+        # before the first write remains held through this transaction, so a
+        # concurrent project deletion cannot overtake staged object metadata.
         await session.refresh(candidate)
         await session.refresh(job)
-        locked_project = await session.scalar(
-            select(Project)
-            .where(Project.id == project.id)
-            .with_for_update()
-            .execution_options(populate_existing=True)
-        )
-        if locked_project is None:  # pragma: no cover - project deletion is soft-state first
-            for object_key in uploaded_keys:
-                try:
-                    delete_object(object_key=object_key)
-                except Exception:
-                    pass
-            return "already_processed"
-        project = locked_project
         if candidate.status == "cancel_requested" or job.cancel_requested_at is not None:
             for object_key in uploaded_keys:
                 try:

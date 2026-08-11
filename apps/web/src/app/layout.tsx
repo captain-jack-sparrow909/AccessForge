@@ -16,18 +16,30 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </a>
         <div className="af-shell">
           <header className="border-b border-[var(--af-line)] bg-[var(--af-surface)]">
-            <div className="af-container flex min-h-16 items-center justify-between gap-4">
+            <div className="af-container flex min-h-16 flex-wrap items-center justify-between gap-4 py-3">
               <Link className="font-bold tracking-tight" href="/" aria-label="AccessForge home">
                 Access<span className="text-[var(--af-primary)]">Forge</span>
               </Link>
-              <nav aria-label="Primary navigation" className="flex items-center gap-4 text-sm">
-                <Link className="hover:text-[var(--af-primary)]" href="/how-it-works">
+              <nav
+                aria-label="Primary navigation"
+                className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"
+              >
+                <Link
+                  className="inline-flex min-h-11 items-center hover:text-[var(--af-primary)]"
+                  href="/how-it-works"
+                >
                   How it works
                 </Link>
-                <Link className="hover:text-[var(--af-primary)]" href="/safety">
+                <Link
+                  className="inline-flex min-h-11 items-center hover:text-[var(--af-primary)]"
+                  href="/safety"
+                >
                   Safety limits
                 </Link>
-                <Link className="hover:text-[var(--af-primary)]" href="/settings/models">
+                <Link
+                  className="inline-flex min-h-11 items-center hover:text-[var(--af-primary)]"
+                  href="/settings/models"
+                >
                   Model settings
                 </Link>
                 <Link className="af-button af-button-secondary" href="/dashboard">

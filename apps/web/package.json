@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:accessibility-source": "vitest run tests/phase7-accessibility-source.test.ts"
   },
   "dependencies": {
     "@accessforge/api-client": "workspace:*",

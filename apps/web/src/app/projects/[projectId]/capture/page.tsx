@@ -53,43 +53,42 @@ export default function CapturePage({ params }: { params: Promise<{ projectId: s
             Describe what happens in your own words, or skip observation entirely.
           </p>
         </Link>
-        <div className="af-card p-6">
+        <div className="af-card p-6" aria-busy={busy}>
           <h2 className="text-xl font-bold">Upload a still image</h2>
-          <p className="mt-2 text-sm leading-6 text-[var(--af-muted)]">
+          <p id="still-image-help" className="mt-2 text-sm leading-6 text-[var(--af-muted)]">
             Only an allowlisted image type and size can be uploaded. The link expires.
           </p>
-          <label
-            className="af-button af-button-secondary mt-5 cursor-pointer"
-            htmlFor="still-image"
-          >
-            Choose image
+          <label className="mt-5 block font-semibold" htmlFor="still-image">
+            Choose still image
           </label>
           <input
-            className="sr-only"
+            className="af-input mt-2"
             id="still-image"
             type="file"
             accept="image/jpeg,image/png,image/webp"
             disabled={busy}
+            aria-describedby="still-image-help"
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (file) void upload(file, 'still_image');
             }}
           />
         </div>
-        <div className="af-card p-6">
+        <div className="af-card p-6" aria-busy={busy}>
           <h2 className="text-xl font-bold">Upload a short video</h2>
-          <p className="mt-2 text-sm leading-6 text-[var(--af-muted)]">
+          <p id="video-help" className="mt-2 text-sm leading-6 text-[var(--af-muted)]">
             Video is off unless you granted separate video consent. No action needs to be repeated.
           </p>
-          <label className="af-button af-button-secondary mt-5 cursor-pointer" htmlFor="video">
-            Choose video
+          <label className="mt-5 block font-semibold" htmlFor="video">
+            Choose short video
           </label>
           <input
-            className="sr-only"
+            className="af-input mt-2"
             id="video"
             type="file"
             accept="video/mp4,video/webm"
             disabled={busy}
+            aria-describedby="video-help"
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (file) void upload(file, 'video');

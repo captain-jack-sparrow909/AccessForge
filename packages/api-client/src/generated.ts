@@ -511,6 +511,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/projects/{project_id}/deletion-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Deletion Status
+         * @description Expose only safe cleanup progress to the owner after a soft delete.
+         */
+        get: operations["get_deletion_status_v1_projects__project_id__deletion_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/projects/{project_id}/design-plans": {
         parameters: {
             query?: never;
@@ -1176,6 +1196,35 @@ export interface components {
              * Format: date-time
              */
             recorded_at: string;
+            /** Status */
+            status: string;
+        };
+        /**
+         * DeletionStatusRead
+         * @description Owner-visible, sanitized progress for a soft-deleted private project.
+         */
+        DeletionStatusRead: {
+            /** Attempt Count */
+            attempt_count: number;
+            /** Completed At */
+            completed_at: string | null;
+            /** Last Error At */
+            last_error_at: string | null;
+            /** Last Error Code */
+            last_error_code: string | null;
+            /** Last Reconciled At */
+            last_reconciled_at: string | null;
+            /** Next Attempt At */
+            next_attempt_at: string | null;
+            /** Reconciliation Passes */
+            reconciliation_passes: number;
+            /**
+             * Requested At
+             * Format: date-time
+             */
+            requested_at: string;
+            /** Started At */
+            started_at: string | null;
             /** Status */
             status: string;
         };
@@ -3292,6 +3341,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConsentRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_deletion_status_v1_projects__project_id__deletion_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeletionStatusRead"];
                 };
             };
             /** @description Validation Error */

@@ -45,7 +45,7 @@ export default function ProjectOverview({ params }: { params: Promise<{ projectI
     setMessage('Queueing deletion…');
     try {
       await client.deleteProject(projectId);
-      router.push('/dashboard');
+      router.push(`/projects/${projectId}/deletion-status`);
     } catch (error: unknown) {
       setMessage(error instanceof Error ? error.message : 'Could not queue deletion.');
     }

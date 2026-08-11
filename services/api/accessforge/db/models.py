@@ -7,10 +7,12 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     Text,
     UniqueConstraint,
+    text,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -205,6 +207,15 @@ class AuditEvent(Base):
 
 class DeletionJob(Base):
     __tablename__ = "deletion_jobs"
+    __table_args__ = (
+        Index(
+            "uq_deletion_jobs_active_project_id",
+            "project_id",
+            unique=True,
+            postgresql_where=text("status IN ('queued', 'running', 'manual_review_required')"),
+            sqlite_where=text("status IN ('queued', 'running', 'manual_review_required')"),
+        ),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
     project_id: Mapped[str] = mapped_column(
@@ -215,7 +226,23 @@ class DeletionJob(Base):
     requested_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, nullable=False
     )
+    # Deletion is an outbox workflow, not a best-effort request.  A worker
+    # claims one lease at a time, and a later sweep can safely recover an
+    # expired claim without exposing storage implementation details to users.
+    attempt_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    next_attempt_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    last_error_code: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    last_error_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    reconciliation_passes: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    last_reconciled_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Retained for compatibility with pre-Phase-7 rows. New worker code must
+    # never write exception text here; use the opaque last_error_code instead.
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 

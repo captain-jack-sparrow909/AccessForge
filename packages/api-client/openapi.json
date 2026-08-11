@@ -1029,6 +1029,113 @@
         "title": "ControlledPhysicalValidationRead",
         "type": "object"
       },
+      "DeletionStatusRead": {
+        "description": "Owner-visible, sanitized progress for a soft-deleted private project.",
+        "properties": {
+          "attempt_count": {
+            "title": "Attempt Count",
+            "type": "integer"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "last_error_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error At"
+          },
+          "last_error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error Code"
+          },
+          "last_reconciled_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reconciled At"
+          },
+          "next_attempt_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Attempt At"
+          },
+          "reconciliation_passes": {
+            "title": "Reconciliation Passes",
+            "type": "integer"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "title": "Requested At",
+            "type": "string"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "requested_at",
+          "attempt_count",
+          "started_at",
+          "next_attempt_at",
+          "last_error_code",
+          "last_error_at",
+          "reconciliation_passes",
+          "last_reconciled_at",
+          "completed_at"
+        ],
+        "title": "DeletionStatusRead",
+        "type": "object"
+      },
       "DesignPlanCreate": {
         "additionalProperties": false,
         "properties": {
@@ -6075,6 +6182,54 @@
         "summary": "Revoke Consent",
         "tags": [
           "consent"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/deletion-status": {
+      "get": {
+        "description": "Expose only safe cleanup progress to the owner after a soft delete.",
+        "operationId": "get_deletion_status_v1_projects__project_id__deletion_status_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletionStatusRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Deletion Status",
+        "tags": [
+          "projects"
         ]
       }
     },

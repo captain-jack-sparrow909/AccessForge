@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 from typing import Protocol, cast
 
 import boto3
+from botocore.config import Config
 from botocore.exceptions import BotoCoreError, ClientError
 
 from accessforge.core.config import get_settings
@@ -37,9 +39,34 @@ class S3Client(Protocol):
 
     def delete_object(self, *, Bucket: str, Key: str) -> object: ...
 
+    def list_objects_v2(
+        self,
+        *,
+        Bucket: str,
+        Prefix: str,
+        MaxKeys: int,
+        ContinuationToken: str | None = None,
+    ) -> dict[str, object]: ...
+
+
+@dataclass(frozen=True)
+class PrivateObjectListing:
+    """A bounded project-prefix inventory used by deletion reconciliation."""
+
+    keys: tuple[str, ...]
+    complete: bool
+
 
 def storage_client() -> S3Client:
     settings = get_settings()
+    # Keep one S3 request inside the deletion worker's 60-second defensive
+    # timeout. The durable deletion outbox, rather than botocore, owns retry
+    # timing and records only sanitized failure categories.
+    request_config = Config(
+        connect_timeout=settings.s3_connect_timeout_seconds,
+        read_timeout=settings.s3_read_timeout_seconds,
+        retries={"mode": "standard", "total_max_attempts": 1},
+    )
     return cast(
         S3Client,
         boto3.client(
@@ -48,6 +75,7 @@ def storage_client() -> S3Client:
             region_name=settings.s3_region,
             aws_access_key_id=settings.s3_access_key_id,
             aws_secret_access_key=settings.s3_secret_access_key,
+            config=request_config,
         ),
     )
 
@@ -134,3 +162,48 @@ def get_private_bytes(*, object_key: str, max_bytes: int = 50_000_000) -> bytes:
 def delete_object(*, object_key: str) -> None:
     settings = get_settings()
     storage_client().delete_object(Bucket=settings.s3_bucket_private, Key=object_key)
+
+
+def list_project_private_object_keys(
+    *, project_id: str, max_keys: int = 1_000
+) -> PrivateObjectListing:
+    """List a bounded fixed project prefix without accepting an arbitrary path."""
+
+    if max_keys < 1:
+        raise ValueError("The project object listing limit must be positive.")
+    settings = get_settings()
+    client = storage_client()
+    prefix = f"private/{project_id}/"
+    keys: list[str] = []
+    continuation_token: str | None = None
+    while len(keys) < max_keys:
+        remaining = max_keys - len(keys)
+        if continuation_token is None:
+            response = client.list_objects_v2(
+                Bucket=settings.s3_bucket_private,
+                Prefix=prefix,
+                MaxKeys=remaining,
+            )
+        else:
+            response = client.list_objects_v2(
+                Bucket=settings.s3_bucket_private,
+                Prefix=prefix,
+                MaxKeys=remaining,
+                ContinuationToken=continuation_token,
+            )
+        contents = response.get("Contents")
+        if isinstance(contents, list):
+            for item in contents:
+                if not isinstance(item, dict):
+                    continue
+                key = item.get("Key")
+                if isinstance(key, str) and key.startswith(prefix):
+                    keys.append(key)
+        truncated = response.get("IsTruncated") is True
+        if not truncated:
+            return PrivateObjectListing(keys=tuple(keys), complete=True)
+        next_token = response.get("NextContinuationToken")
+        if not isinstance(next_token, str) or not next_token:
+            return PrivateObjectListing(keys=tuple(keys), complete=False)
+        continuation_token = next_token
+    return PrivateObjectListing(keys=tuple(keys), complete=False)

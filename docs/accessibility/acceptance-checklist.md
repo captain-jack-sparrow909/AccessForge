@@ -1,11 +1,23 @@
 # AccessForge Accessibility Acceptance Checklist
 
-Version: 0.1  
-Status: Phase 0 draft  
-Target: WCAG 2.2 AA plus lived-experience review  
-Last updated: 2026-08-08
+Version: 0.2
+Status: Phase 7 source baseline; manual audit and pilot evidence outstanding
+Target: WCAG 2.2 AA plus lived-experience review
+Last updated: 2026-08-11
 
 This is a product acceptance checklist, not a claim of conformance. Conformance requires testing the complete implemented experience, including responsive variations and any third-party components.
+
+## Phase 7 source baseline (not a conformance result)
+
+The current source includes a small set of auditable safeguards:
+
+- text-only observation and manual measurement routes remain available without camera, audio, or 3D interaction;
+- candidate geometry and validation findings have a primary structured text report; the private 3D GLB preview is loaded only after an explicit user action and does not auto-rotate;
+- native, keyboard-reachable media file inputs include explanatory text;
+- the shared styles include explicit `:focus-visible`, reduced-motion, forced-colors, and wrapping navigation safeguards;
+- `pnpm --filter @accessforge/web test:accessibility-source` checks these source contracts without adding a browser-testing dependency.
+
+This automated source check does **not** run axe, a screen reader, a browser keyboard flow, a contrast calculation, a responsive-layout test, or a participant study. The unchecked items below remain required evidence before an accessibility or pilot exit gate can be considered.
 
 ## 1. Non-negotiable workflow alternatives
 
@@ -99,6 +111,7 @@ Required alternatives:
 
 Automated tests:
 
+- [x] Source-contract checks preserve the Phase 7 optional-3D, keyboard-reachable upload, focus, forced-colors, reduced-motion, and navigation guardrails.
 - [ ] axe-core or equivalent checks run on critical routes.
 - [ ] Playwright keyboard flows cover onboarding, measurements, candidates, and export.
 - [ ] Component tests cover focus, errors, dialogs, live regions, and reduced motion.
@@ -118,4 +131,3 @@ Manual tests:
 ## 9. Exit criteria
 
 No critical blocker remains for core tasks. Any known limitation has an owner, a documented workaround, and a visible issue. Accessibility findings from disabled participants take priority over cosmetic preferences.
-

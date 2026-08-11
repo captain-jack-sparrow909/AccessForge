@@ -1,12 +1,21 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import select
+from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from accessforge.core.security import Principal, get_current_principal
-from accessforge.db.models import Project, utc_now
+from accessforge.db.models import (
+    AuditEvent,
+    CadJob,
+    CandidateDesign,
+    DeletionJob,
+    Project,
+    utc_now,
+)
+from accessforge.db.results import affected_row_count
 from accessforge.db.session import get_session
 from accessforge.projects.workflow import (
     ensure_user,
@@ -66,6 +75,23 @@ class ProjectRead(BaseModel):
     updated_at: datetime
 
 
+class DeletionStatusRead(BaseModel):
+    """Owner-visible, sanitized progress for a soft-deleted private project."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    status: str
+    requested_at: datetime
+    attempt_count: int
+    started_at: datetime | None
+    next_attempt_at: datetime | None
+    last_error_code: str | None
+    last_error_at: datetime | None
+    reconciliation_passes: int
+    last_reconciled_at: datetime | None
+    completed_at: datetime | None
+
+
 @router.get("", response_model=list[ProjectRead])
 async def list_projects(
     principal: Principal = Depends(get_current_principal),
@@ -121,6 +147,27 @@ async def get_project(
     session: AsyncSession = Depends(get_session),
 ) -> Project:
     return await get_owned_project(session, principal, project_id)
+
+
+@router.get("/{project_id}/deletion-status", response_model=DeletionStatusRead)
+async def get_deletion_status(
+    project_id: str,
+    principal: Principal = Depends(get_current_principal),
+    session: AsyncSession = Depends(get_session),
+) -> DeletionJob:
+    """Expose only safe cleanup progress to the owner after a soft delete."""
+
+    await get_owned_project(session, principal, project_id, include_deleted=True)
+    deletion_job = await session.scalar(
+        select(DeletionJob)
+        .where(DeletionJob.project_id == project_id)
+        .order_by(DeletionJob.requested_at.desc(), DeletionJob.id.desc())
+    )
+    if deletion_job is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Deletion status not found."
+        )
+    return deletion_job
 
 
 @router.patch("/{project_id}", response_model=ProjectRead)
@@ -192,16 +239,112 @@ async def delete_project(
     principal: Principal = Depends(get_current_principal),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, str]:
-    project = await get_owned_project(session, principal, project_id)
-    transition_project(
-        session,
-        project,
-        target="deleted",
-        actor_id=principal.subject,
-        reason="User requested project deletion.",
+    # This row lock is the common write barrier shared with server-side CAD
+    # and export persistence. Once deletion owns it, no new private object can
+    # be staged from those paths before the deleted state is committed.
+    project = await session.scalar(
+        select(Project)
+        .where(Project.id == project_id, Project.owner_id == principal.subject)
+        .with_for_update()
+        .execution_options(populate_existing=True)
     )
-    from accessforge.db.models import DeletionJob
-
-    session.add(DeletionJob(project_id=project.id, requested_by=principal.subject))
-    await session.commit()
-    return {"project_id": project.id, "status": "deletion_queued"}
+    if project is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found.")
+    existing_job = await session.scalar(
+        select(DeletionJob)
+        .where(DeletionJob.project_id == project.id)
+        .order_by(DeletionJob.requested_at.desc(), DeletionJob.id.desc())
+    )
+    if project.status == "deleted" and existing_job is not None:
+        # Repeated owner requests must not create duplicate object-cleanup
+        # outboxes. The status endpoint remains the source of safe progress.
+        return {"project_id": project.id, "status": "deletion_queued"}
+    if project.status != "deleted":
+        transition_project(
+            session,
+            project,
+            target="deleted",
+            actor_id=principal.subject,
+            reason="User requested project deletion.",
+        )
+        cancellation_requested_at = datetime.now(UTC)
+        queued_candidates = await session.execute(
+            update(CandidateDesign)
+            .where(
+                CandidateDesign.project_id == project.id,
+                CandidateDesign.status == "queued",
+            )
+            .values(status="cancelled", completed_at=cancellation_requested_at)
+        )
+        running_candidates = await session.execute(
+            update(CandidateDesign)
+            .where(
+                CandidateDesign.project_id == project.id,
+                CandidateDesign.status == "running",
+            )
+            .values(status="cancel_requested")
+        )
+        queued_jobs = await session.execute(
+            update(CadJob)
+            .where(CadJob.project_id == project.id, CadJob.status == "queued")
+            .values(
+                status="cancelled",
+                cancel_requested_at=cancellation_requested_at,
+                cancelled_at=cancellation_requested_at,
+                completed_at=cancellation_requested_at,
+            )
+        )
+        running_jobs = await session.execute(
+            update(CadJob)
+            .where(CadJob.project_id == project.id, CadJob.status == "running")
+            .values(cancel_requested_at=cancellation_requested_at)
+        )
+        cancelled_count = affected_row_count(queued_candidates) + affected_row_count(queued_jobs)
+        in_flight_count = affected_row_count(running_candidates) + affected_row_count(running_jobs)
+        if cancelled_count or in_flight_count:
+            session.add(
+                AuditEvent(
+                    project_id=project.id,
+                    actor_id=principal.subject,
+                    event_type="deletion.private_writes_fenced",
+                    reason=(
+                        "Project deletion cancelled queued CAD work and requested cooperative "
+                        "cancellation of in-flight private writes."
+                    ),
+                    details={
+                        "terminal_updates": cancelled_count,
+                        "in_flight_updates": in_flight_count,
+                    },
+                )
+            )
+    resolved_project_id = project.id
+    try:
+        deletion_job = DeletionJob(project_id=resolved_project_id, requested_by=principal.subject)
+        session.add(deletion_job)
+        # The partial unique index can raise here, before commit, when two
+        # initial DELETE requests race. Keep flush inside the same recovery
+        # path as commit so both callers receive the idempotent 202 result.
+        await session.flush()
+        session.add(
+            AuditEvent(
+                project_id=resolved_project_id,
+                actor_id=principal.subject,
+                event_type="deletion.queued",
+                reason="The owner requested durable private-object cleanup after soft deletion.",
+                details={"deletion_job_id": deletion_job.id},
+            )
+        )
+        await session.commit()
+    except IntegrityError:
+        # A concurrent request may have committed the only active cleanup job
+        # after this request read the project. Roll back and report the durable
+        # idempotent result rather than queueing a second cleanup path.
+        await session.rollback()
+        existing_job = await session.scalar(
+            select(DeletionJob)
+            .where(DeletionJob.project_id == resolved_project_id)
+            .order_by(DeletionJob.requested_at.desc(), DeletionJob.id.desc())
+        )
+        if existing_job is None:
+            raise
+    return {"project_id": resolved_project_id, "status": "deletion_queued"}

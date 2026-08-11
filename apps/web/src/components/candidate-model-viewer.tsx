@@ -1,28 +1,80 @@
 'use client';
 
-import '@google/model-viewer';
+import dynamic from 'next/dynamic';
 
-export function CandidateModelViewer({ previewUrl, title }: { previewUrl: string; title: string }) {
-  return (
-    <div className="overflow-hidden rounded-xl border border-[var(--af-line)] bg-[#edf2ee]">
-      <model-viewer
-        src={previewUrl}
-        alt={`Interactive 3D preview of ${title}`}
-        camera-controls
-        auto-rotate
-        shadow-intensity="0.8"
-        interaction-prompt="auto"
-        style={{ display: 'block', height: '22rem', width: '100%' }}
-      >
-        <p className="p-5 text-sm text-[var(--af-muted)]">
-          This browser could not display the private GLB preview. The structured validation report
-          remains available below.
-        </p>
-      </model-viewer>
-      <p className="border-t border-[var(--af-line)] bg-white px-4 py-3 text-sm text-[var(--af-muted)]">
-        Drag to inspect the geometry. This is an on-screen representation, not a fit, strength, or
-        safety result.
+const InteractiveCandidateModelViewer = dynamic(
+  () =>
+    import('./interactive-candidate-model-viewer').then(
+      (module) => module.InteractiveCandidateModelViewer,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <p role="status" className="mt-4 text-sm text-[var(--af-muted)]">
+        Loading the optional 3D preview…
       </p>
-    </div>
+    ),
+  },
+);
+
+type CandidateModelViewerProps = {
+  previewUrl: string | null;
+  title: string;
+  isLoading: boolean;
+  message: string;
+  onLoad: () => void;
+  onHide: () => void;
+};
+
+export function CandidateModelViewer({
+  previewUrl,
+  title,
+  isLoading,
+  message,
+  onLoad,
+  onHide,
+}: CandidateModelViewerProps) {
+  const viewerId = `candidate-preview-${title.replaceAll(/[^a-zA-Z0-9_-]/g, '-').toLowerCase()}`;
+  const descriptionId = `${viewerId}-description`;
+  return (
+    <section
+      className="mt-5 rounded-xl border border-[var(--af-line)] bg-[var(--af-paper)] p-4"
+      aria-busy={isLoading}
+    >
+      <h4 className="font-semibold">Optional interactive 3D preview</h4>
+      <p id={descriptionId} className="mt-2 text-sm leading-6 text-[var(--af-muted)]">
+        The structured candidate report above is the primary record. Loading this private visual is
+        optional and may use additional data.
+      </p>
+      {previewUrl ? (
+        <>
+          <InteractiveCandidateModelViewer
+            previewUrl={previewUrl}
+            title={title}
+            viewerId={viewerId}
+          />
+          <button className="af-button af-button-secondary mt-4" type="button" onClick={onHide}>
+            Hide optional 3D preview
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            className="af-button af-button-secondary mt-4"
+            type="button"
+            aria-describedby={descriptionId}
+            disabled={isLoading}
+            onClick={onLoad}
+          >
+            {isLoading ? 'Preparing optional 3D preview…' : 'Load optional interactive 3D preview'}
+          </button>
+          {message ? (
+            <p role="alert" className="mt-3 text-sm text-[var(--af-danger)]">
+              {message}
+            </p>
+          ) : null}
+        </>
+      )}
+    </section>
   );
 }

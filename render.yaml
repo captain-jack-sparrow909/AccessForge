@@ -4,6 +4,9 @@ services:
     runtime: docker
     rootDir: services/api
     dockerfilePath: ./Dockerfile
+    # This API is the single migration owner. The independently deployed
+    # worker and scheduler below perform a read-only head check before startup.
+    preDeployCommand: alembic upgrade head
     plan: starter
     healthCheckPath: /health/live
     envVars:
@@ -85,7 +88,10 @@ services:
     runtime: docker
     rootDir: services/api
     dockerfilePath: ./Dockerfile
-    dockerCommand: celery -A accessforge.jobs.celery_app worker --loglevel=INFO
+    # The API is the single migration owner. This worker performs a read-only
+    # head check and refuses to start if that independently deployed migration
+    # has not completed; it never races the API by running DDL itself.
+    dockerCommand: /bin/sh -c 'python -m accessforge.db.schema_gate && celery -A accessforge.jobs.celery_app worker --loglevel=INFO'
     plan: starter
     envVars:
       - key: APP_ENV
@@ -154,6 +160,22 @@ services:
         sync: false
       - key: S3_SECRET_ACCESS_KEY
         sync: false
+  - type: worker
+    name: accessforge-scheduler
+    runtime: docker
+    rootDir: services/api
+    dockerfilePath: ./Dockerfile
+    # Run one scheduler separately from workers. Its local schedule file is
+    # ephemeral; durable retry state is stored in PostgreSQL deletion rows.
+    dockerCommand: /bin/sh -c 'python -m accessforge.db.schema_gate && celery -A accessforge.jobs.celery_app beat --loglevel=INFO --schedule=/tmp/accessforge-celerybeat-schedule'
+    plan: starter
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase: { name: accessforge-postgres, property: connectionString }
+      - key: REDIS_URL
+        fromService: { type: keyvalue, name: accessforge-redis, property: connectionString }
   - type: keyvalue
     name: accessforge-redis
     plan: starter

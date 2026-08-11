@@ -125,6 +125,22 @@ services:
       S3_ACCESS_KEY_ID: accessforge
       S3_SECRET_ACCESS_KEY: accessforge-local-only
     depends_on:
+      # The API image applies Alembic migrations before serving its health
+      # check, so workers do not claim outbox rows before the current schema.
+      api: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      minio: { condition: service_started }
+  scheduler:
+    build: { context: ./services/api, dockerfile: Dockerfile }
+    # Keep beat separate from horizontally scalable workers. The schedule file
+    # is intentionally ephemeral; durable state belongs in PostgreSQL.
+    command: celery -A accessforge.jobs.celery_app beat --loglevel=INFO --schedule=/tmp/accessforge-celerybeat-schedule
+    environment:
+      APP_ENV: development
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      api: { condition: service_healthy }
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
       minio: { condition: service_started }

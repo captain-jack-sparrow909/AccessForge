@@ -31,8 +31,14 @@ a {
 button,
 a,
 input,
-textarea {
-  outline-color: var(--af-primary);
+select,
+textarea,
+summary,
+[tabindex] {
+  outline-offset: 3px;
+}
+:where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--af-primary-dark);
   outline-offset: 3px;
 }
 .skip-link {
@@ -105,7 +111,7 @@ textarea {
   padding: 0.7rem 0.8rem;
   color: var(--af-ink);
 }
-.af-input:focus {
+.af-input:focus-visible {
   border-color: var(--af-primary);
   box-shadow: 0 0 0 3px rgba(35, 107, 77, 0.14);
 }
@@ -122,5 +128,23 @@ textarea {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+@media (forced-colors: active) {
+  .af-card {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+  .af-button,
+  .af-input {
+    border-color: ButtonText;
+  }
+  .af-button-primary,
+  .af-button-secondary {
+    background: ButtonFace;
+    color: ButtonText;
+  }
+  :where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline-color: Highlight;
   }
 }

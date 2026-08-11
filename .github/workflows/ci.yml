@@ -22,6 +22,7 @@ jobs:
       - run: pnpm generate:api
       - run: pnpm lint
       - run: pnpm typecheck
+      - run: pnpm test
       - run: pnpm build
       - run: pnpm format:check
   api:
@@ -33,5 +34,5 @@ jobs:
         with: { version: '0.9.18' }
       - run: uv sync --project services/api --locked
       - run: uv run --project services/api ruff check services/api
-      - run: uv run --project services/api mypy services/api/accessforge
+      - run: uv run --project services/api mypy --config-file services/api/pyproject.toml services/api/accessforge
       - run: uv run --project services/api pytest

@@ -585,23 +585,32 @@ function CandidateCard({
   const client = useProjectClient();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewMessage, setPreviewMessage] = useState('');
-  useEffect(() => {
-    let active = true;
-    if (candidate.status !== 'succeeded') return undefined;
-    client
-      .getCandidatePreview(projectId, candidate.id)
-      .then((preview) => {
-        if (active) setPreviewUrl(preview.preview_url);
-      })
-      .catch(() => {
-        if (active) setPreviewMessage('The private preview is not available right now.');
-      });
-    return () => {
-      active = false;
-    };
-  }, [candidate.id, candidate.status, client, projectId]);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const report = canonicalRecord(candidate.validation_report);
   const findings = Array.isArray(report.findings) ? report.findings : [];
+  const geometry = canonicalRecord(candidate.geometry_summary);
+  const geometryEntries = Object.entries(geometry);
+  const reportId = `candidate-${candidate.id}-structured-report`;
+
+  async function loadPreview() {
+    if (candidate.status !== 'succeeded' || previewLoading || previewUrl) return;
+    setPreviewLoading(true);
+    setPreviewMessage('');
+    try {
+      const preview = await client.getCandidatePreview(projectId, candidate.id);
+      setPreviewUrl(preview.preview_url);
+    } catch {
+      setPreviewMessage('The optional private preview is not available right now.');
+    } finally {
+      setPreviewLoading(false);
+    }
+  }
+
+  function hidePreview() {
+    setPreviewUrl(null);
+    setPreviewMessage('');
+  }
+
   return (
     <article className="af-card p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -622,36 +631,61 @@ function CandidateCard({
           </p>
         ) : null}
       </div>
-      {previewUrl ? (
-        <div className="mt-5">
-          <CandidateModelViewer
-            previewUrl={previewUrl}
-            title={`${candidate.template_id} candidate ${candidate.candidate_number}`}
+      <section
+        className="mt-5 rounded-lg border border-[var(--af-line)] bg-[var(--af-paper)] p-4"
+        aria-labelledby={reportId}
+      >
+        <h4 id={reportId} className="font-semibold">
+          Structured candidate report
+        </h4>
+        <p className="mt-2 text-sm leading-6 text-[var(--af-muted)]">
+          This text record is available without loading or interpreting a 3D preview.
+        </p>
+        <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+          <CandidateFact label="Candidate status" value={candidate.status.replaceAll('_', ' ')} />
+          <CandidateFact
+            label="Software validation"
+            value={candidate.validation_status?.replaceAll('_', ' ') ?? 'Not recorded'}
           />
-        </div>
-      ) : previewMessage ? (
-        <p className="mt-5 text-sm text-[var(--af-muted)]">{previewMessage}</p>
-      ) : null}
-      {candidate.geometry_summary ? (
-        <details className="mt-5 rounded-lg border border-[var(--af-line)] p-4">
-          <summary className="cursor-pointer font-semibold">
-            Structured geometry and validation
-          </summary>
-          <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-            {Object.entries(canonicalRecord(candidate.geometry_summary)).map(([name, value]) => (
-              <div key={name}>
-                <dt className="text-sm text-[var(--af-muted)]">{name.replaceAll('_', ' ')}</dt>
-                <dd className="mt-1 break-words font-semibold">{JSON.stringify(value)}</dd>
-              </div>
+          <CandidateFact
+            label="Template release"
+            value={`${candidate.template_id} · ${candidate.template_version}`}
+          />
+          <CandidateFact
+            label="Private artifacts"
+            value={
+              candidate.artifacts.length > 0
+                ? candidate.artifacts.map((artifact) => artifact.filename).join(', ')
+                : 'Not recorded'
+            }
+          />
+        </dl>
+        {geometryEntries.length > 0 ? (
+          <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
+            {geometryEntries.map(([name, value]) => (
+              <CandidateFact
+                key={name}
+                label={name.replaceAll('_', ' ')}
+                value={JSON.stringify(value)}
+              />
             ))}
           </dl>
-          {findings.length > 0 ? (
-            <ul className="mt-5 space-y-2 text-sm">
+        ) : (
+          <p className="mt-5 text-sm text-[var(--af-muted)]">
+            No structured geometry summary was recorded for this candidate.
+          </p>
+        )}
+        {findings.length > 0 ? (
+          <section className="mt-5" aria-labelledby={`${reportId}-findings`}>
+            <h5 id={`${reportId}-findings`} className="font-semibold">
+              Validation findings
+            </h5>
+            <ul className="mt-3 space-y-2 text-sm">
               {findings.map((finding, index) => {
                 const item = canonicalRecord(finding);
                 return (
                   <li
-                    className="rounded-lg bg-[var(--af-paper)] p-3"
+                    className="rounded-lg border border-[var(--af-line)] bg-white p-3"
                     key={`${index}-${String(item.check_id)}`}
                   >
                     <span className="font-semibold">{String(item.check_id ?? 'check')}</span> ·{' '}
@@ -663,8 +697,23 @@ function CandidateCard({
                 );
               })}
             </ul>
-          ) : null}
-        </details>
+          </section>
+        ) : (
+          <p className="mt-5 text-sm text-[var(--af-muted)]">
+            No itemized validation findings were recorded. This is not a statement that an
+            unassessed property passed.
+          </p>
+        )}
+      </section>
+      {candidate.status === 'succeeded' ? (
+        <CandidateModelViewer
+          previewUrl={previewUrl}
+          title={`${candidate.template_id} candidate ${candidate.candidate_number}`}
+          isLoading={previewLoading}
+          message={previewMessage}
+          onLoad={() => void loadPreview()}
+          onHide={hidePreview}
+        />
       ) : null}
       {candidate.artifacts.length > 0 ? (
         <p className="mt-5 text-sm text-[var(--af-muted)]">
@@ -672,5 +721,14 @@ function CandidateCard({
         </p>
       ) : null}
     </article>
+  );
+}
+
+function CandidateFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-[var(--af-muted)]">{label}</dt>
+      <dd className="mt-1 break-words font-semibold">{value}</dd>
+    </div>
   );
 }

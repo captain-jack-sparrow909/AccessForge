@@ -882,7 +882,10 @@ async def generate_candidate(
                 details={
                     "candidate_id": candidate.id,
                     "job_id": job.id,
-                    "error": str(exc).replace("\n", " ")[:500],
+                    # A broker error can include internal endpoint or queue
+                    # details. The durable row is sufficient for recovery;
+                    # keep audit metadata intentionally opaque.
+                    "delivery_status": "broker_publish_deferred",
                 },
             )
         )
