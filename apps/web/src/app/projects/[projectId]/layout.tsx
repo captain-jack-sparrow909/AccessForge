@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { auth } from '@/auth';
+import { getSession } from '@/auth';
 import { redirect } from 'next/navigation';
 
 export default async function ProjectLayout({
   children,
   params,
 }: Readonly<{ children: React.ReactNode; params: Promise<{ projectId: string }> }>) {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user) redirect('/sign-in');
   const { projectId } = await params;
   return (

@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { auth } from '@/auth';
+import { getSession } from '@/auth';
 import DashboardClient from './dashboard-client';
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user)
     return (
       <div className="af-container af-section">

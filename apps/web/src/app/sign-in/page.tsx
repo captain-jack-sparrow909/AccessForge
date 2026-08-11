@@ -1,9 +1,12 @@
 import Link from 'next/link';
-import { signIn } from '@/auth';
+import { redirect } from 'next/navigation';
+import { authConfiguration, getSession } from '@/auth';
+import { AuthForm } from './auth-form';
 
-export default function SignInPage() {
-  const githubConfigured = Boolean(process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET);
-  const devAuthEnabled = process.env.DEV_AUTH_ENABLED === 'true';
+export default async function SignInPage() {
+  const session = await getSession();
+  if (session?.user) redirect('/dashboard');
+
   return (
     <div className="af-container grid min-h-[76vh] gap-8 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch lg:py-16">
       <section className="af-dark-panel hidden p-10 lg:flex lg:flex-col lg:justify-between">
@@ -46,46 +49,28 @@ export default function SignInPage() {
           </span>
           <h2 className="mt-6 text-4xl font-extrabold">Welcome to AccessForge</h2>
           <p className="mt-4 leading-7 text-[var(--af-muted)]">
-            Sign in to open your private co-design workspace. Use synthetic data only until the
-            required privacy, accessibility, and operational reviews are complete.
+            Sign in or create an account to open your private co-design workspace.
           </p>
-          <div className="mt-8 space-y-3">
-            {githubConfigured ? (
-              <form
-                action={async () => {
-                  'use server';
-                  await signIn('github', { redirectTo: '/dashboard' });
-                }}
-              >
-                <button className="af-button af-button-primary w-full" type="submit">
-                  Continue with GitHub <span aria-hidden="true">→</span>
-                </button>
-              </form>
-            ) : null}
-            {devAuthEnabled ? (
-              <form
-                action={async () => {
-                  'use server';
-                  await signIn('credentials', {
-                    email: process.env.DEV_AUTH_EMAIL,
-                    password: process.env.DEV_AUTH_PASSWORD,
-                    redirectTo: '/dashboard',
-                  });
-                }}
-              >
-                <button className="af-button af-button-secondary w-full" type="submit">
-                  Use local development account
-                </button>
-              </form>
-            ) : null}
-            {!githubConfigured && !devAuthEnabled ? (
-              <div className="rounded-2xl border border-[var(--af-line)] bg-[var(--af-paper)] p-4 text-sm leading-6 text-[var(--af-muted)]">
-                Authentication is not configured. Add GitHub OAuth credentials or enable the
-                development-only account in <code>apps/web/.env.local</code>.
-              </div>
-            ) : null}
-          </div>
-          <Link href="/" className="af-button af-button-ghost mt-5 px-0">
+
+          <AuthForm
+            enabled={authConfiguration.configured}
+            githubConfigured={authConfiguration.configured && authConfiguration.githubConfigured}
+          />
+          {!authConfiguration.configured ? (
+            <div
+              className="mt-5 rounded-2xl border border-[var(--af-line)] bg-[var(--af-paper)] p-4 text-sm leading-6 text-[var(--af-muted)]"
+              role="status"
+            >
+              Authentication storage is not configured. Add <code>BETTER_AUTH_DATABASE_URL</code>{' '}
+              and <code>BETTER_AUTH_SECRET</code> to the web environment.
+            </div>
+          ) : null}
+
+          <p className="mt-6 text-xs leading-5 text-[var(--af-muted)]">
+            By continuing, you agree to keep safety-critical, medical, and identifying information
+            outside this early-stage workspace.
+          </p>
+          <Link href="/" className="af-button af-button-ghost mt-4 px-0">
             <span aria-hidden="true">←</span> Return home
           </Link>
         </div>

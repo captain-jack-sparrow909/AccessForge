@@ -14,7 +14,11 @@ pnpm generate:api
 docker compose up -d postgres redis minio
 ```
 
-`pnpm dev:keys` writes only gitignored local files: `.env` for Compose’s public key and `apps/web/.env.local` for development auth/private signing key. The local account is `demo@accessforge.local` / `accessforge-local-only`.
+`pnpm dev:keys` writes only gitignored local files: `.env` for Compose’s public
+key and `apps/web/.env.local` for Better Auth/private signing configuration. If
+you still have a generated Phase 1 environment file, replace its legacy
+`AUTH_*`/`DEV_AUTH_*` values with the `BETTER_AUTH_*` values in
+`apps/web/.env.example`.
 
 ## Run services
 
@@ -28,7 +32,11 @@ In another terminal:
 pnpm dev
 ```
 
-Open `http://localhost:3000`, choose the local development account, and start a guided project. The browser receives only a short-lived backend token; it never receives the signing key.
+Open `http://localhost:3000/sign-in` and create a local email/password account.
+GitHub remains optional when `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` are set.
+The browser receives only a secure session cookie and a short-lived backend
+token; it never receives a password hash, OAuth access token, database URL, or
+signing key.
 
 The Phase 2 workflow is deliberately consent-first:
 

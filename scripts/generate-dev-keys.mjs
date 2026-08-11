@@ -24,12 +24,11 @@ mkdirSync(dirname(webEnvPath), { recursive: true });
 writeFileSync(
   webEnvPath,
   [
-    `AUTH_SECRET=${randomBytes(32).toString('base64url')}`,
-    'AUTH_TRUST_HOST=true',
-    'DEV_AUTH_ENABLED=true',
-    'DEV_AUTH_EMAIL=demo@accessforge.local',
-    'DEV_AUTH_PASSWORD=accessforge-local-only',
+    `BETTER_AUTH_SECRET=${randomBytes(32).toString('base64url')}`,
+    'BETTER_AUTH_URL=http://localhost:3000',
+    'BETTER_AUTH_DATABASE_URL=postgresql://accessforge:accessforge@localhost:5432/accessforge',
     'NEXT_PUBLIC_API_URL=http://localhost:8000',
+    'NEXT_PUBLIC_APP_URL=http://localhost:3000',
     `BACKEND_TOKEN_PRIVATE_KEY=${escapedPrivateKey}`,
     'BACKEND_TOKEN_KID=local',
     '',
@@ -42,5 +41,5 @@ writeFileSync(
   { mode: 0o600 },
 );
 console.log(
-  'Created apps/web/.env.local and .env for local development. These files are gitignored.',
+  'Created apps/web/.env.local and .env for local development. Start PostgreSQL, apply migrations, then create an account on /sign-in.',
 );

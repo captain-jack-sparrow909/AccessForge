@@ -1,11 +1,11 @@
-import { auth } from '@/auth';
+import { getSession } from '@/auth';
 import { importPKCS8, SignJWT } from 'jose';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id)
     return NextResponse.json({ detail: 'Authentication required.' }, { status: 401 });
   const rawPrivateKey = process.env.BACKEND_TOKEN_PRIVATE_KEY;

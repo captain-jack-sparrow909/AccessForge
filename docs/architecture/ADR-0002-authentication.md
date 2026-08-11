@@ -1,6 +1,6 @@
 # ADR-0002: Authentication and frontend-to-backend identity
 
-Status: proposed  
+Status: accepted
 Date: 2026-08-08
 
 ## Context
@@ -9,7 +9,17 @@ The frontend runs on Vercel and the API runs on Render. The browser needs authen
 
 ## Decision
 
-Use Auth.js in Next.js with GitHub OAuth as the first login provider. Keep the browser session in secure HTTP-only cookies. The frontend issues a short-lived internal ES256 access token for calls to FastAPI.
+Use Better Auth in Next.js with first-party email/password accounts and optional
+GitHub OAuth. Store Better Auth's user, credential/account, verification, and
+session records in the existing PostgreSQL deployment under dedicated
+`auth_*` tables. Keep the browser session in secure HTTP-only cookies. The
+frontend issues a short-lived internal ES256 access token for calls to FastAPI.
+
+The API service remains the sole schema-migration owner: Alembic creates and
+updates the Better Auth tables. Vercel connects with a restricted PostgreSQL
+URL but does not run schema mutation during builds or deploys. Better Auth user
+IDs become the stable internal token subject regardless of whether the account
+uses a password or GitHub.
 
 The internal token contains `sub`, `iss`, `aud`, `exp`, `iat`, `jti`, `kid`, and role/membership claims. FastAPI verifies the signature, issuer, audience, expiry, and project authorization. The token expires within five minutes. Key rotation is represented by `kid` and a public-key set on the backend.
 
@@ -25,7 +35,8 @@ The internal token contains `sub`, `iss`, `aud`, `exp`, `iat`, `jti`, `kid`, and
 Positive:
 
 - backend receives a stable internal identity contract
-- OAuth provider can be replaced behind Auth.js
+- sign-in does not require a GitHub account
+- OAuth providers remain replaceable behind Better Auth
 - short-lived tokens reduce impact of accidental exposure
 - project authorization remains an API responsibility
 
@@ -33,14 +44,17 @@ Costs:
 
 - key management and rotation are application responsibilities
 - Vercel and Render must share public-key configuration correctly
+- password recovery and verified-email delivery require a transactional email integration
+- existing pre-migration Auth.js subjects need an explicit account-mapping plan before importing production data
 - OAuth setup needs a preview/production callback policy
 
 ## Security requirements
 
-- Never send GitHub access tokens to FastAPI or the browser’s application code.
+- Never send password hashes or GitHub access tokens to FastAPI or the browser’s application code.
+- Use Better Auth's password hashing implementation; never store plaintext credentials.
+- Keep `BETTER_AUTH_SECRET` and `BETTER_AUTH_DATABASE_URL` server-only.
 - Use `HttpOnly`, `Secure`, and appropriate `SameSite` cookie settings.
 - Validate exact allowed web origins and CORS.
 - Protect cookie-authorized state changes against CSRF.
 - Log token subject and request correlation ID, never token content.
 - Provide account deletion, session revocation, and provider unlinking behavior.
-

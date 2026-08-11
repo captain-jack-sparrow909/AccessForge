@@ -45,7 +45,7 @@ a physical design, exporting an artifact, or making a physical-use claim.
 - [x] Add FastAPI service with liveness/readiness endpoints.
 - [x] Add PostgreSQL models/migration for users and private projects.
 - [x] Add project authorization skeleton and RFC 9457-style problem responses.
-- [x] Add Auth.js/GitHub boundary and development-only local credentials.
+- [x] Add Better Auth email/password accounts with optional GitHub OAuth and persistent sessions.
 - [x] Add short-lived ES256 frontend-to-backend token route and API verification.
 - [x] Add local Docker Compose services for Postgres, Redis, MinIO, API, and worker.
 - [x] Add Render Blueprint and Vercel environment documentation.
@@ -362,7 +362,7 @@ Passed:
 Pending or environment-limited:
 
 - Docker image build/start: Docker CLI is installed, but the local Docker daemon is not running.
-- Browser-level OAuth/local-credential flow: the Auth.js boundary and local provider are implemented; run after starting the web/API services with `pnpm dev:keys` and Docker.
+- Browser-level account flow: Better Auth email/password and optional GitHub OAuth are implemented; run the migration-backed end-to-end flow after starting the web/API services with `pnpm dev:keys` and Docker.
 
 No production credentials, real participant data, or physical-design workflows were used.
 
@@ -397,7 +397,7 @@ No production credentials, real participant data, or physical-design workflows w
 | D-001 | Initial MVP is limited to three passive grip/pull template families. | Decided in Phase 0 draft | Project owner + safety reviewers | Phase 1 |
 | D-002 | AI produces structured proposals; deterministic CAD and risk code control generation/export. | Implemented as a Phase 3 boundary; pending external review | Technical maintainer | Phase 3 exit |
 | D-003 | Select the final open-source and hardware-template licenses. | Open | Project owner + legal review | Before external contributions |
-| D-004 | Select the first identity provider and GitHub OAuth application owner. | Proposed Auth.js + GitHub; open for review | Technical maintainer | Phase 1 |
+| D-004 | Select the first identity methods and GitHub OAuth application owner. | Better Auth email/password selected; GitHub remains optional and its application owner is open for review | Technical maintainer | Phase 1 |
 | D-005 | Approve research consent wording and data-retention period. | Open | Project owner + privacy reviewer | Before recruitment |
 | D-006 | Validate that all three template families are genuinely low-risk in the intended contexts. | Open physical assumption | Safety advisory group | Phase 6 |
 | D-007 | Choose and verify a deployment-grade, no-egress compiler sandbox for the Render/container runtime. | Open operational security gate | Technical maintainer + security reviewer | Phase 4 exit |
